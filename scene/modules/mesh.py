@@ -1,0 +1,60 @@
+import numpy as np
+from scene.modules.module_base import Module
+
+
+class Mesh(Module):
+    def __init_module__(self):
+        self.name = "meshes/bnuy.obj"
+        vertices, normals, texcoords, faces = self.parse_obj(self.name)
+
+        vertex_cache = {}
+        interleaved_vertices = []
+        indices = []
+        for face in faces:
+            for vtx_info in face:
+                v_idx = vtx_info[0] - 1
+                vt_idx = vtx_info[1] - 1
+                vn_idx = vtx_info[2] - 1
+
+                key = (v_idx, vt_idx, vn_idx)
+                if key not in vertex_cache:
+                    vertex_cache[key] = len(interleaved_vertices) // 8
+                    v = vertices[v_idx]
+                    vt = texcoords[vt_idx]
+                    vn = normals[vn_idx]
+                    interleaved_vertices.extend(v + vt + vn)
+
+                indices.append(vertex_cache[key])
+
+        self.vertex_buffer = np.array(interleaved_vertices, dtype=np.float32)
+        self.index_buffer = np.array(indices, dtype=np.uint32)
+
+    def parse_obj(self, filepath):
+        vertices = []
+        normals = []
+        texcoords = []
+        faces = []
+
+        with open(filepath, "r") as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+
+                data = line.split()
+                if data[0] == "v":
+                    vertices.append([float(x) for x in data[1:]])
+                elif data[0] == "vn":
+                    normals.append([float(x) for x in data[1:]])
+                elif data[0] == "vt":
+                    texcoords.append([float(x) for x in data[1:]])
+                elif data[0] == "f":
+                    face_data = []
+                    for vertex_data in data[1:]:
+                        parts = vertex_data.split("/")
+                        v = int(parts[0]) if parts[0] else None
+                        t = int(parts[1]) if parts[1] else None
+                        n = int(parts[2]) if parts[2] else None
+                        face_data.append([v, t, n])
+                    faces.append(face_data)
+        return vertices, normals, texcoords, faces

@@ -4,14 +4,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>a78c5b1d-6c6c-4cc1-a281-7eeddcb82ea1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>our_pygame.py</StartupFile>
+    <StartupFile>core\main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>our_pygame</Name>
     <RootNamespace>our_pygame</RootNamespace>
-    <InterpreterId>Global|PythonCore|3.12</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.13</InterpreterId>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,24 +24,51 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="our_pygame.py" />
+    <Compile Include="core\application.py" />
+    <Compile Include="core\event_manager.py" />
+    <Compile Include="graphics\texture.py" />
+    <Compile Include="scene\modules\mesh.py" />
+    <Compile Include="scene\modules\module_base.py" />
+    <Compile Include="scene\modules\renderer.py" />
+    <Compile Include="scene\modules\transform.py" />
+    <Compile Include="scene\scene.py" />
+    <Compile Include="utils\singleton_decorator.py" />
+    <Compile Include="utils\global_variables.py" />
+    <Compile Include="core\main.py" />
+    <Compile Include="graphics\buffer.py" />
+    <Compile Include="graphics\graphics_backend.py" />
+    <Compile Include="scene\scene_object.py" />
+    <Compile Include="graphics\shader_program.py" />
+    <Compile Include="graphics\shader.py" />
+    <Compile Include="utils\gl_constant_map.py" />
+    <Compile Include="utils\debug.py" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|PythonCore|3.12" />
+    <Content Include="requirements.txt" />
+    <Content Include="graphics\shaders\fragment.glsl" />
+    <Content Include="graphics\shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="main_environment\">
-      <Id>main_environment</Id>
-      <Version>3.12</Version>
-      <Description>main_environment (Python 3.12 (64-bit))</Description>
+    <Folder Include="graphics\" />
+    <Folder Include="core\" />
+    <Folder Include="graphics\shaders\" />
+    <Folder Include="scene\" />
+    <Folder Include="scene\modules\" />
+    <Folder Include="utils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.13" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="main_env\">
+      <Id>main_env</Id>
+      <Version>3.13</Version>
+      <Description>main_env (Python 3.13 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
