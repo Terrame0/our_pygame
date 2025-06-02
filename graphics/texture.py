@@ -2,8 +2,8 @@ from OpenGL.GL import *
 from PIL import Image
 import numpy as np
 
+# TODO add debug info
 
-#TODO add debug info
 
 class Texture:
     def __init__(

@@ -14,7 +14,7 @@ class SceneObject:
         if module_name in self.module_list:
             return self.module_list[module_name]
         else:
-            raise KeyError(
+            raise AttributeError(
                 f"(!) no module {module_name} attached to {self.__class__.__name__} {self.name}"
             )
 
@@ -30,6 +30,9 @@ class SceneObject:
                 f"(*) module {module_name} is already attached to {self.__class__.__name__} {self.name}!"
             )
         return self.module_list[module_name]
+
+    def __str__(self):
+        return self.name
 
     def remove_module(self, module_type: Type[Module]):
         module_name = module_type.__name__

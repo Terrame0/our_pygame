@@ -1,10 +1,11 @@
 import numpy as np
 from scene.modules.module_base import Module
-
+from scene.modules.transform import Transform
 
 class Mesh(Module):
+    requires = [Transform]
     def __init_module__(self):
-        self.name = "meshes/bnuy.obj"
+        self.name = "cat.obj"
         vertices, normals, texcoords, faces = self.parse_obj(self.name)
 
         vertex_cache = {}

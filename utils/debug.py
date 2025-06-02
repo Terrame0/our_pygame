@@ -5,9 +5,9 @@ class debug:
     indentation_level = 0
 
     @staticmethod
-    def log(string: str):
+    def log(string):
         indent = "".join(["|   "] * debug.indentation_level)
-        print(indent + string)
+        print(indent + str(string))
 
     @staticmethod
     def indent():

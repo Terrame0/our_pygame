@@ -17,6 +17,9 @@ class Module(ABC):
                 f"(!) no parent module list provided to {self.__class__.__name__} module constructor"
             )
 
+        # -- calling the child's constructor
+        self.__init_module__(*args, **kwargs)
+
         # -- checking requirements
         missing = [
             req.__name__
@@ -27,8 +30,6 @@ class Module(ABC):
             raise Exception(
                 f"(!) missing required modules for {self.__class__.__name__}: {', '.join(missing)}"
             )
-
-        self.__init_module__(*args, **kwargs)
 
     # -- functions as the constructor for subclasses
     @abstractmethod

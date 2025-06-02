@@ -26,12 +26,15 @@
   <ItemGroup>
     <Compile Include="core\application.py" />
     <Compile Include="core\event_manager.py" />
+    <Compile Include="graphics\clock.py" />
     <Compile Include="graphics\texture.py" />
+    <Compile Include="scene\modules\camera.py" />
     <Compile Include="scene\modules\mesh.py" />
     <Compile Include="scene\modules\module_base.py" />
     <Compile Include="scene\modules\renderer.py" />
     <Compile Include="scene\modules\transform.py" />
     <Compile Include="scene\scene.py" />
+    <Compile Include="utils\custom_events.py" />
     <Compile Include="utils\singleton_decorator.py" />
     <Compile Include="utils\global_variables.py" />
     <Compile Include="core\main.py" />
