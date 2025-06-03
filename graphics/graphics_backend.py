@@ -42,13 +42,14 @@ class GraphicsBackend:
         debug.log("graphics backend initialization complete")
 
         # -- TODO make this not hard-coded
-        self.texture = Texture("cat_tex.png")
+        self.texture = Texture("assets/cat_tex.png")
         glUseProgram(self.shader_program.id)
         glUniform2fv(0, 1, pygame.display.get_window_size())
 
     def next_frame(self, scene: Scene):
         pygame.event.post(pygame.event.Event(custom_events.UPDATE))
         self.clock.tick()
+        pygame.time.Clock().tick(144)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glUniformMatrix4fv(2, 1, False, glm.value_ptr(scene.camera.projection_matrix))
         glUniformMatrix4fv(3, 1, False, glm.value_ptr(scene.camera.view_matrix))

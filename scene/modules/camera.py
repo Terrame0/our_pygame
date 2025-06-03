@@ -10,7 +10,7 @@ class Camera(Module):
 
     def __init_module__(self, *args, **kwargs):
         self._projection_matrix = glm.perspective(
-            glm.radians(90), 800/600, 0.1, 10
+            glm.radians(90), 800/600, 0.001, 1000
         )
         self._view_matrix = glm.vec3(0, 0, 1)
     @property

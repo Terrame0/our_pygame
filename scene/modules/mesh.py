@@ -1,12 +1,12 @@
 import numpy as np
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
+from utils.path_resolver import resolve_path
 
 class Mesh(Module):
     requires = [Transform]
-    def __init_module__(self):
-        self.name = "cat.obj"
-        vertices, normals, texcoords, faces = self.parse_obj(self.name)
+    def __init_module__(self,obj_path:str = ""):
+        vertices, normals, texcoords, faces = self.parse_obj(obj_path)
 
         vertex_cache = {}
         interleaved_vertices = []
@@ -36,7 +36,7 @@ class Mesh(Module):
         texcoords = []
         faces = []
 
-        with open(filepath, "r") as file:
+        with open(resolve_path(filepath), "r") as file:
             for line in file:
                 line = line.strip()
                 if not line or line.startswith("#"):

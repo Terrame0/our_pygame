@@ -3,6 +3,7 @@ from typing import DefaultDict, Callable, Any, List, Tuple, Type
 from collections import defaultdict
 from utils.debug import debug
 import pygame
+import sys
 
 
 @singleton
@@ -56,5 +57,5 @@ class EventManager:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                sys.exit()
             self.emit(event)

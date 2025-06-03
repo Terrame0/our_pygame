@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from utils.gl_constant_map import get_gl_name
 from utils.debug import debug
+from utils.path_resolver import resolve_path
 
 
 class Shader:
@@ -9,9 +10,9 @@ class Shader:
         debug.log(
             f"constructing a {get_gl_name(int(type))} at {path} at index {self.id}"
         )
-        glShaderSource(self.id, open(path, "r").read())
+        glShaderSource(self.id, open(resolve_path(path), "r").read())
         glCompileShader(self.id)
-        # -- check if compilation failed
+
         if not glGetShaderiv(self.id, GL_COMPILE_STATUS):
             raise Exception(
                 f"(!) error during shader construction:{glGetShaderInfoLog(self.id)}"
