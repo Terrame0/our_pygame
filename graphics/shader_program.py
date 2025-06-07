@@ -5,7 +5,7 @@ from utils.debug import debug
 
 
 class ShaderProgram:
-    def __init__(self, shader_list: tuple[Shader, ...]):
+    def __init__(self, *shader_list: tuple[Shader, ...]):
         self.id = glCreateProgram()
         self.shader_list = shader_list
         debug.log(f"constructing a shader program with:")
@@ -23,6 +23,13 @@ class ShaderProgram:
             raise Exception(
                 f"(!) error during program construction:{glGetProgramInfoLog(self.id)}"
             )
+
+    def __enter__(self):
+        self.use()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        glUseProgram(0)
 
     def use(self):
         glUseProgram(self.id)

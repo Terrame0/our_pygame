@@ -9,8 +9,10 @@ from utils.path_resolver import resolve_path
 class Texture:
     def __init__(
         self,
+        unit: int,
         filepath: str = None,
     ):
+        self.unit = unit
         self.id = glGenTextures(1)
         self.width = 0
         self.height: int = 0
@@ -53,9 +55,9 @@ class Texture:
                 img_data,
             )
 
-    def bind(self, unit: int = 0):
-        glActiveTexture(GL_TEXTURE0 + unit)
+    def bind(self):
         glBindTexture(GL_TEXTURE_2D, self.id)
+        glActiveTexture(GL_TEXTURE0 + self.unit)
 
     def unbind(self):
         glBindTexture(GL_TEXTURE_2D, 0)
@@ -70,8 +72,8 @@ class Texture:
     def delete(self):
         glDeleteTextures(1, [self.id])
 
-    #@classmethod
-    #def create_empty(
+    # @classmethod
+    # def create_empty(
     #    cls,
     #    width: int,
     #    height: int,
@@ -80,7 +82,7 @@ class Texture:
     #    data_type: int = GL_UNSIGNED_BYTE,
     #    wrap_s: int = GL_CLAMP_TO_EDGE,
     #    wrap_t: int = GL_CLAMP_TO_EDGE,
-    #):
+    # ):
     #    tex = cls()
     #    tex.width = width
     #    tex.height = height

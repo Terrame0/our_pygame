@@ -15,11 +15,12 @@ layout(location = 3) uniform mat4 view;
 
 // -- outputs to fragment shader 
 out vec2 frag_texcoord;
+out float depth;
 out float w;
 
 void main() {
-	// TODO vertex snapping is broken in perspective !!!
 	vec4 clip_space = projection*view*model*vec4(position, 1.0);
+	depth = clip_space.z;
 	vec2 screen_space = round((clip_space.xy / clip_space.w) * screen_size / 4) / screen_size * 4 * clip_space.w;
 	gl_Position = vec4(screen_space,clip_space.zw);
 	frag_texcoord = texcoord;

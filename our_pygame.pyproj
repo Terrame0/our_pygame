@@ -26,15 +26,19 @@
   <ItemGroup>
     <Compile Include="core\application.py" />
     <Compile Include="core\event_manager.py" />
+    <Compile Include="core\leading_reticle.py" />
     <Compile Include="core\player.py" />
+    <Compile Include="core\projectile.py" />
     <Compile Include="graphics\clock.py" />
     <Compile Include="graphics\texture.py" />
     <Compile Include="scene\modules\camera.py" />
+    <Compile Include="scene\modules\collider.py" />
     <Compile Include="scene\modules\mesh.py" />
     <Compile Include="scene\modules\module_base.py" />
     <Compile Include="scene\modules\renderer.py" />
     <Compile Include="scene\modules\transform.py" />
     <Compile Include="scene\scene.py" />
+    <Compile Include="scene\scripts\script_base.py" />
     <Compile Include="utils\custom_events.py" />
     <Compile Include="utils\path_resolver.py" />
     <Compile Include="utils\singleton_decorator.py" />
@@ -49,6 +53,7 @@
     <Compile Include="utils\debug.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="graphics\shaders\collision_checker.glsl" />
     <Content Include="requirements.txt" />
     <Content Include="graphics\shaders\fragment.glsl" />
     <Content Include="graphics\shaders\vertex.glsl" />
@@ -59,6 +64,7 @@
     <Folder Include="graphics\shaders\" />
     <Folder Include="scene\" />
     <Folder Include="scene\modules\" />
+    <Folder Include="scene\scripts\" />
     <Folder Include="utils\" />
   </ItemGroup>
   <ItemGroup>

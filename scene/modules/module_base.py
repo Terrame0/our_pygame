@@ -1,20 +1,21 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Dict, Type, List
 from utils.debug import debug
 
 
 class Module(ABC):
-    requires: List[Type["Module"]] = []
+    requires: List[Type[Module]] = []
 
-    def __init__(self, *args, module_list: Dict[str, "Module"] = None, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         debug.log(f"constructing a {self.__class__.__name__} module")
 
         # -- module list validity check
-        if module_list is not None:
-            self.parent_modules = module_list
+        if parent is not None:
+            self.parent = parent
         else:
             raise Exception(
-                f"(!) no parent module list provided to {self.__class__.__name__} module constructor"
+                f"(!) no parent object provided to {self.__class__.__name__} module constructor"
             )
 
         # -- calling the child's constructor
@@ -24,7 +25,7 @@ class Module(ABC):
         missing = [
             req.__name__
             for req in self.requires
-            if req.__name__ not in self.parent_modules
+            if req.__name__ not in self.parent.modules
         ]
         if missing:
             raise Exception(

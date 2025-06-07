@@ -1,13 +1,16 @@
-import numpy as np
+from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
 from utils.path_resolver import resolve_path
+from utils.debug import debug
+
 
 class Mesh(Module):
     requires = [Transform]
-    def __init_module__(self,obj_path:str = ""):
-        vertices, normals, texcoords, faces = self.parse_obj(obj_path)
 
+    def __init_module__(self, obj_path: str = ""):
+        vertices, normals, texcoords, faces = self.parse_obj(obj_path)
+        self.max_vert_radius = 0
         vertex_cache = {}
         interleaved_vertices = []
         indices = []
@@ -21,14 +24,21 @@ class Mesh(Module):
                 if key not in vertex_cache:
                     vertex_cache[key] = len(interleaved_vertices) // 8
                     v = vertices[v_idx]
+                    self.max_vert_radius = max(
+                        self.max_vert_radius,
+                        glm.distance(glm.vec3(0), glm.vec3(*v)),
+                    )
                     vt = texcoords[vt_idx]
                     vn = normals[vn_idx]
                     interleaved_vertices.extend(v + vt + vn)
 
                 indices.append(vertex_cache[key])
-
-        self.vertex_buffer = np.array(interleaved_vertices, dtype=np.float32)
-        self.index_buffer = np.array(indices, dtype=np.uint32)
+        self.vertex_buffer = glm.array.from_numbers(glm.float32, *interleaved_vertices)
+        self.index_buffer = glm.array.from_numbers(glm.int32, *indices)
+    
+    @property
+    def bounding_sphere_radius(self):
+        return self.max_vert_radius * max(*self.parent.transform.scale) + 0.01
 
     def parse_obj(self, filepath):
         vertices = []

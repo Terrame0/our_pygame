@@ -19,17 +19,5 @@ class Camera(Module):
 
     @property
     def view_matrix(self):
-        transform = self.parent_modules[Transform.__name__]
-        self._view_matrix = glm.inverse(transform.model_matrix)
-        #self._view_matrix = glm.mat4(1)
-        #for axis_id, angle in zip(
-        #    ["z", "x", "y"],
-        #    [transform.rotation[2], transform.rotation[0], transform.rotation[1]],
-        #):
-        #    axis = glm.vec3(0)
-        #    setattr(axis, axis_id, 1)
-        #    self._view_matrix = glm.rotate(self._view_matrix, glm.radians(angle), axis)
-        #self._view_matrix[3, 0] = transform.position.x
-        #self._view_matrix[3, 1] = transform.position.y
-        #self._view_matrix[3, 2] = transform.position.z
+        self._view_matrix = glm.inverse(self.parent.transform.model_matrix)
         return self._view_matrix

@@ -8,7 +8,6 @@ from graphics.shader_program import ShaderProgram
 from scene.scene import Scene
 from utils.debug import debug
 from pyglm import glm
-import time
 from graphics.texture import Texture
 from graphics.clock import Clock
 
@@ -29,33 +28,62 @@ class GraphicsBackend:
         # -- opengl setup
         glEnable(GL_DEPTH_TEST)
         glClearColor(0.1, 0.1, 0.1, 1.0)
-        glEnable(GL_CULL_FACE)
-        glCullFace(GL_BACK)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         self.fragment_shader = Shader(
             "graphics/shaders/fragment.glsl", GL_FRAGMENT_SHADER
         )
         self.vertex_shader = Shader("graphics/shaders/vertex.glsl", GL_VERTEX_SHADER)
-        self.shader_program = ShaderProgram((self.fragment_shader, self.vertex_shader))
+        self.render_program = ShaderProgram(self.fragment_shader, self.vertex_shader)
 
         debug.dedent()
         debug.log("graphics backend initialization complete")
 
         # -- TODO make this not hard-coded
-        self.texture = Texture("assets/cat_tex.png")
-        glUseProgram(self.shader_program.id)
+        glUseProgram(self.render_program.id)
         glUniform2fv(0, 1, pygame.display.get_window_size())
 
-    def next_frame(self, scene: Scene):
+    def next_frame(self):
         pygame.event.post(pygame.event.Event(custom_events.UPDATE))
         self.clock.tick()
         pygame.time.Clock().tick(144)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glUniformMatrix4fv(2, 1, False, glm.value_ptr(scene.camera.projection_matrix))
-        glUniformMatrix4fv(3, 1, False, glm.value_ptr(scene.camera.view_matrix))
 
-        with self.texture:
-            for obj in scene.object_list:
+        with self.render_program:
+            glUniformMatrix4fv(
+                2, 1, False, glm.value_ptr(Scene().camera.projection_matrix)
+            )
+            glUniformMatrix4fv(3, 1, False, glm.value_ptr(Scene().camera.view_matrix))
+            transparent_objects = []
+            for obj in Scene().object_list:
                 if hasattr(obj, "renderer"):
-                    obj.renderer.draw()
+                    # -- UI faces the camera and is of constant size relative to view
+                    if obj.renderer.is_UI:
+                        obj.transform.quaternion = (
+                            Scene().camera_object.transform.quaternion
+                        )
+                        obj.transform.scale = (
+                            glm.vec3(
+                                glm.distance(
+                                    obj.transform.position,
+                                    Scene().camera_object.transform.position,
+                                )
+                            )
+                            * 0.1
+                        )
+
+                    if not obj.renderer.is_transparent:
+                        obj.renderer.draw()
+                    else:
+                        transparent_objects.append(obj)
+            transparent_objects.sort(
+                key=lambda obj: glm.distance(
+                    obj.transform.position, Scene().camera_object.transform.position
+                ),
+                reverse=True,
+            )
+            for obj in transparent_objects:
+                obj.renderer.draw()
+
         pygame.display.flip()
