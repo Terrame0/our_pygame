@@ -82,7 +82,6 @@ class GraphicsBackend:
                             )
                             * 0.1
                         )
-
                     if not obj.renderer.is_transparent:
                         obj.renderer.draw()
                     else:

@@ -1,21 +1,17 @@
 
 from graphics.graphics_backend import GraphicsBackend
 from scene.modules.physics_body import PhysicsBody
-from scene.scripts import crosshair
 from scene.scripts.skybox import Skybox
 from utils import custom_events
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
-from scene.modules.camera import Camera
 from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from graphics.texture import Texture
 import pygame
 from pyglm import glm
-from utils.debug import debug
 from scene.scene import Scene
 from scene.modules.module_base import Module
-
 from scene.scripts.projectile import Projectile
 from scene.scripts.crosshair import Crosshair
 from scene.scripts.leading_reticle import LeadingReticle

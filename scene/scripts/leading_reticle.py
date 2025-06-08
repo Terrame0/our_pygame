@@ -1,12 +1,9 @@
-
-from scene.modules.physics_body import PhysicsBody
 from scene.scripts.target_selector import TargetSelector
 from utils import custom_events
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
 from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
-from graphics.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
 

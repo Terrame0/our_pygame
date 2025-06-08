@@ -1,5 +1,4 @@
 #version 430
-// -- TODO remember to change back to a higher value
 layout(local_size_x = 64) in;
 
 layout(std430, binding = 0) buffer vertices {

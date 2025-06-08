@@ -32,6 +32,6 @@ class Projectile(Module):
         self.subscribe_to_event(custom_events.UPDATE, self.update)
 
     def update(self):
-        if GraphicsBackend().clock.time_snapshot - self.creation_time > 1:
+        if GraphicsBackend().clock.time_snapshot - self.creation_time > 5:
             self.parent_obj.destroy()
         self.parent_obj.transform.quaternion = self.player.transform.quaternion

@@ -1,7 +1,4 @@
-
-from typing import DefaultDict
 import pygame
-from scene.modules.physics_body import PhysicsBody
 from utils import custom_events
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
@@ -10,7 +7,6 @@ from scene.modules.renderer import Renderer
 from graphics.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
-from utils.debug import debug
 from scene.scene import Scene
 from scene.scripts.target_indicator import TargetIndicator
 
@@ -26,7 +22,7 @@ class TargetSelector(Module):
     def update(self):
         for target in Scene().objects:
             if (
-                hasattr(target, "renderer")
+                hasattr(target, "enemy")
                 and not target.renderer.is_UI
                 and target not in self.available_targets
             ):

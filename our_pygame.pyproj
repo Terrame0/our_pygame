@@ -28,6 +28,7 @@
     <Compile Include="core\event_manager.py" />
     <Compile Include="scene\modules\physics_body.py" />
     <Compile Include="scene\scripts\crosshair.py" />
+    <Compile Include="scene\scripts\enemy.py" />
     <Compile Include="scene\scripts\leading_reticle.py" />
     <Compile Include="scene\scripts\player.py" />
     <Compile Include="core\projectile_old.py" />
