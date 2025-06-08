@@ -38,7 +38,7 @@ class Mesh(Module):
     
     @property
     def bounding_sphere_radius(self):
-        return self.max_vert_radius * max(*self.parent.transform.scale) + 0.01
+        return self.max_vert_radius * max(*self.parent_obj.transform.scale) + 0.01
 
     def parse_obj(self, filepath):
         vertices = []

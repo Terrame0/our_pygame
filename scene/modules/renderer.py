@@ -10,15 +10,22 @@ import glm
 class Renderer(Module):
     requires = [Mesh, Transform]
 
-    def __init_module__(self, texture:Texture = None, is_transparent:bool = False, is_UI:bool = False):
+    def __init_module__(
+        self,
+        texture: Texture = None,
+        is_transparent: bool = False,
+        is_UI: bool = False,
+        is_visible: bool = True,
+    ):
 
         # -- properties
         self.is_transparent = is_transparent
         self.is_UI = is_UI
+        self.is_visible = is_visible
 
         # -- resources
-        self.mesh = self.parent.mesh
-        self.transform = self.parent.transform
+        self.mesh = self.parent_obj.mesh
+        self.transform = self.parent_obj.transform
         self.shader_program = None
         self.texture = texture
 
@@ -49,11 +56,11 @@ class Renderer(Module):
             glBindVertexArray(0)
 
     def draw(self):
-        if(self.is_UI):
+        if self.is_UI:
             glDisable(GL_DEPTH_TEST)
         else:
             glEnable(GL_DEPTH_TEST)
-        if(self.texture != None):
+        if self.texture != None:
             self.texture.bind()
         glBindVertexArray(self.vao)
         glUniformMatrix4fv(1, 1, False, glm.value_ptr(self.transform.model_matrix))

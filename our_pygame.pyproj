@@ -26,9 +26,11 @@
   <ItemGroup>
     <Compile Include="core\application.py" />
     <Compile Include="core\event_manager.py" />
-    <Compile Include="core\leading_reticle.py" />
-    <Compile Include="core\player.py" />
-    <Compile Include="core\projectile.py" />
+    <Compile Include="scene\modules\physics_body.py" />
+    <Compile Include="scene\scripts\crosshair.py" />
+    <Compile Include="scene\scripts\leading_reticle.py" />
+    <Compile Include="scene\scripts\player.py" />
+    <Compile Include="core\projectile_old.py" />
     <Compile Include="graphics\clock.py" />
     <Compile Include="graphics\texture.py" />
     <Compile Include="scene\modules\camera.py" />
@@ -38,7 +40,10 @@
     <Compile Include="scene\modules\renderer.py" />
     <Compile Include="scene\modules\transform.py" />
     <Compile Include="scene\scene.py" />
-    <Compile Include="scene\scripts\script_base.py" />
+    <Compile Include="scene\scripts\projectile.py" />
+    <Compile Include="scene\scripts\skybox.py" />
+    <Compile Include="scene\scripts\target_indicator.py" />
+    <Compile Include="scene\scripts\target_selector.py" />
     <Compile Include="utils\custom_events.py" />
     <Compile Include="utils\path_resolver.py" />
     <Compile Include="utils\singleton_decorator.py" />
@@ -51,6 +56,7 @@
     <Compile Include="graphics\shader.py" />
     <Compile Include="utils\gl_constant_map.py" />
     <Compile Include="utils\debug.py" />
+    <Compile Include="utils\snake_to_pascal.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="graphics\shaders\collision_checker.glsl" />

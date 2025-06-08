@@ -13,14 +13,18 @@ class Scene:
         self._camera_object = None
         debug.log(f"constructing a {self.__class__.__name__} with:")
         debug.indent()
-        self.object_list: List = objects
-        for obj in self.object_list:
+        self.objects: List = objects
+        for obj in self.objects:
             debug.log(f"{obj.name}")
         debug.dedent()
 
     def add_objects(self, *objs: List):
         for obj in objs:
-            self.object_list.append(obj)
+            self.objects.append(obj)
+
+    def remove_objects(self, *objs: List):
+        for obj in objs:
+            self.objects.remove(obj)
 
     @property
     def camera(self):

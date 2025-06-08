@@ -14,11 +14,13 @@ class EventManager:
     def subscribe(
         self,
         event_type: Any,
-        f: Callable[[pygame.event.Event, Any], None] = None,
+        callback: Callable[[Any], None] = None,
         *args: Any,
         **kwargs: Any,
     ):
-        self._subscriptions[event_type].append({"callable": f, "data": (args, kwargs)})
+        self._subscriptions[event_type].append(
+            {"callable": callback, "data": (args, kwargs)}
+        )
         debug.log(f"subscribed callback to {event_type}")
 
     def unsubscribe(self, event_type: Any, callback: Callable):

@@ -15,6 +15,7 @@ layout(std430, binding = 2) buffer result {
 };
 
 layout(location = 0) uniform vec3 camera_pos;
+layout(location = 1) uniform mat4 model;
 
 uint inv_id = gl_GlobalInvocationID.x;
 
@@ -92,7 +93,7 @@ void main() {
     // -- the shader is dispatched for each face, so we have to iterate over 3 vertices
     // -- inv_id is multiplied by 3 for the very same reason
     for(int i = 0; i < 3; i++){
-        vertices[i] = get_vert(i);
+        vertices[i] = (model * vec4(get_vert(i),1)).xyz;
         face_normal += get_normal(i);
         }
      face_normal /= 3.0;

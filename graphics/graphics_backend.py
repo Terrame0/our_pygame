@@ -10,6 +10,7 @@ from utils.debug import debug
 from pyglm import glm
 from graphics.texture import Texture
 from graphics.clock import Clock
+from core.event_manager import EventManager
 
 
 @singleton
@@ -24,12 +25,20 @@ class GraphicsBackend:
         # -- pygame setup
         pygame.init()
         pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+        EventManager().subscribe(
+            pygame.WINDOWFOCUSGAINED, pygame.mouse.set_visible, False
+        )
+        EventManager().subscribe(pygame.WINDOWFOCUSGAINED, pygame.event.set_grab, True)
+        EventManager().subscribe(pygame.WINDOWFOCUSLOST, pygame.mouse.set_visible, True)
+        EventManager().subscribe(pygame.WINDOWFOCUSLOST, pygame.event.set_grab, False)
 
         # -- opengl setup
         glEnable(GL_DEPTH_TEST)
         glClearColor(0.1, 0.1, 0.1, 1.0)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_CULL_FACE)
+        glCullFace(GL_BACK)
 
         self.fragment_shader = Shader(
             "graphics/shaders/fragment.glsl", GL_FRAGMENT_SHADER
@@ -45,6 +54,7 @@ class GraphicsBackend:
         glUniform2fv(0, 1, pygame.display.get_window_size())
 
     def next_frame(self):
+
         pygame.event.post(pygame.event.Event(custom_events.UPDATE))
         self.clock.tick()
         pygame.time.Clock().tick(144)
@@ -56,8 +66,8 @@ class GraphicsBackend:
             )
             glUniformMatrix4fv(3, 1, False, glm.value_ptr(Scene().camera.view_matrix))
             transparent_objects = []
-            for obj in Scene().object_list:
-                if hasattr(obj, "renderer"):
+            for obj in Scene().objects:
+                if hasattr(obj, "renderer") and obj.renderer.is_visible:
                     # -- UI faces the camera and is of constant size relative to view
                     if obj.renderer.is_UI:
                         obj.transform.quaternion = (

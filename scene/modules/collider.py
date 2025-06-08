@@ -14,7 +14,7 @@ class Collider(Module):
     requires = [Transform, Mesh]
 
     def __init_module__(self, obj_path: str = ""):
-        self.mesh = self.parent.mesh
+        self.mesh = self.parent_obj.mesh
 
         self.collision_checker = Shader(
             "graphics/shaders/collision_checker.glsl", GL_COMPUTE_SHADER
@@ -22,11 +22,8 @@ class Collider(Module):
         self.compute_program = ShaderProgram(self.collision_checker)
 
         self.vertices = Buffer(GL_SHADER_STORAGE_BUFFER)
-        self.vertices.bind_base(0)
         self.indices = Buffer(GL_SHADER_STORAGE_BUFFER)
-        self.indices.bind_base(1)
         self.result = Buffer(GL_SHADER_STORAGE_BUFFER)
-        self.result.bind_base(2)
 
         self.upload_buffers()
 
@@ -41,7 +38,13 @@ class Collider(Module):
 
     def dist_to_point(self, pos):
         with self.compute_program:
+            self.vertices.bind_base(0)
+            self.indices.bind_base(1)
+            self.result.bind_base(2)
             glUniform3fv(0, 1, glm.value_ptr(pos))
+            glUniformMatrix4fv(
+                1, 1, False, glm.value_ptr(self.parent_obj.transform.model_matrix)
+            )
             glDispatchCompute((self.indices.size // 3) // 64 + 1, 1, 1)
             glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT)
         min_distance = min(self.result.get_data(), key=lambda x: x[0])

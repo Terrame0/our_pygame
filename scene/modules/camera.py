@@ -19,5 +19,5 @@ class Camera(Module):
 
     @property
     def view_matrix(self):
-        self._view_matrix = glm.inverse(self.parent.transform.model_matrix)
+        self._view_matrix = glm.inverse(self.parent_obj.transform.model_matrix)
         return self._view_matrix
