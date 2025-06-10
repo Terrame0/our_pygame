@@ -19,7 +19,7 @@ class LeadingReticle(Module):
     def update(self):
         self.parent_obj.renderer.is_visible = False
         if self.target_selector.selected_target is not None:
-            pos = self.calculate_reticle_position(
+            pos = LeadingReticle.calculate_reticle_position(
                 self.player.transform.position,
                 self.player.physics_body.velocity,
                 self.target_selector.selected_target.transform.position,
@@ -31,8 +31,8 @@ class LeadingReticle(Module):
                 self.parent_obj.transform.position = pos
 
     # MAY NOT WORK CORRECTLY FOR MOVING TARGETS (YET)
+    @staticmethod
     def calculate_reticle_position(
-        self,
         player_position: glm.vec3,
         player_velocity: glm.vec3,
         target_position: glm.vec3,
@@ -40,13 +40,13 @@ class LeadingReticle(Module):
         projectile_speed: float,
     ) -> glm.vec3:
         if projectile_speed <= 0:
-            return target_position
+            return None
 
         relative_velocity = target_velocity - player_velocity
         position_delta = target_position - player_position
 
         if glm.length(relative_velocity) < 1e-5:
-            return target_position
+            return None
 
         a = glm.length2(relative_velocity) - projectile_speed**2
         b = 2.0 * glm.dot(relative_velocity, position_delta)

@@ -18,7 +18,6 @@ layout(location = 1) uniform mat4 model;
 
 uint inv_id = gl_GlobalInvocationID.x;
 
-
 vec3 get_vert(uint offset){
     int idx = idx_array[inv_id*3+offset];
     vec3 vert;

@@ -32,25 +32,17 @@ class Application:
         player.add_module(Player)
 
         # -- scene object creation
-        cat = SceneObject(name="cat")
-        cat.add_module(Transform)
-        cat.add_module(Mesh, obj_path="assets/cat.obj")
-        cat.add_module(Collider)
-        cat.add_module(Renderer)
-        cat.add_module(PhysicsBody)
-        cat.add_module(Enemy, player=player)
-        cat.renderer.texture = Texture(0, "assets/cat_tex.png")
+        enemy = SceneObject(name="enemy")
+        enemy.add_module(Transform)
+        enemy.add_module(Mesh, obj_path="assets/monocarrier.obj")
+        enemy.add_module(Collider)
+        enemy.add_module(Renderer)
+        enemy.add_module(PhysicsBody)
+        enemy.add_module(Enemy, player=player)
+        enemy.renderer.texture = Texture(0, "assets/monocarrier.png")
         # -- main sene
         Scene().camera_object = player
 
         while True:
-            cat.physics_body.velocity = (
-                glm.vec3(
-                    glm.sin(GraphicsBackend().clock.time_snapshot / 5),
-                    glm.cos(GraphicsBackend().clock.time_snapshot / 5),
-                    0,
-                )
-                * 5
-            )
             EventManager().process_events()
             GraphicsBackend().next_frame()

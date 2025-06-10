@@ -9,13 +9,31 @@ class Camera(Module):
     requires = [Transform]
 
     def __init_module__(self, *args, **kwargs):
+        self.aspect_ratio = 800 / 600
+        self.near_plane = 0.01
+        self.far_plane = 1000
+        self._fov = glm.radians(70)
         self._projection_matrix = glm.perspective(
-            glm.radians(90), 800/600, 0.001, 1000
+            glm.radians(70), self.aspect_ratio, self.near_plane, self.far_plane
         )
-        self._view_matrix = glm.vec3(0, 0, 1)
+
     @property
     def projection_matrix(self):
         return self._projection_matrix
+
+    @property
+    def fov(self):
+        return self._fov
+
+    @fov.setter
+    def fov(self, fov: float):
+        self._fov = fov
+        self._projection_matrix = glm.perspective(
+            glm.radians(fov),
+            self.aspect_ratio,
+            self.near_plane,
+            self.far_plane,
+        )
 
     @property
     def view_matrix(self):

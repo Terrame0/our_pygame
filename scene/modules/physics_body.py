@@ -53,6 +53,8 @@ class PhysicsBody(Module):
             pitch * yaw * roll * self.parent_obj.transform.quaternion
         )
 
+        self.velocity = glm.clamp(self.velocity,-10,10)
+
     def check_collisions(self):
         for obj in Scene().objects:
             if (
