@@ -15,7 +15,8 @@ class Projectile(Module):
     def __init_module__(self, player: SceneObject):
         self.player = player
         self.creation_time = GraphicsBackend().clock.time_snapshot
-        self.speed = 10
+        self.speed = 100
+        self.parent_obj.physics_body.max_velocity = 100
 
         self.parent_obj.physics_body.velocity = (
             self.player.physics_body.velocity
@@ -23,10 +24,10 @@ class Projectile(Module):
         )
         self.parent_obj.transform.position = (
             self.player.transform.position.xyz
-            + self.player.transform.R * glm.vec3(0, -0.1, -0.3)
+            + self.player.transform.R * glm.vec3(0, -0.1, -1)
         )
 
-        self.parent_obj.transform.scale = glm.vec3(0.2)
+        self.parent_obj.transform.scale = glm.vec3(0.5)
 
         self.update()
         self.subscribe_to_event(custom_events.UPDATE, self.update)

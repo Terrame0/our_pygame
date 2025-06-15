@@ -1,0 +1,34 @@
+#version 430
+layout(local_size_x = 64) in;
+
+layout(std430, binding=0) buffer dead_particles_stack {
+    uint dead_particles[];
+};
+
+layout(binding=0) uniform atomic_uint dead_particles_stack_counter;
+
+layout(std430, binding=1) buffer particle_positions {
+    vec4 positions[];
+};
+
+layout(std430, binding=2) buffer particle_velocities {
+    vec4 velocities[];
+};
+
+layout(std430, binding=3) buffer particle_lifetimes {
+    float lifetimes[];
+};
+
+layout(location = 0) uniform float delta_time;
+
+uint inv_id = uint(gl_GlobalInvocationID.x);
+void main() {
+    if(lifetimes[inv_id] > 0.0){
+        lifetimes[inv_id] -= delta_time; // -- decreasing lifetime
+        positions[inv_id].xyz += velocities[inv_id].xyz * delta_time; // -- applying velocity
+        if(lifetimes[inv_id.x] <= 0.0){ // -- a particle is dead
+            dead_particles[atomicCounterIncrement(dead_particles_stack_counter)] = inv_id;
+        }
+    }
+    
+}

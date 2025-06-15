@@ -25,14 +25,16 @@ class Player(Module):
     def __init_module__(self):
         # -- constants
         self.collision_radius = 0.1
-        self.boost_duration = 3.5
+        self.boost_duration = 4
         self.boost_cooldown = 4
-        self.max_boost_modifier = 4
+        self.max_boost_modifier = 20
+        self.reload_time = 0.5
 
         # -- state
         self.is_boosting = False
         self.boost_modifier = 1
         self.boost_start = GraphicsBackend().clock.time_snapshot - self.boost_cooldown
+        self.last_shot = GraphicsBackend().clock.time_snapshot - self.reload_time
 
         # -- crosshair
         self.crosshair = SceneObject(name="crosshair")
@@ -40,7 +42,7 @@ class Player(Module):
         self.crosshair.add_module(Mesh, obj_path="assets/plane.obj")
         self.crosshair.add_module(
             Renderer,
-            texture=Texture(0, "assets/crosshair_3.png"),
+            texture=Texture.load_from_file("assets/crosshair_3.png"),
             is_transparent=True,
             is_UI=True,
         )
@@ -53,7 +55,7 @@ class Player(Module):
         self.reticle.add_module(Mesh, obj_path="assets/plane.obj")
         self.reticle.add_module(
             Renderer,
-            texture=Texture(0, "assets/reticle_2.png"),
+            texture=Texture.load_from_file("assets/reticle_2.png"),
             is_transparent=True,
             is_UI=True,
         )
@@ -67,14 +69,16 @@ class Player(Module):
         self.skybox = SceneObject(name="skybox")
         self.skybox.add_module(Transform, scale=glm.vec3(-500))
         self.skybox.add_module(Mesh, obj_path="assets/cube.obj")
-        self.skybox.add_module(Renderer, texture=Texture(0, "assets/skybox.png"))
+        self.skybox.add_module(
+            Renderer, texture=Texture.load_from_file("assets/skybox.png")
+        )
         self.skybox.add_module(Skybox, player=self.parent_obj)
 
         # -- event subscriptions
         self.subscribe_to_event(custom_events.UPDATE, self.handle_keyboard_input)
         self.subscribe_to_event(custom_events.UPDATE, self.calculate_boost)
         self.subscribe_to_event(pygame.MOUSEMOTION, self.handle_mouse_input)
-        self.subscribe_to_event(pygame.MOUSEBUTTONDOWN, self.shoot, pass_event=True)
+        self.subscribe_to_event(custom_events.UPDATE, self.shoot, pass_event=True)
 
     def check_collisions(self):
         for obj in Scene().objects:
@@ -103,7 +107,12 @@ class Player(Module):
                     )
 
     def shoot(self, event):
-        if event.button == 1:
+        if (
+            pygame.mouse.get_pressed()[0]
+            and GraphicsBackend().clock.time_snapshot - self.last_shot
+            > self.reload_time
+        ):
+            self.last_shot = GraphicsBackend().clock.time_snapshot
             projectile = SceneObject(name="projectile")
             projectile.add_module(Transform)
             projectile.add_module(Mesh, obj_path="assets/plane.obj")
@@ -111,7 +120,7 @@ class Player(Module):
             projectile.physics_body.velocity = glm.vec3(1)
             projectile.add_module(
                 Renderer,
-                texture=Texture(0, "assets/plasma.png"),
+                texture=Texture.load_from_file("assets/plasma.png"),
             )
             projectile.add_module(
                 Projectile,
@@ -129,7 +138,6 @@ class Player(Module):
         self.parent_obj.physics_body.angular_velocity.x -= mpos[1] * clock.delta_time
 
     def calculate_boost(self):
-
         x = (
             glm.clamp(
                 GraphicsBackend().clock.time_snapshot - self.boost_start,
@@ -143,7 +151,7 @@ class Player(Module):
         if x == 1:
             self.is_boosting = False
         t = (glm.cos((x * 2.43409) ** 2 + 3.5) + 1) / 2
-        self.parent_obj.camera.fov = 70 + t * 10
+        self.parent_obj.camera.fov = 90 + t * 15
         self.boost_modifier = 1 + t * self.max_boost_modifier
 
     def handle_keyboard_input(self):

@@ -10,7 +10,7 @@ class Camera(Module):
 
     def __init_module__(self, *args, **kwargs):
         self.aspect_ratio = 800 / 600
-        self.near_plane = 0.01
+        self.near_plane = 0.1
         self.far_plane = 1000
         self._fov = glm.radians(70)
         self._projection_matrix = glm.perspective(

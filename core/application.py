@@ -15,7 +15,6 @@ from scene.modules.camera import Camera
 from graphics.texture import Texture
 from OpenGL.GL import *
 
-
 @singleton
 class Application:
     def __init__(self):
@@ -26,7 +25,7 @@ class Application:
 
         # -- player
         player = SceneObject(name="player")
-        player.add_module(Transform, position=glm.vec3(0, 0, 5))
+        player.add_module(Transform, position=glm.vec3(0, 0, 10))
         player.add_module(Camera)
         player.add_module(PhysicsBody)
         player.add_module(Player)
@@ -38,9 +37,10 @@ class Application:
         enemy.add_module(Collider)
         enemy.add_module(Renderer)
         enemy.add_module(PhysicsBody)
-        enemy.add_module(Enemy, player=player)
-        enemy.renderer.texture = Texture(0, "assets/monocarrier.png")
-        # -- main sene
+        #enemy.add_module(Enemy, player=player)
+        enemy.renderer.texture = Texture.load_from_file(path = "assets/monocarrier.png")
+
+        # -- camera
         Scene().camera_object = player
 
         while True:

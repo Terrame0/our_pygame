@@ -11,23 +11,33 @@ from pyglm import glm
 from graphics.graphics_backend import GraphicsBackend
 from utils import custom_events
 from scene.scene import Scene
+from utils.debug import debug
+from scene.scene_object import SceneObject
+from scene.modules.renderer import Renderer
+from graphics.texture import Texture
 
 
 class PhysicsBody(Module):
     requires = [Transform]
 
     def __init_module__(self):
-        self.collision_radius = 0.1
+
+        self.max_velocity = 30
+        self.previous_position = glm.vec3(0)
+        self.collision_radius = 0.001
         self.angular_velocity = glm.vec3(0)
         self.velocity = glm.vec3(0)
         self.subscribe_to_event(custom_events.UPDATE, self.update)
-        self.subscribe_to_event(custom_events.UPDATE, self.check_collisions)
+        self.subscribe_to_event(custom_events.UPDATE, self.handle_collision)
 
     def update(self):
         clock = GraphicsBackend().clock
 
         # -- velocity calculation
         delta_velocity = self.velocity * clock.delta_time
+        self.previous_position = (
+            self.parent_obj.transform.position
+        )  # -- storing previous position
         self.parent_obj.transform.position += delta_velocity
 
         # -- rotation axis calculation (can be done less often)
@@ -53,31 +63,19 @@ class PhysicsBody(Module):
             pitch * yaw * roll * self.parent_obj.transform.quaternion
         )
 
-        self.velocity = glm.clamp(self.velocity,-10,10)
+        if self.velocity != glm.vec3(0):
+            self.velocity = glm.normalize(self.velocity) * glm.clamp(
+                glm.length(self.velocity), -self.max_velocity, self.max_velocity
+            )
 
-    def check_collisions(self):
+    def handle_collision(self):
         for obj in Scene().objects:
-            if (
-                hasattr(obj, "collider")
-                and not obj is self.parent_obj
-                and 0
-                < glm.distance(
-                    obj.transform.position, self.parent_obj.transform.position
-                )
-                <= obj.mesh.bounding_sphere_radius + self.collision_radius
-            ):
-                distance_test: glm.vec4 = obj.collider.dist_to_point(
-                    self.parent_obj.transform.position
-                )
-                if (
-                    obj.collider.dist_to_point(self.parent_obj.transform.position).x
-                    < self.collision_radius
-                ):
-                    self.parent_obj.transform.position += (
-                        distance_test.yzw
-                        / glm.length(distance_test.yzw)
-                        * (self.collision_radius - distance_test.x)
-                    )
-                    self.velocity = glm.reflect(
-                        self.velocity, distance_test.yzw / glm.length(distance_test.yzw) 
-                    ) * 0.5
+            if hasattr(obj, "collider") and not obj is self.parent_obj:
+                delta_velocity = self.velocity * GraphicsBackend().clock.delta_time
+                start = self.parent_obj.transform.position
+                end = self.parent_obj.transform.position + delta_velocity
+                radius = obj.mesh.bounding_sphere_radius
+                t, normal = obj.collider.bounding_sphere_collision(start, end, radius)
+                if t is not None and normal is not None:
+                    self.parent_obj.transform.position += delta_velocity * t + glm.reflect(delta_velocity,normal) * (1-t)
+                    self.velocity = glm.reflect(self.velocity,normal) * 0.2

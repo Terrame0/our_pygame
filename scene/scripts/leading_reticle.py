@@ -24,7 +24,7 @@ class LeadingReticle(Module):
                 self.player.physics_body.velocity,
                 self.target_selector.selected_target.transform.position,
                 self.target_selector.selected_target.physics_body.velocity,
-                10,
+                100,
             )
             if pos is not None:
                 self.parent_obj.renderer.is_visible = True

@@ -4,6 +4,7 @@ from collections import defaultdict
 from utils.debug import debug
 import pygame
 import sys
+from utils import custom_events
 
 
 @singleton
@@ -40,6 +41,7 @@ class EventManager:
             debug.log(f"event_type {event_type} not found in subscriptions")
 
     def emit(self, event: Any):
+
         if event.type in self._subscriptions:
             for callback in self._subscriptions[event.type]:
                 try:
@@ -56,6 +58,9 @@ class EventManager:
                     debug.log(f"error in callback for {event.type}: {str(e)}")
 
     def process_events(self):
+        pygame.event.post(
+            pygame.event.Event(custom_events.UPDATE)
+        )  # -- i hope this does not cause any undefined behaviour :)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

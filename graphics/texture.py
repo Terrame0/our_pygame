@@ -1,63 +1,56 @@
+from __future__ import annotations
 from OpenGL.GL import *
+from pygame.locals import *
 from PIL import Image
 import numpy as np
+from typing import Tuple
 from utils.path_resolver import resolve_path
-
-# TODO add debug info
 
 
 class Texture:
     def __init__(
         self,
-        unit: int,
-        filepath: str = None,
-    ):
-        self.unit = unit
+        size: Tuple[int, int],
+        img_data: np.ndarray = None,
+        internal_format=GL_RGBA32F,
+        pixel_data_format=GL_RGBA,
+        pixel_component_format=GL_FLOAT,
+    ):  # -- creates a texture with data (empty if none provided)
         self.id = glGenTextures(1)
-        self.width = 0
-        self.height: int = 0
-        self.format: int = GL_RGBA
-        self.path: str = filepath
-
-        if filepath:
-            self.load_from_file(filepath)
-
-    def load_from_file(
-        self,
-        filepath: str,
-    ):
-        self.path = resolve_path(filepath)
-
-        img: Image.Image = Image.open(self.path)
-        img = img.transpose(Image.FLIP_TOP_BOTTOM)  # -- flip for opengl coordinates
-        img_data: np.ndarray = np.array(img, dtype=np.uint8)
-
-        self.width, self.height = img.size
-        channels: int = len(img.getbands())
-
-        self.format = GL_RGBA if channels == 4 else GL_RGB
-
         with self:
+            glTexImage2D(
+                GL_TEXTURE_2D,  # -- texture target
+                0,  # -- mipmap level
+                internal_format,  # -- internal format
+                size[0],  # -- texture width
+                size[1],  # -- texture height
+                0,  # -- border (must be 0)
+                pixel_data_format,  # -- format of pixel data (matches internal format)
+                pixel_component_format,  # -- data type of pixel components
+                img_data,  # -- pointer to image data
+            )
+
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
-            glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                self.format,
-                self.width,
-                self.height,
-                0,
-                self.format,
-                GL_UNSIGNED_BYTE,
-                img_data,
-            )
+    @classmethod
+    def load_from_file(cls, path: str, *args, **kwargs) -> Texture:
+        path = resolve_path(path)
+        img: Image.Image = Image.open(path)
+        img = img.transpose(Image.FLIP_TOP_BOTTOM)  # -- flip for opengl coordinates
+        if img.mode != "RGBA":
+            img = img.convert("RGBA")
+
+        img_data: np.ndarray = np.array(img, dtype=np.float32) / 255
+
+        instance = cls(img.size, *args, img_data=img_data, **kwargs)
+        return instance
 
     def bind(self):
         glBindTexture(GL_TEXTURE_2D, self.id)
-        glActiveTexture(GL_TEXTURE0 + self.unit)
+        glActiveTexture(GL_TEXTURE0 + 0)
 
     def unbind(self):
         glBindTexture(GL_TEXTURE_2D, 0)
@@ -69,39 +62,5 @@ class Texture:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.unbind()
 
-    def delete(self):
-        glDeleteTextures(1, [self.id])
-
-    # @classmethod
-    # def create_empty(
-    #    cls,
-    #    width: int,
-    #    height: int,
-    #    internal_format: int = GL_RGBA,
-    #    data_format: int = GL_RGBA,
-    #    data_type: int = GL_UNSIGNED_BYTE,
-    #    wrap_s: int = GL_CLAMP_TO_EDGE,
-    #    wrap_t: int = GL_CLAMP_TO_EDGE,
-    # ):
-    #    tex = cls()
-    #    tex.width = width
-    #    tex.height = height
-    #
-    #    with tex:
-    #        glTexImage2D(
-    #            GL_TEXTURE_2D,
-    #            0,
-    #            internal_format,
-    #            width,
-    #            height,
-    #            0,
-    #            data_format,
-    #            data_type,
-    #            None,
-    #        )
-    #        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s)
-    #        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t)
-    #        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    #        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-    #
-    #    return tex
+    def bind_as_image(self, binding: int = 0):
+        glBindImageTexture(binding, self.id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F)

@@ -28,15 +28,15 @@ class Buffer:
     def bind(self):
         glBindBuffer(self.target, self.id)
 
-    def bind_base(self, slot: int):
+    def bind_base(self, slot: int, usage):
         with self as buffer:
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, slot, buffer.id)
+            glBindBufferBase(usage, slot, buffer.id)
 
     def unbind(self):
         glBindBuffer(self.target, 0)
 
     def upload_data(self, data: glm.array, usage=GL_STATIC_DRAW):
-        if not isinstance(data,glm.array):
+        if not isinstance(data, glm.array):
             raise TypeError("(!) must be a glm array")
         if len(data) == 0:
             raise Error("(!) the array cannot be empty")
@@ -49,7 +49,7 @@ class Buffer:
             glBufferData(self.target, data.nbytes, data.ptr, self.usage)
 
     def get_data(self):
-        data = glm.array([self.element_type()]*self.size)
+        data = glm.array([self.element_type()] * self.size)
         glGetNamedBufferSubData(self.id, 0, self.nbytes, data.ptr)
         return data
 

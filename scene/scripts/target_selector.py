@@ -9,6 +9,7 @@ from pyglm import glm
 from scene.modules.module_base import Module
 from scene.scene import Scene
 from scene.scripts.target_indicator import TargetIndicator
+from utils.debug import debug
 
 
 class TargetSelector(Module):
@@ -37,7 +38,7 @@ class TargetSelector(Module):
         indicator.add_module(Transform)
         indicator.add_module(Mesh, obj_path="assets/plane.obj")
         indicator.add_module(Renderer, is_transparent=True, is_UI=True)
-        indicator.renderer.texture = Texture(0, "assets/target.png")
+        indicator.renderer.texture = Texture.load_from_file("assets/target.png")
         indicator.add_module(TargetIndicator, self.player, target)
         return indicator
 
@@ -52,4 +53,4 @@ class TargetSelector(Module):
                     self.player.transform.R * glm.vec3(0, 0, -1),
                 ),
             )
-            print(f"selected {self.selected_target}")
+            debug.log(f"selected {self.selected_target}")

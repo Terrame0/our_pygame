@@ -10,7 +10,7 @@ class Mesh(Module):
 
     def __init_module__(self, obj_path: str = ""):
         vertices, normals, texcoords, faces = self.parse_obj(obj_path)
-        self.max_vert_radius = 0
+        self.max_vertex_distance = 0
         vertex_cache = {}
         interleaved_vertices = []
         indices = []
@@ -24,9 +24,9 @@ class Mesh(Module):
                 if key not in vertex_cache:
                     vertex_cache[key] = len(interleaved_vertices) // 8
                     v = vertices[v_idx]
-                    self.max_vert_radius = max(
-                        self.max_vert_radius,
-                        glm.distance(glm.vec3(0), glm.vec3(*v)),
+                    self.max_vertex_distance = max(
+                        self.max_vertex_distance,
+                        glm.length(glm.vec3(*v)),
                     )
                     vt = texcoords[vt_idx]
                     vn = normals[vn_idx]
@@ -35,18 +35,18 @@ class Mesh(Module):
                 indices.append(vertex_cache[key])
         self.vertex_buffer = glm.array.from_numbers(glm.float32, *interleaved_vertices)
         self.index_buffer = glm.array.from_numbers(glm.int32, *indices)
-    
+
     @property
     def bounding_sphere_radius(self):
-        return self.max_vert_radius * max(*self.parent_obj.transform.scale) + 0.01
+        return self.max_vertex_distance * max(*self.parent_obj.transform.scale)
 
-    def parse_obj(self, filepath):
+    def parse_obj(self, path):
         vertices = []
         normals = []
         texcoords = []
         faces = []
 
-        with open(resolve_path(filepath), "r") as file:
+        with open(resolve_path(path), "r") as file:
             for line in file:
                 line = line.strip()
                 if not line or line.startswith("#"):

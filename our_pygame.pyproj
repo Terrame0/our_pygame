@@ -26,13 +26,14 @@
   <ItemGroup>
     <Compile Include="core\application.py" />
     <Compile Include="core\event_manager.py" />
+    <Compile Include="graphics\framebuffer.py" />
+    <Compile Include="graphics\particle_system.py" />
     <Compile Include="scene\modules\physics_body.py" />
     <Compile Include="scene\scripts\crosshair.py" />
     <Compile Include="scene\scripts\enemy.py" />
     <Compile Include="scene\scripts\leading_reticle.py" />
     <Compile Include="scene\scripts\player.py" />
-    <Compile Include="core\projectile_old.py" />
-    <Compile Include="graphics\clock.py" />
+    <Compile Include="core\clock.py" />
     <Compile Include="graphics\texture.py" />
     <Compile Include="scene\modules\camera.py" />
     <Compile Include="scene\modules\collider.py" />
@@ -60,15 +61,24 @@
     <Compile Include="utils\snake_to_pascal.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="graphics\shaders\collision_checker.glsl" />
+    <Content Include="graphics\shaders\particle_system\particle_renderer.frag" />
+    <Content Include="graphics\shaders\particle_system\particle_renderer_deprecated.glsl" />
+    <Content Include="graphics\shaders\particle_system\particle_renderer.vert" />
+    <Content Include="graphics\shaders\particle_system\particle_spawner.comp" />
+    <Content Include="graphics\shaders\particle_system\particle_updater.comp" />
+    <Content Include="graphics\shaders\texture_to_screen\tts_vertex.glsl" />
+    <Content Include="graphics\shaders\texture_to_screen\tts_fragment.glsl" />
     <Content Include="requirements.txt" />
-    <Content Include="graphics\shaders\fragment.glsl" />
-    <Content Include="graphics\shaders\vertex.glsl" />
+    <Content Include="graphics\shaders\geometry_rendering\gmt_fragment.glsl" />
+    <Content Include="graphics\shaders\geometry_rendering\gmt_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="graphics\" />
     <Folder Include="core\" />
     <Folder Include="graphics\shaders\" />
+    <Folder Include="graphics\shaders\geometry_rendering\" />
+    <Folder Include="graphics\shaders\particle_system\" />
+    <Folder Include="graphics\shaders\texture_to_screen\" />
     <Folder Include="scene\" />
     <Folder Include="scene\modules\" />
     <Folder Include="scene\scripts\" />
