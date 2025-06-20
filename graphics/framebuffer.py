@@ -2,11 +2,46 @@ from OpenGL.GL import *
 from graphics.shader import Shader
 from utils.gl_constant_map import get_gl_name
 from utils.debug import debug
+from graphics.texture import Texture
 
 
 class Framebuffer:
     def __init__(self):
         self.id = glGenFramebuffers(1)
+        self._color_attachment: Texture = None
+        self._depth_attachment: Texture = None
+
+    @property
+    def color_attachment(self):
+        return self._color_attachment
+
+    @color_attachment.setter
+    def color_attachment(self, texture: Texture):
+        self._color_attachment = texture
+        with self:
+            glFramebufferTexture2D(  # -- binding the screen texture
+                GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D,
+                self._color_attachment.id,
+                0,
+            )
+
+    @property
+    def depth_attachment(self):
+        return self._depth_attachment
+
+    @depth_attachment.setter
+    def depth_attachment(self, texture: Texture):
+        self._depth_attachment = texture
+        with self:
+            glFramebufferTexture2D(  # -- binding the depth texture
+                GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT,
+                GL_TEXTURE_2D,
+                self._depth_attachment.id,
+                0,
+            )
 
     def __enter__(self):
         self.bind()

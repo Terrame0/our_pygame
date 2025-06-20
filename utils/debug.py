@@ -6,6 +6,7 @@ class debug:
 
     @staticmethod
     def log(string):
+        pass
         indent = "".join(["|   "] * debug.indentation_level)
         print(indent + str(string))
 

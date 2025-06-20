@@ -11,8 +11,8 @@ from graphics.texture import Texture
 from graphics.framebuffer import Framebuffer
 from core.clock import Clock
 from core.event_manager import EventManager
-from graphics.buffer import Buffer
 from graphics.particle_system import ParticleSystem
+from graphics.blitter import Blitter
 
 
 @singleton
@@ -26,7 +26,8 @@ class GraphicsBackend:
 
         # -- pygame setup
         pygame.init()
-        pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+        self.screen = pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+        pygame.display.set_caption("generic space game")
 
         # -- window focus whatevers
         EventManager().subscribe(
@@ -38,7 +39,7 @@ class GraphicsBackend:
 
         # -- global opengl state
         glEnable(GL_DEPTH_TEST)
-        glClearColor(0.1, 0.1, 0.1, 1.0)
+        glClearColor(0.1, 0.1, 0.1, 0.0)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_CULL_FACE)
@@ -70,59 +71,24 @@ class GraphicsBackend:
         )
 
         # -- custom framebuffer (to write directly to its texture)
-        self.geometry_fbo = Framebuffer()
-        with self.geometry_fbo:
-            glFramebufferTexture2D(  # -- binding the screen texture
-                GL_FRAMEBUFFER,
-                GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D,
-                self.geometry_texture.id,
-                0,
-            )
-
-            glFramebufferTexture2D(  # -- binding the depth texture
-                GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT,
-                GL_TEXTURE_2D,
-                self.depth_texture.id,
-                0,
-            )
-
-        # -- shader program to render the texture to the default pygame framebuffer
-        self.texture_to_screen_program = ShaderProgram(
-            Shader(
-                "graphics/shaders/texture_to_screen/tts_fragment.glsl",
-                GL_FRAGMENT_SHADER,
-            ),
-            Shader(
-                "graphics/shaders/texture_to_screen/tts_vertex.glsl", GL_VERTEX_SHADER
-            ),
-        )
+        self.main_fbo = Framebuffer()
+        self.main_fbo.color_attachment = self.geometry_texture
+        self.main_fbo.depth_attachment = self.depth_texture
 
         debug.dedent()
         debug.log("graphics backend initialization complete")
 
     def next_frame(self):
         pygame.time.Clock().tick(144)
-
         self.render_geometry()
-        ParticleSystem().render_particles(self.geometry_fbo)
-
-        self.render_texture_to_screen(self.geometry_texture)
+        Blitter().merge_framebuffers(ParticleSystem().particle_fbo, self.main_fbo)
+        ParticleSystem().update_particles()  # -- clears the render flag
+        Blitter().blit_to_default_framebuffer(self.main_fbo)
         pygame.display.flip()
-
-    def render_texture_to_screen(self, texture: Texture):
-        glBindFramebuffer(
-            GL_FRAMEBUFFER, 0
-        )  # -- rendering a fullscreen triangle to the default framebuffer
-
-        with self.texture_to_screen_program, texture:
-            glDisable(GL_DEPTH_TEST)
-            glDrawArrays(GL_TRIANGLES, 0, 3)
 
     # -- TODO refactor this PLEASE
     def render_geometry(self):
-        with self.geometry_shader_program, self.geometry_fbo:  # -- rendering to a custom framebuffer
+        with self.geometry_shader_program, self.main_fbo:  # -- rendering to a custom framebuffer
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
             # -- setting camera matrices

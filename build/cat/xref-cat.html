@@ -25,6 +25,7 @@ imports:
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
  &#8226;   <a href="#encodings.ascii">encodings.ascii</a>
@@ -150,6 +151,7 @@ imports:
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#genericpath">genericpath</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#heapq">heapq</a>
  &#8226;   <a href="#io">io</a>
  &#8226;   <a href="#keyword">keyword</a>
@@ -159,6 +161,7 @@ imports:
  &#8226;   <a href="#operator">operator</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#pygame">pygame</a>
  &#8226;   <a href="#pyi_rth_inspect.py">pyi_rth_inspect.py</a>
  &#8226;   <a href="#pyi_rth_multiprocessing.py">pyi_rth_multiprocessing.py</a>
  &#8226;   <a href="#pyi_rth_pkgres.py">pyi_rth_pkgres.py</a>
@@ -174,6 +177,7 @@ imports:
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
  &#8226;   <a href="#stat">stat</a>
+ &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#warnings">warnings</a>
@@ -816,8 +820,11 @@ imported by:
  &#8226;   <a href="#OpenGL.GLU.projection">OpenGL.GLU.projection</a>
  &#8226;   <a href="#OpenGL.raw.GL._lookupint">OpenGL.raw.GL._lookupint</a>
  &#8226;   <a href="#application">application</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
  &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
@@ -828,6 +835,8 @@ imported by:
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#utils.gl_constant_map">utils.gl_constant_map</a>
 
   </div>
@@ -9475,6 +9484,7 @@ imported by:
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#setuptools">setuptools</a>
  &#8226;   <a href="#setuptools._core_metadata">setuptools._core_metadata</a>
  &#8226;   <a href="#setuptools._distutils._modified">setuptools._distutils._modified</a>
@@ -11343,12 +11353,15 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
  &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.texture">graphics.texture</a>
+ &#8226;   <a href="#pygame">pygame</a>
  &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
- &#8226;   <a href="#scene.modules.camera">scene.modules.camera</a>
+ &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
@@ -11356,8 +11369,7 @@ imports:
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
- &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
- &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+ &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
 
   </div>
@@ -12919,6 +12931,7 @@ imported by:
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#queue">queue</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#setuptools._vendor.importlib_metadata">setuptools._vendor.importlib_metadata</a>
  &#8226;   <a href="#setuptools._vendor.importlib_metadata._collections">setuptools._vendor.importlib_metadata._collections</a>
@@ -13269,7 +13282,78 @@ imported by:
   <a target="code" href="-" type="text/plain"><tt>core</tt></a>
 <span class="moduletype">NamespacePackage</span>  <div class="import">
 imported by:
-    <a href="#core.event_manager">core.event_manager</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.clock"></a>
+  <a target="code" href="///C:/our_pygame/core/clock.py" type="text/plain"><tt>core.clock</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core">core</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#pygame.locals">pygame.locals</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+ &#8226;   <a href="#utils.debug">utils.debug</a>
+ &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.enemy_spawner"></a>
+  <a target="code" href="///C:/our_pygame/core/enemy_spawner.py" type="text/plain"><tt>core.enemy_spawner</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core">core</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.texture">graphics.texture</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#random">random</a>
+ &#8226;   <a href="#scene.modules.camera">scene.modules.camera</a>
+ &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
+ &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+ &#8226;   <a href="#utils.debug">utils.debug</a>
+ &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#application">application</a>
 
   </div>
 
@@ -13285,6 +13369,8 @@ imports:
  &#8226;   <a href="#pygame">pygame</a>
  &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
  &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
 
@@ -13292,9 +13378,46 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.game_manager"></a>
+  <a target="code" href="///C:/our_pygame/core/game_manager.py" type="text/plain"><tt>core.game_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core">core</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#pygame">pygame</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#scene.modules.camera">scene.modules.camera</a>
+ &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+ &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
 
   </div>
 
@@ -17447,14 +17570,45 @@ imported by:
   <a target="code" href="-" type="text/plain"><tt>graphics</tt></a>
 <span class="moduletype">NamespacePackage</span>  <div class="import">
 imported by:
-    <a href="#graphics.buffer">graphics.buffer</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
  &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#graphics.shader">graphics.shader</a>
  &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
  &#8226;   <a href="#graphics.texture">graphics.texture</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="graphics.blitter"></a>
+  <a target="code" href="///C:/our_pygame/graphics/blitter.py" type="text/plain"><tt>graphics.blitter</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#graphics">graphics</a>
+ &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
+ &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#graphics.shader">graphics.shader</a>
+ &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
+ &#8226;   <a href="#graphics.texture">graphics.texture</a>
+ &#8226;   <a href="#pygame.locals">pygame.locals</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#utils.debug">utils.debug</a>
+ &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
 
   </div>
 
@@ -17479,33 +17633,11 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="graphics.clock"></a>
-  <a target="code" href="///C:/our_pygame/graphics/clock.py" type="text/plain"><tt>graphics.clock</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#OpenGL.GL">OpenGL.GL</a>
- &#8226;   <a href="#graphics">graphics</a>
- &#8226;   <a href="#pygame.locals">pygame.locals</a>
- &#8226;   <a href="#time">time</a>
- &#8226;   <a href="#utils.debug">utils.debug</a>
- &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
- &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
 
   </div>
 
@@ -17519,14 +17651,18 @@ imports:
     <a href="#OpenGL.GL">OpenGL.GL</a>
  &#8226;   <a href="#graphics">graphics</a>
  &#8226;   <a href="#graphics.shader">graphics.shader</a>
+ &#8226;   <a href="#graphics.texture">graphics.texture</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
  &#8226;   <a href="#utils.gl_constant_map">utils.gl_constant_map</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -17538,10 +17674,10 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
  &#8226;   <a href="#core.event_manager">core.event_manager</a>
  &#8226;   <a href="#graphics">graphics</a>
- &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#graphics.shader">graphics.shader</a>
@@ -17552,8 +17688,6 @@ imports:
  &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
- &#8226;   <a href="#utils">utils</a>
- &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
  &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
 
@@ -17562,9 +17696,9 @@ imports:
 imported by:
     <a href="#application">application</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
- &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
- &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -17576,10 +17710,10 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
  &#8226;   <a href="#core.event_manager">core.event_manager</a>
  &#8226;   <a href="#graphics">graphics</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
  &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.shader">graphics.shader</a>
  &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
@@ -17588,7 +17722,9 @@ imports:
  &#8226;   <a href="#pygame.locals">pygame.locals</a>
  &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#utils">utils</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
@@ -17597,7 +17733,11 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+ &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -17617,12 +17757,15 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.framebuffer">graphics.framebuffer</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -17642,10 +17785,13 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -17670,10 +17816,15 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
+ &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
 
@@ -28504,9 +28655,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#core.event_manager">core.event_manager</a>
+    <a href="#application">application</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pygame">pygame</a>
  &#8226;   <a href="#pygame._common">pygame._common</a>
  &#8226;   <a href="#pygame._freetype">pygame._freetype</a>
@@ -28549,6 +28703,7 @@ imported by:
  &#8226;   <a href="#pygame.time">pygame.time</a>
  &#8226;   <a href="#pygame.transform">pygame.transform</a>
  &#8226;   <a href="#pygame.version">pygame.version</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
@@ -28902,7 +29057,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.clock">graphics.clock</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#graphics.texture">graphics.texture</a>
@@ -29359,7 +29515,10 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#glm">glm</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
@@ -29374,12 +29533,15 @@ imported by:
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -29395,7 +29557,10 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#glm">glm</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
@@ -29409,12 +29574,15 @@ imported by:
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -29524,8 +29692,13 @@ imports:
   <div class="import">
 imported by:
     <a href="#PIL.ImagePalette">PIL.ImagePalette</a>
+ &#8226;   <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
  &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#secrets">secrets</a>
  &#8226;   <a href="#setuptools._vendor.more_itertools.more">setuptools._vendor.more_itertools.more</a>
  &#8226;   <a href="#setuptools._vendor.more_itertools.recipes">setuptools._vendor.more_itertools.recipes</a>
@@ -29960,7 +30133,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#application">application</a>
+    <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
 
   </div>
@@ -29982,6 +30156,7 @@ imports:
  &#8226;   <a href="#scene.modules">scene.modules</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#typing">typing</a>
 
@@ -29989,6 +30164,8 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
 
   </div>
 
@@ -30011,17 +30188,21 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30051,12 +30232,15 @@ imported by:
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30068,6 +30252,7 @@ imported by:
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.shader">graphics.shader</a>
@@ -30083,6 +30268,7 @@ imports:
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#utils">utils</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
@@ -30091,9 +30277,15 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30117,15 +30309,19 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30148,6 +30344,8 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#scene.modules.camera">scene.modules.camera</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
@@ -30156,12 +30354,15 @@ imported by:
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30186,12 +30387,17 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+ &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30214,15 +30420,21 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30240,12 +30452,15 @@ imports:
 imported by:
     <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
 
   </div>
 
@@ -30281,7 +30496,10 @@ imported by:
   <a target="code" href="///C:/our_pygame/scene/scripts/enemy.py" type="text/plain"><tt>scene.scripts.enemy</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.texture">graphics.texture</a>
+ &#8226;   <a href="#pygame">pygame</a>
  &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
@@ -30291,13 +30509,54 @@ imports:
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#scene.scripts">scene.scripts</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
+ &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
+ &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#utils">utils</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+ &#8226;   <a href="#utils.debug">utils.debug</a>
+ &#8226;   <a href="#utils.path_resolver">utils.path_resolver</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#application">application</a>
+    <a href="#core.enemy_spawner">core.enemy_spawner</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="scene.scripts.health"></a>
+  <a target="code" href="///C:/our_pygame/scene/scripts/health.py" type="text/plain"><tt>scene.scripts.health</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#graphics.texture">graphics.texture</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
+ &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts">scene.scripts</a>
+ &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
+ &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+ &#8226;   <a href="#utils.debug">utils.debug</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
 
   </div>
 
@@ -30323,7 +30582,9 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#scene.scripts.player">scene.scripts.player</a>
+    <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
 
   </div>
 
@@ -30348,18 +30609,23 @@ imports:
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#scene.scripts">scene.scripts</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#utils">utils</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
+ &#8226;   <a href="#utils.path_resolver">utils.path_resolver</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#application">application</a>
+    <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
 
   </div>
 
@@ -30370,12 +30636,41 @@ imported by:
   <a target="code" href="///C:/our_pygame/scene/scripts/projectile.py" type="text/plain"><tt>scene.scripts.projectile</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#__future__">__future__</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
  &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts">scene.scripts</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="scene.scripts.skybox"></a>
+  <a target="code" href="///C:/our_pygame/scene/scripts/skybox.py" type="text/plain"><tt>scene.scripts.skybox</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
+ &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
@@ -30393,16 +30688,25 @@ imported by:
 </div>
 
 <div class="node">
-  <a name="scene.scripts.skybox"></a>
-  <a target="code" href="///C:/our_pygame/scene/scripts/skybox.py" type="text/plain"><tt>scene.scripts.skybox</tt></a>
+  <a name="scene.scripts.speed_lines_emitter"></a>
+  <a target="code" href="///C:/our_pygame/scene/scripts/speed_lines_emitter.py" type="text/plain"><tt>scene.scripts.speed_lines_emitter</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#pyglm">pyglm</a>
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#graphics.shader">graphics.shader</a>
+ &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
  &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
  &#8226;   <a href="#scene.scripts">scene.scripts</a>
  &#8226;   <a href="#utils">utils</a>
@@ -30467,6 +30771,42 @@ imports:
   <div class="import">
 imported by:
     <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="scene.scripts.trail_emitter"></a>
+  <a target="code" href="///C:/our_pygame/scene/scripts/trail_emitter.py" type="text/plain"><tt>scene.scripts.trail_emitter</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#OpenGL.GL">OpenGL.GL</a>
+ &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
+ &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+ &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
+ &#8226;   <a href="#graphics.shader">graphics.shader</a>
+ &#8226;   <a href="#graphics.shader_program">graphics.shader_program</a>
+ &#8226;   <a href="#pyglm">pyglm</a>
+ &#8226;   <a href="#pyglm.glm">pyglm.glm</a>
+ &#8226;   <a href="#random">random</a>
+ &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
+ &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
+ &#8226;   <a href="#scene.modules.renderer">scene.modules.renderer</a>
+ &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
+ &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts">scene.scripts</a>
+ &#8226;   <a href="#utils">utils</a>
+ &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
+ &#8226;   <a href="#utils.singleton_decorator">utils.singleton_decorator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
 
   </div>
@@ -35309,6 +35649,7 @@ imported by:
  &#8226;   <a href="#_pyrepl.simple_interact">_pyrepl.simple_interact</a>
  &#8226;   <a href="#_pyrepl.windows_console">_pyrepl.windows_console</a>
  &#8226;   <a href="#_sitebuiltins">_sitebuiltins</a>
+ &#8226;   <a href="#application">application</a>
  &#8226;   <a href="#argparse">argparse</a>
  &#8226;   <a href="#ast">ast</a>
  &#8226;   <a href="#asyncio">asyncio</a>
@@ -35370,6 +35711,7 @@ imported by:
  &#8226;   <a href="#linecache">linecache</a>
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#multiprocessing">multiprocessing</a>
  &#8226;   <a href="#multiprocessing.connection">multiprocessing.connection</a>
@@ -35814,12 +36156,12 @@ imported by:
  &#8226;   <a href="#asyncio.base_events">asyncio.base_events</a>
  &#8226;   <a href="#asyncio.windows_events">asyncio.windows_events</a>
  &#8226;   <a href="#concurrent.futures._base">concurrent.futures._base</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
  &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#email._parseaddr">email._parseaddr</a>
  &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#gc">gc</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
  &#8226;   <a href="#gzip">gzip</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
@@ -36358,9 +36700,11 @@ imported by:
  &#8226;   <a href="#pyglm.glm_typing">pyglm.glm_typing</a>
  &#8226;   <a href="#scene.modules.collider">scene.modules.collider</a>
  &#8226;   <a href="#scene.modules.module_base">scene.modules.module_base</a>
+ &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.modules.transform">scene.modules.transform</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
  &#8226;   <a href="#setuptools">setuptools</a>
  &#8226;   <a href="#setuptools._distutils._modified">setuptools._distutils._modified</a>
  &#8226;   <a href="#setuptools._distutils.archive_util">setuptools._distutils.archive_util</a>
@@ -37073,17 +37417,22 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#utils.custom_events">utils.custom_events</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
  &#8226;   <a href="#utils.gl_constant_map">utils.gl_constant_map</a>
@@ -37106,17 +37455,22 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scripts.crosshair">scene.scripts.crosshair</a>
  &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.leading_reticle">scene.scripts.leading_reticle</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.projectile">scene.scripts.projectile</a>
  &#8226;   <a href="#scene.scripts.skybox">scene.scripts.skybox</a>
+ &#8226;   <a href="#scene.scripts.speed_lines_emitter">scene.scripts.speed_lines_emitter</a>
  &#8226;   <a href="#scene.scripts.target_indicator">scene.scripts.target_indicator</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#utils">utils</a>
 
   </div>
@@ -37134,9 +37488,11 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#core.event_manager">core.event_manager</a>
+    <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
+ &#8226;   <a href="#core.event_manager">core.event_manager</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.buffer">graphics.buffer</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
  &#8226;   <a href="#graphics.framebuffer">graphics.framebuffer</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
@@ -37147,6 +37503,8 @@ imported by:
  &#8226;   <a href="#scene.modules.physics_body">scene.modules.physics_body</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
  &#8226;   <a href="#scene.scene_object">scene.scene_object</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.health">scene.scripts.health</a>
  &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
  &#8226;   <a href="#scene.scripts.target_selector">scene.scripts.target_selector</a>
  &#8226;   <a href="#utils.gl_constant_map">utils.gl_constant_map</a>
@@ -37192,6 +37550,8 @@ imported by:
     <a href="#graphics.shader">graphics.shader</a>
  &#8226;   <a href="#graphics.texture">graphics.texture</a>
  &#8226;   <a href="#scene.modules.mesh">scene.modules.mesh</a>
+ &#8226;   <a href="#scene.scripts.enemy">scene.scripts.enemy</a>
+ &#8226;   <a href="#scene.scripts.player">scene.scripts.player</a>
 
   </div>
 
@@ -37208,11 +37568,15 @@ imports:
   <div class="import">
 imported by:
     <a href="#application">application</a>
+ &#8226;   <a href="#core.clock">core.clock</a>
+ &#8226;   <a href="#core.enemy_spawner">core.enemy_spawner</a>
  &#8226;   <a href="#core.event_manager">core.event_manager</a>
- &#8226;   <a href="#graphics.clock">graphics.clock</a>
+ &#8226;   <a href="#core.game_manager">core.game_manager</a>
+ &#8226;   <a href="#graphics.blitter">graphics.blitter</a>
  &#8226;   <a href="#graphics.graphics_backend">graphics.graphics_backend</a>
  &#8226;   <a href="#graphics.particle_system">graphics.particle_system</a>
  &#8226;   <a href="#scene.scene">scene.scene</a>
+ &#8226;   <a href="#scene.scripts.trail_emitter">scene.scripts.trail_emitter</a>
  &#8226;   <a href="#utils.debug">utils.debug</a>
 
   </div>

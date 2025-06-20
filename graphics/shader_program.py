@@ -24,6 +24,27 @@ class ShaderProgram:
                 f"(!) error during program construction:{glGetProgramInfoLog(self.id)}"
             )
 
+    def get_uniform_id(self, name: str):
+        return glGetUniformLocation(self.id, name)
+
+    def get_ssbo_id(self, name: str):
+        index = glGetProgramResourceIndex(self.id, GL_SHADER_STORAGE_BLOCK, name)
+
+        if index == GL_INVALID_INDEX:
+            raise RuntimeError(f"SSBO block '{name}' not found")
+
+        props = [GL_BUFFER_BINDING]
+        output = glGetProgramResourceiv(
+            self.id,
+            GL_SHADER_STORAGE_BLOCK,
+            index,
+            len(props),
+            props,
+            1,
+        )
+
+        return output[1]
+
     def __enter__(self):
         self.use()
         return self

@@ -25,12 +25,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="core\application.py" />
+    <Compile Include="core\enemy_spawner.py" />
     <Compile Include="core\event_manager.py" />
+    <Compile Include="core\game_manager.py" />
+    <Compile Include="core\deprecated\game_over_screen.py" />
+    <Compile Include="core\deprecated\menu.py" />
+    <Compile Include="graphics\blitter.py" />
     <Compile Include="graphics\framebuffer.py" />
     <Compile Include="graphics\particle_system.py" />
     <Compile Include="scene\modules\physics_body.py" />
     <Compile Include="scene\scripts\crosshair.py" />
     <Compile Include="scene\scripts\enemy.py" />
+    <Compile Include="scene\scripts\health.py" />
     <Compile Include="scene\scripts\leading_reticle.py" />
     <Compile Include="scene\scripts\player.py" />
     <Compile Include="core\clock.py" />
@@ -44,6 +50,8 @@
     <Compile Include="scene\scene.py" />
     <Compile Include="scene\scripts\projectile.py" />
     <Compile Include="scene\scripts\skybox.py" />
+    <Compile Include="scene\scripts\speed_lines_emitter.py" />
+    <Compile Include="scene\scripts\trail_emitter.py" />
     <Compile Include="scene\scripts\target_indicator.py" />
     <Compile Include="scene\scripts\target_selector.py" />
     <Compile Include="utils\custom_events.py" />
@@ -61,24 +69,32 @@
     <Compile Include="utils\snake_to_pascal.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="graphics\shaders\particle_system\particle_renderer.frag" />
+    <Content Include="graphics\shaders\misc\blitter.comp" />
+    <Content Include="graphics\shaders\particle_system\trails\trail_renderer.frag" />
+    <Content Include="graphics\shaders\particle_system\trails\trail_renderer.vert" />
+    <Content Include="graphics\shaders\particle_system\trails\trail_spawner.comp" />
+    <Content Include="graphics\shaders\particle_system\speed_lines\speed_line_renderer.frag" />
     <Content Include="graphics\shaders\particle_system\particle_renderer_deprecated.glsl" />
-    <Content Include="graphics\shaders\particle_system\particle_renderer.vert" />
-    <Content Include="graphics\shaders\particle_system\particle_spawner.comp" />
+    <Content Include="graphics\shaders\particle_system\speed_lines\speed_line_renderer.vert" />
+    <Content Include="graphics\shaders\particle_system\speed_lines\speed_line_spawner.comp" />
     <Content Include="graphics\shaders\particle_system\particle_updater.comp" />
-    <Content Include="graphics\shaders\texture_to_screen\tts_vertex.glsl" />
-    <Content Include="graphics\shaders\texture_to_screen\tts_fragment.glsl" />
+    <Content Include="graphics\shaders\misc\texture_to_screen\tts.vert" />
+    <Content Include="graphics\shaders\misc\texture_to_screen\tts.frag" />
     <Content Include="requirements.txt" />
     <Content Include="graphics\shaders\geometry_rendering\gmt_fragment.glsl" />
     <Content Include="graphics\shaders\geometry_rendering\gmt_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="core\deprecated\" />
     <Folder Include="graphics\" />
     <Folder Include="core\" />
     <Folder Include="graphics\shaders\" />
     <Folder Include="graphics\shaders\geometry_rendering\" />
+    <Folder Include="graphics\shaders\misc\" />
     <Folder Include="graphics\shaders\particle_system\" />
-    <Folder Include="graphics\shaders\texture_to_screen\" />
+    <Folder Include="graphics\shaders\particle_system\trails\" />
+    <Folder Include="graphics\shaders\particle_system\speed_lines\" />
+    <Folder Include="graphics\shaders\misc\texture_to_screen\" />
     <Folder Include="scene\" />
     <Folder Include="scene\modules\" />
     <Folder Include="scene\scripts\" />

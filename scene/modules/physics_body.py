@@ -15,20 +15,32 @@ from utils.debug import debug
 from scene.scene_object import SceneObject
 from scene.modules.renderer import Renderer
 from graphics.texture import Texture
+from collections import defaultdict
+from typing import Callable
 
 
 class PhysicsBody(Module):
     requires = [Transform]
 
-    def __init_module__(self):
+    def __init_module__(self, collision_radius: float = 1):
 
         self.max_velocity = 30
         self.previous_position = glm.vec3(0)
-        self.collision_radius = 0.001
+        self.collision_radius = collision_radius
         self.angular_velocity = glm.vec3(0)
         self.velocity = glm.vec3(0)
         self.subscribe_to_event(custom_events.UPDATE, self.update)
         self.subscribe_to_event(custom_events.UPDATE, self.handle_collision)
+
+        self.callbacks = []
+        self.collision_exclusion_list = []
+        self.invert_collision_exclusion = False
+
+    def exclude_from_collision_check(self, obj: SceneObject):
+        self.collision_exclusion_list.append(obj)
+
+    def on_collision(self, callback: Callable[[SceneObject], None]):
+        self.callbacks.append(callback)
 
     def update(self):
         clock = GraphicsBackend().clock
@@ -70,12 +82,29 @@ class PhysicsBody(Module):
 
     def handle_collision(self):
         for obj in Scene().objects:
-            if hasattr(obj, "collider") and not obj is self.parent_obj:
+            if (
+                hasattr(obj, "collider")
+                and not obj is self.parent_obj
+                and not (
+                    (obj in self.collision_exclusion_list)
+                    ^ self.invert_collision_exclusion
+                )
+            ):
                 delta_velocity = self.velocity * GraphicsBackend().clock.delta_time
                 start = self.parent_obj.transform.position
                 end = self.parent_obj.transform.position + delta_velocity
-                radius = obj.mesh.bounding_sphere_radius
-                t, normal = obj.collider.bounding_sphere_collision(start, end, radius)
+                t, normal = obj.collider.bounding_sphere_collision(
+                    start, end, self.collision_radius
+                )
                 if t is not None and normal is not None:
-                    self.parent_obj.transform.position += delta_velocity * t + glm.reflect(delta_velocity,normal) * (1-t)
-                    self.velocity = glm.reflect(self.velocity,normal) * 0.2
+                    if t == -1.0:
+                        self.parent_obj.transform.position += normal
+                    else:
+                        for callback in self.callbacks:
+                            callback(obj)
+
+                        self.parent_obj.transform.position += (
+                            delta_velocity * t
+                            + glm.reflect(delta_velocity, normal) * (1 - t)
+                        )
+                        self.velocity = glm.reflect(self.velocity, normal) * 0.7

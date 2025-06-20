@@ -20,6 +20,11 @@ class TargetSelector(Module):
         self.subscribe_to_event(pygame.KEYDOWN, self.select_target, pass_event=True)
         self.available_targets = {}
 
+        self.active_texture = Texture.load_from_file("assets/textures/target.png")
+        self.inactive_texture = Texture.load_from_file(
+            "assets/textures/target_inactive.png"
+        )
+
     def update(self):
         for target in Scene().objects:
             if (
@@ -32,18 +37,24 @@ class TargetSelector(Module):
         for target in list(self.available_targets.keys()):
             if target not in Scene().objects:
                 self.available_targets.pop(target).destroy()
+                if target is self.selected_target:
+                    self.selected_target = None
 
     def create_indicator(self, target: SceneObject) -> SceneObject:
         indicator = SceneObject(name="indicator")
         indicator.add_module(Transform)
-        indicator.add_module(Mesh, obj_path="assets/plane.obj")
+        indicator.add_module(Mesh, path="assets/meshes/plane.obj")
         indicator.add_module(Renderer, is_transparent=True, is_UI=True)
-        indicator.renderer.texture = Texture.load_from_file("assets/target.png")
+        indicator.renderer.texture = self.inactive_texture
         indicator.add_module(TargetIndicator, self.player, target)
         return indicator
 
     def select_target(self, event):
         if event.key == pygame.K_t and self.available_targets:
+            if self.selected_target is not None:
+                self.available_targets[self.selected_target].renderer.texture = (
+                    self.inactive_texture
+                )
             self.selected_target = max(
                 self.available_targets.keys(),
                 key=lambda obj: glm.dot(
@@ -53,4 +64,8 @@ class TargetSelector(Module):
                     self.player.transform.R * glm.vec3(0, 0, -1),
                 ),
             )
+            self.available_targets[self.selected_target].renderer.texture = (
+                self.active_texture
+            )
+
             debug.log(f"selected {self.selected_target}")

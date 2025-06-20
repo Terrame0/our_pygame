@@ -8,8 +8,8 @@ from utils.debug import debug
 class Mesh(Module):
     requires = [Transform]
 
-    def __init_module__(self, obj_path: str = ""):
-        vertices, normals, texcoords, faces = self.parse_obj(obj_path)
+    def __init_module__(self, path: str = ""):
+        vertices, normals, texcoords, faces = self.parse_obj(path)
         self.max_vertex_distance = 0
         vertex_cache = {}
         interleaved_vertices = []

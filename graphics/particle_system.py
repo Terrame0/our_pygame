@@ -14,61 +14,52 @@ from core.clock import Clock
 from core.event_manager import EventManager
 from graphics.framebuffer import Framebuffer
 from graphics.buffer import Buffer
+from scene.scene_object import SceneObject
+
+
+@singleton
+class RenderpassManager:
+    MAX_RENDERPASS_COUNT = 1000
+
+    def __init__(self):
+        self.id_queue_pointer = self.MAX_RENDERPASS_COUNT - 1
+        self.id_queue = [x for x in range(self.MAX_RENDERPASS_COUNT)]
+
+    def get_renderpass_id(self):
+        if self.id_queue_pointer < 0:
+            raise RuntimeError(
+                f"renderpass ID pool exhausted!"
+            )  # -- i hope there can't be more than a thousand renderpasses :)
+        out = self.id_queue[self.id_queue_pointer]
+        self.id_queue[self.id_queue_pointer] = 0
+        self.id_queue_pointer -= 1
+        return out
+
+    def return_renderpass_id(self, idx: int):
+        self.id_queue_pointer += 1
+        self.id_queue[self.id_queue_pointer] = idx
 
 
 @singleton
 class ParticleSystem:
-    MAX_PARTICLES = 100000
+    MAX_PARTICLES = 10000
 
     def setup_fbo(self):
-        self.fbo = Framebuffer()
-        with self.fbo:
-            glFramebufferTexture2D(
-                GL_FRAMEBUFFER,
-                GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D,
-                self.result_texture.id,
-                0,
-            )
-            depth_texture = Texture(
-                (800, 600),
-                internal_format=GL_DEPTH_COMPONENT32,
-                pixel_data_format=GL_DEPTH_COMPONENT,
-                pixel_component_format=GL_FLOAT,
-            )
-            glFramebufferTexture2D(
-                GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT,
-                GL_TEXTURE_2D,
-                depth_texture.id,
-                0,
-            )
-
-    def create_shader_programs(self):
-        self.spawner_program = ShaderProgram(
-            Shader(
-                "graphics/shaders/particle_system/particle_spawner.comp",
-                GL_COMPUTE_SHADER,
-            )
+        self.particle_fbo = Framebuffer()
+        self.particle_fbo.color_attachment = Texture((800, 600))
+        self.particle_fbo.depth_attachment = Texture(
+            (800, 600),
+            internal_format=GL_DEPTH_COMPONENT32,
+            pixel_data_format=GL_DEPTH_COMPONENT,
+            pixel_component_format=GL_FLOAT,
         )
 
-        self.creator_program = ShaderProgram(
+    def create_shader_programs(self):
+        self.particle_updater = ShaderProgram(
             Shader(
                 "graphics/shaders/particle_system/particle_updater.comp",
                 GL_COMPUTE_SHADER,
             )
-        )
-
-        # -- shader program that renders particles
-        self.renderer_program = ShaderProgram(
-            Shader(
-                "graphics/shaders/particle_system/particle_renderer.frag",
-                GL_FRAGMENT_SHADER,
-            ),
-            Shader(
-                "graphics/shaders/particle_system/particle_renderer.vert",
-                GL_VERTEX_SHADER,
-            ),
         )
 
     def create_default_quad_vao(self):
@@ -145,6 +136,11 @@ class ParticleSystem:
             GL_DYNAMIC_DRAW,
         )
 
+        self.renderpass_id_buffer = Buffer(GL_ARRAY_BUFFER)
+        self.renderpass_id_buffer.upload_data(
+            glm.array(glm.uint32, *([0] * self.MAX_PARTICLES)), GL_DYNAMIC_DRAW
+        )
+
         with self.particle_positions:
             glBindVertexArray(self.vao)
             glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, None)
@@ -167,40 +163,72 @@ class ParticleSystem:
             glBindVertexArray(0)
 
     def __init__(self):
-        self.result_texture = Texture((800, 600))
         self.create_shader_programs()
         self.setup_fbo()
         self.create_default_quad_vao()
-        self.create_particle_attribute_buffers()
         self.create_particle_state_buffers()
+        self.create_particle_attribute_buffers()
 
-        EventManager().subscribe(custom_events.UPDATE, self.create_particles)
+    def bind_spawn_vars(self, program: ShaderProgram, renderpass_id:int):
+        self.dead_particles_stack_pointer.bind_base(0, GL_ATOMIC_COUNTER_BUFFER)
+        glUniform1ui(
+            program.get_uniform_id("current_renderpass"),
+            renderpass_id,
+        )
+        self.dead_particles_stack.bind_base(
+            program.get_ssbo_id("dead_particles_stack"),
+            GL_SHADER_STORAGE_BUFFER,
+        )
+        self.particle_positions.bind_base(
+            program.get_ssbo_id("particle_positions"),
+            GL_SHADER_STORAGE_BUFFER,
+        )
+        self.particle_velocities.bind_base(
+            program.get_ssbo_id("particle_velocities"),
+            GL_SHADER_STORAGE_BUFFER,
+        )
+        self.particle_lifetimes.bind_base(
+            program.get_ssbo_id("particle_lifetimes"),
+            GL_SHADER_STORAGE_BUFFER,
+        )
+        self.renderpass_id_buffer.bind_base(
+            program.get_ssbo_id("particle_renderpass_ids"),
+            GL_SHADER_STORAGE_BUFFER,
+        )
 
-    def create_particles(self):
-        with self.spawner_program:
-            glUniform1ui(0, 1)
-            glUniform4fv(
-                1,
-                1,
-                glm.value_ptr(
-                    (
-                        glm.vec4(random.random(), random.random(), random.random(), 1)
-                        - 0.5
-                    )
-                    * 100
-                ),
-            )
-            self.dead_particles_stack_pointer.bind_base(0, GL_ATOMIC_COUNTER_BUFFER)
-            self.dead_particles_stack.bind_base(0, GL_SHADER_STORAGE_BUFFER)
-            self.particle_positions.bind_base(1, GL_SHADER_STORAGE_BUFFER)
-            self.particle_velocities.bind_base(2, GL_SHADER_STORAGE_BUFFER)
-            self.particle_lifetimes.bind_base(3, GL_SHADER_STORAGE_BUFFER)
-            glDispatchCompute(self.MAX_PARTICLES // 64 + 1, 1, 1)
+    def bind_render_vars(self, program: ShaderProgram, renderpass_id:int):
+        glEnable(GL_DEPTH_TEST)
+        self.renderpass_id_buffer.bind_base(
+            program.get_ssbo_id("particle_renderpass_ids"), GL_SHADER_STORAGE_BUFFER
+        )
+        glUniformMatrix4fv(
+            program.get_uniform_id("projection"),
+            1,
+            False,
+            glm.value_ptr(Scene().camera.projection_matrix),
+        )
+        glUniformMatrix4fv(
+            program.get_uniform_id("view"),
+            1,
+            False,
+            glm.value_ptr(Scene().camera.view_matrix),
+        )
+        glUniformMatrix4fv(
+            program.get_uniform_id("model"),
+            1,
+            False,
+            glm.value_ptr(Scene().camera_object.transform.R),
+        )
+        glUniform1ui(
+            program.get_uniform_id("current_renderpass"),
+            renderpass_id,
+        )
 
-    def render_particles(self, target_fbo: Framebuffer):
-
-        # -- update particles
-        with self.creator_program:
+    # -- is called after rendering
+    def update_particles(self):
+        with self.particle_fbo:
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        with self.particle_updater:
             glUniform1f(0, Clock().delta_time)
             self.dead_particles_stack_pointer.bind_base(0, GL_ATOMIC_COUNTER_BUFFER)
             self.dead_particles_stack.bind_base(0, GL_SHADER_STORAGE_BUFFER)
@@ -208,33 +236,3 @@ class ParticleSystem:
             self.particle_velocities.bind_base(2, GL_SHADER_STORAGE_BUFFER)
             self.particle_lifetimes.bind_base(3, GL_SHADER_STORAGE_BUFFER)
             glDispatchCompute(self.MAX_PARTICLES // 64 + 1, 1, 1)
-
-        # -- render particles
-        with target_fbo, self.renderer_program:
-
-            self.dead_particles_stack.bind_base(0, GL_SHADER_STORAGE_BUFFER)
-
-            glEnable(GL_DEPTH_TEST)
-            glUniformMatrix4fv(
-                0, 1, False, glm.value_ptr(Scene().camera.projection_matrix)
-            )
-            glUniformMatrix4fv(1, 1, False, glm.value_ptr(Scene().camera.view_matrix))
-            glUniformMatrix4fv(
-                2, 1, False, glm.value_ptr(Scene().camera_object.transform.R)
-            )
-            glBindVertexArray(self.vao)
-            glDrawElementsInstanced(
-                GL_TRIANGLES, 6, GL_UNSIGNED_INT, None, self.MAX_PARTICLES
-            )
-
-        # target.bind_as_image(binding=0)
-        # self.result_texture.bind_as_image(binding=1)
-        #
-        # with self.compute_program, depth:
-        #    glUniformMatrix4fv(
-        #        0, 1, False, glm.value_ptr(Scene().camera.projection_matrix)
-        #    )
-        #    glUniformMatrix4fv(1, 1, False, glm.value_ptr(Scene().camera.view_matrix))
-        #    glUniform1f(2, Scene().camera.near_plane)
-        #    glUniform1f(3, Scene().camera.far_plane)
-        #    glDispatchCompute(800 // 16 + 1, 600 // 16 + 1, 1)

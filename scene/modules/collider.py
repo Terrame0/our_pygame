@@ -2,6 +2,7 @@ from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
 from scene.modules.mesh import Mesh
+from scene.modules.physics_body import PhysicsBody
 from OpenGL.GL import *
 from pygame.locals import *
 from graphics.shader import Shader
@@ -12,17 +13,23 @@ from typing import Tuple
 
 
 class Collider(Module):
-    requires = [Transform, Mesh]
+    requires = [Transform,PhysicsBody]
 
-    def __init_module__(self, obj_path: str = ""):
+    def __init_module__(self):
         pass
 
     def bounding_sphere_collision(
         self, start: glm.vec3, end: glm.vec3, radius: float
     ) -> Tuple[float, glm.vec3]:
+
+        current_distance = glm.distance(self.parent_obj.transform.position,start)
+        minimal_distance = self.parent_obj.physics_body.collision_radius + glm.distance(start,end)
+        # -- if collision cannot occur
+        #if(current_distance <= minimal_distance):
+        #    return None, glm.vec3(0)
         # -- get static sphere properties
         static_center = self.parent_obj.transform.position
-        moving_radius = self.parent_obj.mesh.bounding_sphere_radius
+        moving_radius = self.parent_obj.physics_body.collision_radius
         total_radius = moving_radius + radius
 
         # -- calculate movement vector and initial offset
@@ -33,13 +40,13 @@ class Collider(Module):
         initial_dist_sq = glm.length2(initial_offset)
         total_radius_sq = total_radius * total_radius
 
-        # -- case 1: already colliding at start position (static collision)
+        # -- case 1: already colliding at start position
         if initial_dist_sq <= total_radius_sq:
             if initial_dist_sq < 1e-10:  # -- centers coincide
                 normal = glm.vec3(1, 0, 0)  # -- arbitrary direction
             else:
                 normal = glm.normalize(initial_offset)
-            return 0.0, normal
+            return -1.0, normal # -- -1 so that in the physics module we can handle this case
 
         # -- case 2: no movement - can't collide
         movement_length_sq = glm.length2(movement)

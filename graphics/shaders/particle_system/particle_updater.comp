@@ -26,9 +26,8 @@ void main() {
     if(lifetimes[inv_id] > 0.0){
         lifetimes[inv_id] -= delta_time; // -- decreasing lifetime
         positions[inv_id].xyz += velocities[inv_id].xyz * delta_time; // -- applying velocity
-        if(lifetimes[inv_id.x] <= 0.0){ // -- a particle is dead
+        if(lifetimes[inv_id.x] <= 0.0){ // -- particle death handling
             dead_particles[atomicCounterIncrement(dead_particles_stack_counter)] = inv_id;
         }
     }
-    
 }

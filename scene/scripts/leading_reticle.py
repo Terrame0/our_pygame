@@ -30,7 +30,6 @@ class LeadingReticle(Module):
                 self.parent_obj.renderer.is_visible = True
                 self.parent_obj.transform.position = pos
 
-    # MAY NOT WORK CORRECTLY FOR MOVING TARGETS (YET)
     @staticmethod
     def calculate_reticle_position(
         player_position: glm.vec3,
@@ -44,9 +43,6 @@ class LeadingReticle(Module):
 
         relative_velocity = target_velocity - player_velocity
         position_delta = target_position - player_position
-
-        if glm.length(relative_velocity) < 1e-5:
-            return None
 
         a = glm.length2(relative_velocity) - projectile_speed**2
         b = 2.0 * glm.dot(relative_velocity, position_delta)

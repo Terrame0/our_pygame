@@ -17,6 +17,8 @@ class Texture:
         pixel_component_format=GL_FLOAT,
     ):  # -- creates a texture with data (empty if none provided)
         self.id = glGenTextures(1)
+        self.size = size
+        self._binding = 0
         with self:
             glTexImage2D(
                 GL_TEXTURE_2D,  # -- texture target
@@ -49,8 +51,8 @@ class Texture:
         return instance
 
     def bind(self):
+        glActiveTexture(GL_TEXTURE0 + self._binding)
         glBindTexture(GL_TEXTURE_2D, self.id)
-        glActiveTexture(GL_TEXTURE0 + 0)
 
     def unbind(self):
         glBindTexture(GL_TEXTURE_2D, 0)
@@ -62,5 +64,9 @@ class Texture:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.unbind()
 
-    def bind_as_image(self, binding: int = 0):
-        glBindImageTexture(binding, self.id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F)
+    def bind_as_image(self, unit: int = 0):
+        glBindImageTexture(unit, self.id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F)
+
+    def unit(self, unit: int) -> Texture:
+        self._binding = unit
+        return self

@@ -50,6 +50,6 @@ class Module(ABC):
         EventManager().subscribe(event_type, callback, *args, **kwargs)
         self.event_subscriptions.append((event_type, callback))
 
-    def deinit(self):
+    def deinit_base(self):
         for subscription in self.event_subscriptions:
             EventManager().unsubscribe(subscription[0], subscription[1])

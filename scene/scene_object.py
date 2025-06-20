@@ -44,6 +44,7 @@ class SceneObject:
     def destroy(self):
         Scene().remove_objects(self)
         for module in self.modules.values():
+            module.deinit_base()
             if hasattr(module, "deinit"):
                 module.deinit()
         debug.log(f"destroyed {self.__class__.__name__} {self.name}")
