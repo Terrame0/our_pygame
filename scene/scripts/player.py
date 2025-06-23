@@ -1,4 +1,3 @@
-
 from graphics.graphics_backend import GraphicsBackend
 from scene.modules.physics_body import PhysicsBody
 from scene.scripts.skybox import Skybox
@@ -12,13 +11,15 @@ from scene.modules.renderer import Renderer
 from graphics.texture import Texture
 import pygame
 from pyglm import glm
-from scene.scene import Camera, Scene
+from scene.scene import Scene
+from scene.modules.camera import Camera
 from scene.modules.module_base import Module
 from scene.scripts.projectile import Projectile
 from scene.scripts.crosshair import Crosshair
 from scene.scripts.health import Health
 from scene.scripts.leading_reticle import LeadingReticle
 from scene.scripts.target_selector import TargetSelector
+from scene.scripts.weapons.weapon_controller import WeaponController
 from utils.debug import debug
 from utils.path_resolver import resolve_path
 
@@ -36,56 +37,64 @@ class Player(Module):
         self.boost_duration = 4
         self.boost_cooldown = 4
         self.max_boost_modifier = 20
-        self.reload_time = 0.5
 
         # -- state
         self.stop = False
         self.is_boosting = False
         self.boost_modifier = 1
         self.boost_start = GraphicsBackend().clock.now - self.boost_cooldown
-        self.last_shot = GraphicsBackend().clock.now - self.reload_time
 
         # -- crosshair
-        self.crosshair = SceneObject(name="crosshair")
-        self.crosshair.add_module(Transform)
-        self.crosshair.add_module(Mesh, path="assets/meshes/plane.obj")
-        self.crosshair.add_module(
-            Renderer,
-            texture=Texture.load_from_file("assets/textures/crosshair.png"),
-            is_transparent=True,
-            is_UI=True,
+        self.crosshair = SceneObject(
+            name="crosshair",
+            modules=[
+                Transform,
+                Mesh(path="assets/meshes/plane.obj"),
+                Renderer(
+                    texture=Texture.load_from_file("assets/textures/crosshair.png"),
+                    is_transparent=True,
+                    is_UI=True,
+                ),
+                Crosshair(player=self.parent_obj),
+            ],
         )
-        self.crosshair.add_module(TargetSelector, player=self.parent_obj)
-        self.crosshair.add_module(Crosshair, player=self.parent_obj)
 
         # -- leading reticle
-        self.reticle = SceneObject(name="reticle")
-        self.reticle.add_module(Transform)
-        self.reticle.add_module(Mesh, path="assets/meshes/plane.obj")
-        self.reticle.add_module(
-            Renderer,
-            texture=Texture.load_from_file("assets/textures/reticle.png"),
-            is_transparent=True,
-            is_UI=True,
-        )
-        self.reticle.add_module(
-            LeadingReticle,
-            player=self.parent_obj,
-            target_selector=self.crosshair.target_selector,
+        self.reticle = SceneObject(
+            name="reticle",
+            modules=[
+                Transform(),
+                Mesh(path="assets/meshes/plane.obj"),
+                Renderer(
+                    texture=Texture.load_from_file("assets/textures/reticle.png"),
+                    is_transparent=True,
+                    is_UI=True,
+                ),
+                TargetSelector(player=self.parent_obj),
+                LeadingReticle(
+                    player=self.parent_obj,
+                ),
+                WeaponController(
+                    owner=self.parent_obj,
+                ),
+            ],
         )
 
         # -- skybox
-        self.skybox = SceneObject(name="skybox")
-        self.skybox.add_module(Transform, scale=glm.vec3(-500))
-        self.skybox.add_module(Mesh, path="assets/meshes/cube.obj")
-        self.skybox.add_module(
-            Renderer, texture=Texture.load_from_file("assets/textures/skybox.png")
+        self.skybox = SceneObject(
+            name="skybox",
+            modules=[
+                Transform(scale=glm.vec3(-500)),
+                Mesh(path="assets/meshes/cube.obj"),
+                Renderer(texture=Texture.load_from_file("assets/textures/skybox.png")),
+                Skybox(player=self.parent_obj),
+            ],
         )
-        self.skybox.add_module(Skybox, player=self.parent_obj)
 
         # -- speed lines
-        self.speed_lines = SceneObject(name="skybox")
-        self.speed_lines.add_module(SpeedLinesEmitter, self.parent_obj)
+        self.speed_lines = SceneObject(
+            name="skybox", modules=[SpeedLinesEmitter(player=self.parent_obj)]
+        )
 
         # -- event subscriptions
         self.subscribe_to_event(custom_events.UPDATE, self.handle_keyboard_input)
@@ -94,61 +103,14 @@ class Player(Module):
         self.subscribe_to_event(custom_events.UPDATE, self.shoot)
         self.subscribe_to_event(custom_events.UPDATE, self.check_health)
 
-    def check_collisions(self):
-        for obj in Scene().objects:
-            if (
-                hasattr(obj, "collider")
-                and obj.mesh.bounding_sphere_radius >= self.collision_radius
-            ):
-                distance_test: glm.vec4 = obj.collider.dist_to_point(
-                    self.obj.transform.position
-                )
-                if (
-                    obj.collider.dist_to_point(self.obj.transform.position).x
-                    < self.collision_radius
-                ):
-                    self.obj.transform.position += (
-                        distance_test.yzw
-                        / glm.length(distance_test.yzw)
-                        * (self.collision_radius - distance_test.x)
-                    )
-                    self.velocity = (
-                        glm.reflect(
-                            self.velocity,
-                            distance_test.yzw / glm.length(distance_test.yzw),
-                        )
-                        * 0.3
-                    )
-
     def check_health(self):
         if self.parent_obj.health.value <= 0:
             self.hit_sound.play()
             self.stop = True
 
     def shoot(self):
-        if (
-            pygame.mouse.get_pressed()[0]
-            and GraphicsBackend().clock.now - self.last_shot > self.reload_time
-        ):
-            self.shoot_sound.play()
-            self.last_shot = GraphicsBackend().clock.now
-            projectile = SceneObject(name="projectile")
-            projectile.add_module(Transform)
-            projectile.add_module(Mesh, path="assets/meshes/plane.obj")
-            projectile.add_module(PhysicsBody, collision_radius=0.5)
-            projectile.physics_body.exclude_from_collision_check(self.parent_obj)
-            projectile.physics_body.velocity = glm.vec3(1)
-            projectile.add_module(
-                Renderer,
-                texture=Texture.load_from_file("assets/textures/plasma.png"),
-            )
-            projectile.add_module(
-                Projectile,
-                progenitor=self.parent_obj,
-            )
-            projectile.add_module(
-                TrailEmitter, trail_color=glm.vec3(0.470588, 0.811765, 0.203922)
-            )
+        if pygame.mouse.get_pressed()[0]:
+            self.reticle.weapon_controller.shoot_weapons()
 
     def handle_mouse_input(self):
         clock = GraphicsBackend().clock

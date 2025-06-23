@@ -1,7 +1,4 @@
 from OpenGL.GL import *
-from graphics.shader import Shader
-from utils.gl_constant_map import get_gl_name
-from utils.debug import debug
 from graphics.texture import Texture
 
 

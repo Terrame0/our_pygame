@@ -2,7 +2,6 @@ from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
 from utils.path_resolver import resolve_path
-from utils.debug import debug
 
 
 class Mesh(Module):

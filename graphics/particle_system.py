@@ -1,20 +1,14 @@
-import random
-import pygame
-from utils import custom_events
 from OpenGL.GL import *
 from pygame.locals import *
 from utils.singleton_decorator import singleton
 from graphics.shader import Shader
 from graphics.shader_program import ShaderProgram
 from scene.scene import Scene
-from utils.debug import debug
 from pyglm import glm
 from graphics.texture import Texture
 from core.clock import Clock
-from core.event_manager import EventManager
 from graphics.framebuffer import Framebuffer
 from graphics.buffer import Buffer
-from scene.scene_object import SceneObject
 
 
 @singleton
@@ -169,7 +163,7 @@ class ParticleSystem:
         self.create_particle_state_buffers()
         self.create_particle_attribute_buffers()
 
-    def bind_spawn_vars(self, program: ShaderProgram, renderpass_id:int):
+    def bind_spawn_vars(self, program: ShaderProgram, renderpass_id: int):
         self.dead_particles_stack_pointer.bind_base(0, GL_ATOMIC_COUNTER_BUFFER)
         glUniform1ui(
             program.get_uniform_id("current_renderpass"),
@@ -196,7 +190,7 @@ class ParticleSystem:
             GL_SHADER_STORAGE_BUFFER,
         )
 
-    def bind_render_vars(self, program: ShaderProgram, renderpass_id:int):
+    def bind_render_vars(self, program: ShaderProgram, renderpass_id: int):
         glEnable(GL_DEPTH_TEST)
         self.renderpass_id_buffer.bind_base(
             program.get_ssbo_id("particle_renderpass_ids"), GL_SHADER_STORAGE_BUFFER

@@ -9,31 +9,42 @@ from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.physics_body import PhysicsBody
 from core.clock import Clock
+from utils.debug import debug
+from typing import List
 
 
 class Projectile(Module):
     requires = [Transform, Mesh, Renderer, PhysicsBody]
 
-    def __init_module__(self, progenitor: SceneObject):
+    def __init_module__(
+        self,
+        progenitor: SceneObject,
+        parent_velocity: glm.vec3 = glm.vec3(0),
+        exclude_from_collision: List[SceneObject] = [],
+    ):
+        self.parent_obj.physics_body.exclude_from_collision_check(
+            exclude_from_collision
+        )
+
         self.parent_obj.renderer.is_visible = False
-        self.progenitor = progenitor
         self.creation_time = Clock().now
         self.speed = 100
         self.parent_obj.physics_body.max_velocity = 100
 
         self.parent_obj.physics_body.velocity = (
-            self.progenitor.physics_body.velocity
-            + self.progenitor.transform.R * glm.vec3(0, 0, -1) * self.speed
+            progenitor.transform.R * glm.vec3(0, 0, -1) * self.speed + parent_velocity
         )
+
         self.parent_obj.transform.position = (
-            self.progenitor.transform.position.xyz
-            + self.progenitor.transform.R * glm.vec3(0, 0, 0)
+            progenitor.transform.position.xyz
+            + progenitor.transform.R * glm.vec3(0, 0, 0)
         )
 
         self.parent_obj.transform.scale = glm.vec3(0.5)
 
         self.update()
         self.subscribe_to_event(custom_events.UPDATE, self.update)
+        self.subscribe_to_event(custom_events.UPDATE, self.handle_lifetime)
 
         self.parent_obj.physics_body.callbacks.append(self.collide_with_target)
 
@@ -43,7 +54,7 @@ class Projectile(Module):
             obj.health.value -= 1
             self.parent_obj.destroy()
 
-    def update(self):
+    def handle_lifetime(self):
         is_alive_for = Clock().now - self.creation_time
         if is_alive_for > 0.01 and not self.parent_obj.renderer.is_visible:
             self.parent_obj.renderer.is_visible = True
@@ -51,6 +62,8 @@ class Projectile(Module):
                 self.parent_obj.trail_emitter.is_emitting = True
         if is_alive_for > 2:
             self.parent_obj.destroy()
+
+    def update(self):
         self.parent_obj.transform.quaternion = (
             Scene().camera_object.transform.quaternion
         )

@@ -17,7 +17,6 @@ class Renderer(Module):
         is_UI: bool = False,
         is_visible: bool = True,
     ):
-
         # -- properties
         self.is_transparent = is_transparent
         self.is_UI = is_UI
@@ -46,14 +45,16 @@ class Renderer(Module):
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * 4, None)
             glEnableVertexAttribArray(0)
             glVertexAttribPointer(
-                1, 3, GL_FLOAT, GL_FALSE, 8 * 4, ctypes.c_void_p(3 * 4)
+                1, 2, GL_FLOAT, GL_FALSE, 8 * 4, ctypes.c_void_p(3 * 4)
             )
             glEnableVertexAttribArray(1)
+
             glVertexAttribPointer(
                 2, 3, GL_FLOAT, GL_FALSE, 8 * 4, ctypes.c_void_p(5 * 4)
             )
             glEnableVertexAttribArray(2)
             glBindVertexArray(0)
+
 
     def draw(self):
         if self.is_UI:

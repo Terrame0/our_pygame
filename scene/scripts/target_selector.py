@@ -41,12 +41,17 @@ class TargetSelector(Module):
                     self.selected_target = None
 
     def create_indicator(self, target: SceneObject) -> SceneObject:
-        indicator = SceneObject(name="indicator")
-        indicator.add_module(Transform)
-        indicator.add_module(Mesh, path="assets/meshes/plane.obj")
-        indicator.add_module(Renderer, is_transparent=True, is_UI=True)
-        indicator.renderer.texture = self.inactive_texture
-        indicator.add_module(TargetIndicator, self.player, target)
+        indicator = SceneObject(
+            name="indicator",
+            modules=[
+                Transform(),
+                Mesh(path="assets/meshes/plane.obj"),
+                Renderer(
+                    texture=self.inactive_texture, is_transparent=True, is_UI=True
+                ),
+                TargetIndicator(self.player, target),
+            ],
+        )
         return indicator
 
     def select_target(self, event):

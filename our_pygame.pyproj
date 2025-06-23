@@ -11,9 +11,10 @@
     <OutputPath>.</OutputPath>
     <Name>our_pygame</Name>
     <RootNamespace>our_pygame</RootNamespace>
-    <InterpreterId>Global|PythonCore|3.13</InterpreterId>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +26,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="core\application.py" />
+    <Compile Include="core\asset_loader.py" />
     <Compile Include="core\enemy_spawner.py" />
     <Compile Include="core\event_manager.py" />
     <Compile Include="core\game_manager.py" />
@@ -36,6 +38,8 @@
     <Compile Include="scene\modules\physics_body.py" />
     <Compile Include="scene\scripts\crosshair.py" />
     <Compile Include="scene\scripts\enemy.py" />
+    <Compile Include="scene\scripts\weapons\cannon.py" />
+    <Compile Include="scene\scripts\weapons\weapon_controller.py" />
     <Compile Include="scene\scripts\health.py" />
     <Compile Include="scene\scripts\leading_reticle.py" />
     <Compile Include="scene\scripts\player.py" />
@@ -54,6 +58,8 @@
     <Compile Include="scene\scripts\trail_emitter.py" />
     <Compile Include="scene\scripts\target_indicator.py" />
     <Compile Include="scene\scripts\target_selector.py" />
+    <Compile Include="utils\args.py" />
+    <Compile Include="utils\classproperty.py" />
     <Compile Include="utils\custom_events.py" />
     <Compile Include="utils\path_resolver.py" />
     <Compile Include="utils\singleton_decorator.py" />
@@ -66,7 +72,7 @@
     <Compile Include="graphics\shader.py" />
     <Compile Include="utils\gl_constant_map.py" />
     <Compile Include="utils\debug.py" />
-    <Compile Include="utils\snake_to_pascal.py" />
+    <Compile Include="utils\case_converter.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="graphics\shaders\misc\blitter.comp" />
@@ -80,7 +86,6 @@
     <Content Include="graphics\shaders\particle_system\particle_updater.comp" />
     <Content Include="graphics\shaders\misc\texture_to_screen\tts.vert" />
     <Content Include="graphics\shaders\misc\texture_to_screen\tts.frag" />
-    <Content Include="requirements.txt" />
     <Content Include="graphics\shaders\geometry_rendering\gmt_fragment.glsl" />
     <Content Include="graphics\shaders\geometry_rendering\gmt_vertex.glsl" />
   </ItemGroup>
@@ -98,16 +103,17 @@
     <Folder Include="scene\" />
     <Folder Include="scene\modules\" />
     <Folder Include="scene\scripts\" />
+    <Folder Include="scene\scripts\weapons\" />
     <Folder Include="utils\" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.13" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="main_env\">
-      <Id>main_env</Id>
-      <Version>3.13</Version>
-      <Description>main_env (Python 3.13 (64-bit))</Description>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.9</Version>
+      <Description>env (Python 3.9 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>

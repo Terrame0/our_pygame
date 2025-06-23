@@ -1,19 +1,15 @@
 from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.physics_body import PhysicsBody
 from OpenGL.GL import *
 from pygame.locals import *
-from graphics.shader import Shader
-from graphics.shader_program import ShaderProgram
-from graphics.buffer import Buffer
 from pyglm import glm
 from typing import Tuple
 
 
 class Collider(Module):
-    requires = [Transform,PhysicsBody]
+    requires = [Transform, PhysicsBody]
 
     def __init_module__(self):
         pass
@@ -22,10 +18,12 @@ class Collider(Module):
         self, start: glm.vec3, end: glm.vec3, radius: float
     ) -> Tuple[float, glm.vec3]:
 
-        current_distance = glm.distance(self.parent_obj.transform.position,start)
-        minimal_distance = self.parent_obj.physics_body.collision_radius + glm.distance(start,end)
+        current_distance = glm.distance(self.parent_obj.transform.position, start)
+        minimal_distance = self.parent_obj.physics_body.collision_radius + glm.distance(
+            start, end
+        )
         # -- if collision cannot occur
-        #if(current_distance <= minimal_distance):
+        # if(current_distance <= minimal_distance):
         #    return None, glm.vec3(0)
         # -- get static sphere properties
         static_center = self.parent_obj.transform.position
@@ -46,7 +44,10 @@ class Collider(Module):
                 normal = glm.vec3(1, 0, 0)  # -- arbitrary direction
             else:
                 normal = glm.normalize(initial_offset)
-            return -1.0, normal # -- -1 so that in the physics module we can handle this case
+            return (
+                -1.0,
+                normal,
+            )  # -- -1 so that in the physics module we can handle this case
 
         # -- case 2: no movement - can't collide
         movement_length_sq = glm.length2(movement)

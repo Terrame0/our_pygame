@@ -1,2 +1,8 @@
 .vs
-main_environment
+env
+dist
+build
+__pycache__/
+*.py[cod]
+*$py.class
+*.spec

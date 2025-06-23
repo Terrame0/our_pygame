@@ -3,7 +3,6 @@ from scene.modules.transform import Transform
 from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.scene_object import SceneObject
-from pyglm import glm
 from scene.modules.module_base import Module
 
 

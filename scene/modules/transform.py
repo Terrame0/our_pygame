@@ -1,8 +1,6 @@
 import math
-import numpy as np
 from pyglm import glm
 from scene.modules.module_base import Module
-from typing import Callable
 
 class Transform(Module):
     # -- model matrix property

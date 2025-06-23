@@ -1,22 +1,14 @@
 from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from OpenGL.GL import *
 from pygame.locals import *
-from graphics.shader import Shader
-from graphics.shader_program import ShaderProgram
-from graphics.buffer import Buffer
 from pyglm import glm
 from graphics.graphics_backend import GraphicsBackend
 from utils import custom_events
 from scene.scene import Scene
-from utils.debug import debug
 from scene.scene_object import SceneObject
-from scene.modules.renderer import Renderer
-from graphics.texture import Texture
-from collections import defaultdict
-from typing import Callable
+from typing import Callable, List
 
 
 class PhysicsBody(Module):
@@ -36,8 +28,8 @@ class PhysicsBody(Module):
         self.collision_exclusion_list = []
         self.invert_collision_exclusion = False
 
-    def exclude_from_collision_check(self, obj: SceneObject):
-        self.collision_exclusion_list.append(obj)
+    def exclude_from_collision_check(self, *objects: List[SceneObject]):
+        self.collision_exclusion_list.append(*objects)
 
     def on_collision(self, callback: Callable[[SceneObject], None]):
         self.callbacks.append(callback)
@@ -100,11 +92,11 @@ class PhysicsBody(Module):
                     if t == -1.0:
                         self.parent_obj.transform.position += normal
                     else:
-                        for callback in self.callbacks:
-                            callback(obj)
-
                         self.parent_obj.transform.position += (
                             delta_velocity * t
                             + glm.reflect(delta_velocity, normal) * (1 - t)
                         )
                         self.velocity = glm.reflect(self.velocity, normal) * 0.7
+                        for callback in self.callbacks:
+                            callback(obj) # -- executes last because it can destroy the object
+                        break

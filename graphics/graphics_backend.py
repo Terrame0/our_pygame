@@ -96,13 +96,18 @@ class GraphicsBackend:
                 2, 1, False, glm.value_ptr(Scene().camera.projection_matrix)
             )
             glUniformMatrix4fv(3, 1, False, glm.value_ptr(Scene().camera.view_matrix))
+            glUniformMatrix4fv(
+                4, 1, False, glm.value_ptr(Scene().camera_object.transform.R)
+            )
 
-            # -- transparency checks (TODO move this crap to a separate method)
+            # -- transparency checks (TODO move this crap to a separate method) 
             transparent_objects = []
             for obj in Scene().objects:
                 if hasattr(obj, "renderer") and obj.renderer.is_visible:
                     # -- UI faces the camera and is of constant size relative to view
                     if obj.renderer.is_UI:
+                        glDisable(GL_DEPTH_TEST)
+
                         obj.transform.quaternion = (
                             Scene().camera_object.transform.quaternion
                         )
@@ -117,6 +122,7 @@ class GraphicsBackend:
                         )
                     if not obj.renderer.is_transparent:
                         obj.renderer.draw()
+                        glEnable(GL_DEPTH_TEST)
                     else:
                         transparent_objects.append(obj)
             transparent_objects.sort(

@@ -3,15 +3,8 @@ from pygame.locals import *
 from utils.singleton_decorator import singleton
 from graphics.shader import Shader
 from graphics.shader_program import ShaderProgram
-from scene.scene import Scene
-from utils.debug import debug
 from pyglm import glm
-from graphics.texture import Texture
 from graphics.framebuffer import Framebuffer
-from core.clock import Clock
-from core.event_manager import EventManager
-from graphics.buffer import Buffer
-from graphics.particle_system import ParticleSystem
 
 
 @singleton

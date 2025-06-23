@@ -1,22 +1,14 @@
 from __future__ import annotations
-from typing import List, Type
-from pyglm import glm
-from scene.modules.camera import Camera
-from scene.modules.transform import Transform
+from typing import List
 from utils.debug import debug
 from utils.singleton_decorator import singleton
 
 
 @singleton
 class Scene:
-    def __init__(self, objects: List = []):
+    def __init__(self):
         self._camera_object = None
-        debug.log(f"constructing a {self.__class__.__name__} with:")
-        debug.indent()
-        self.objects: List = objects
-        for obj in self.objects:
-            debug.log(f"{obj.name}")
-        debug.dedent()
+        self.objects: List = []
 
     def add_objects(self, *objs: List):
         for obj in objs:

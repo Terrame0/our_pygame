@@ -9,12 +9,10 @@ from scene.modules.module_base import Module
 from core.clock import Clock
 from scene.scripts.leading_reticle import LeadingReticle
 from scene.scripts.projectile import Projectile
-from utils.debug import debug
 from graphics.texture import Texture
 from scene.scripts.health import Health
 from scene.scripts.trail_emitter import TrailEmitter
 from core.game_manager import GameManager
-from typing import Callable
 import pygame
 from utils.path_resolver import resolve_path
 
@@ -48,20 +46,23 @@ class Enemy(Module):
             )
             self.shoot_sound.play()
             self.last_shot = Clock().now
-            projectile = SceneObject(name="projectile")
-            projectile.add_module(Transform)
-            projectile.add_module(Mesh, path="assets/meshes/plane.obj")
-            projectile.add_module(PhysicsBody, collision_radius=0)
-            projectile.physics_body.exclude_from_collision_check(self.parent_obj)
-            projectile.add_module(
-                Renderer,
-                texture=Texture.load_from_file("assets/textures/plasma_red.png"),
+            projectile = SceneObject(
+                name="projectile",
+                modules=[
+                    Transform(),
+                    Mesh(path="assets/meshes/plane.obj"),
+                    PhysicsBody(collision_radius=0.3),
+                    Renderer(
+                        texture=Texture.load_from_file("assets/textures/plasma_red.png")
+                    ),
+                    Projectile(
+                        progenitor=self.parent_obj,
+                        parent_velocity=self.parent_obj.physics_body.velocity,
+                        exclude_from_collision=[self.parent_obj],
+                    ),
+                    TrailEmitter(trail_color=glm.vec3(1, 0.207, 0.207)),
+                ],
             )
-            projectile.add_module(
-                Projectile,
-                progenitor=self.parent_obj,
-            )
-            projectile.add_module(TrailEmitter, trail_color=glm.vec3(1, 0.207, 0.207))
 
     def check_health(self):
         if self.parent_obj.health.value <= 0:

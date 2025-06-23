@@ -9,10 +9,10 @@ from scene.modules.module_base import Module
 
 
 class LeadingReticle(Module):
-    requires = [Transform, Mesh, Renderer]
+    requires = [Transform, Mesh, Renderer, TargetSelector]
 
-    def __init_module__(self, player: SceneObject, target_selector: TargetSelector):
-        self.target_selector = target_selector
+    def __init_module__(self, player: SceneObject):
+        self.target_selector = self.parent_obj.target_selector
         self.player = player
         self.subscribe_to_event(custom_events.UPDATE, self.update)
 

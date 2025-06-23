@@ -1,10 +1,9 @@
 from OpenGL.GL import *
 from pygame.locals import *
 from utils.singleton_decorator import singleton
-from utils.debug import debug
-import time
 from core.event_manager import EventManager
 from utils import custom_events
+import time
 
 
 @singleton

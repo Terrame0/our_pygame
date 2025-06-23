@@ -1,10 +1,10 @@
 from utils.singleton_decorator import singleton
-from typing import DefaultDict, Callable, Any, List, Tuple, Type
+from typing import Callable, Any
 from collections import defaultdict
 from utils.debug import debug
+from utils import custom_events
 import pygame
 import sys
-from utils import custom_events
 
 
 @singleton
@@ -41,7 +41,6 @@ class EventManager:
             debug.log(f"event_type {event_type} not found in subscriptions")
 
     def emit(self, event: Any):
-
         if event.type in self._subscriptions:
             for callback in self._subscriptions[event.type]:
                 try:
@@ -55,7 +54,7 @@ class EventManager:
                     callback["callable"](*args, **kwargs)
 
                 except Exception as e:
-                    debug.log(f"error in callback for {event.type}: {str(e)}")
+                    debug.log(f"(!) error in callback for {event.type}, {callback}: {str(e)}")
 
     def process_events(self):
         pygame.event.post(
