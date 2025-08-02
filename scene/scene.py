@@ -26,7 +26,7 @@ class ObjectIDManager:
 @singleton
 class Scene:
 
-    MAX_OBJECTS = 10000
+    MAX_OBJECTS = 100
 
     def __init__(self):
         self._camera_object = None

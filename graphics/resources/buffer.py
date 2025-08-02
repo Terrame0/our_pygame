@@ -55,7 +55,7 @@ class Buffer:
             )
         return np_array
 
-    # -- FINISH WRITING THIS
+    # -- TODO FINISH WRITING THIS
     # def wait_for_upload(self):
     #    while self.sync_objects:
     #        sync = self.sync_objects.pop(0)

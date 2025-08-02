@@ -47,23 +47,16 @@ class Camera(Module):
         EventManager.subscribe(custom_events.UPDATE, self.load_view_vector_to_gpu)
 
     def load_view_matrix_to_gpu(self):  # -- is called every frame
-        self.camera_data.view = ctypes.cast(
-            glm.value_ptr(self.view_matrix), ctypes.POINTER(ctypes.c_float * 16)
-        ).contents
+        self.camera_data.view = self.view_matrix
 
     def load_view_vector_to_gpu(self):  # -- is called every frame
-        self.camera_data.view_vector = ctypes.cast(
-            glm.value_ptr(glm.vec4(self.parent_obj.transform.R * glm.vec3(0, 0, -1), 1)),
-            ctypes.POINTER(ctypes.c_float * 4),
-        ).contents
+        self.camera_data.view_vector = glm.vec4(self.parent_obj.transform.R * glm.vec3(0, 0, -1), 1)
 
     def load_projection_matrix_to_gpu(self):  # -- is called on window size or fov change
-        self.camera_data.projection = ctypes.cast(
-            glm.value_ptr(self.projection_matrix), ctypes.POINTER(ctypes.c_float * 16)
-        ).contents
+        self.camera_data.projection = self.projection_matrix
 
     def load_window_size_to_gpu(self):  # -- is called on window size change
-        self.camera_data.window_size = Window.size
+        self.camera_data.window_size = glm.vec2(*Window.size)
 
     def _resize(self, event):
         self.aspect_ratio = event.size[0] / event.size[1]

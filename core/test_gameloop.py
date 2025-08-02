@@ -41,35 +41,38 @@ class TestGameloop:
             ],
         )
 
-        grid_size = glm.uvec3(2)
+        grid_size = glm.uvec3(1)
 
         for x in range(-grid_size.x, grid_size.x + 1):
             for y in range(-grid_size.y, grid_size.y + 1):
                 for z in range(-grid_size.z, grid_size.z + 1):
                     position = glm.vec3(x, y, z) * 3
                     SceneObject(
-                        name=f"test",
+                        name=f"test_transparent",
                         modules=[
                             Transform(position=position),
                             Renderer(
                                 mesh="plane.obj",
                                 texture=f"""plasma{"_red" if (x+y+z+round(Clock.now))%2==0 else ""}.png""",
+                                is_transparent = True,
                             ),
                         ],
                     )
 
-        SceneObject(
-            name=f"test",
+        a = SceneObject(
+            name=f"test_opaque",
             modules=[
                 Transform(position=position),
                 Renderer(
                     mesh="cube.obj",
                     texture=f"cat_tex.png",
+                    is_transparent = False,
                 ),
             ],
         )
 
         while True:
+            a.renderer.is_visible = True
             EventManager.process_events()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             GraphicsBackend.next_frame()

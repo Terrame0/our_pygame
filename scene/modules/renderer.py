@@ -24,38 +24,54 @@ class Renderer(Module):
         self.mesh_data = MeshLoader[mesh]
         self.texture_data = TextureLoader[texture]
 
-        # -- arrays mapped to gpu buffers
-        self.gpu_draw_commands = GeometryRenderer.draw_commands
-        self.gpu_object_data = GeometryRenderer.object_data
+        self.mapped_command_cstruct = draw_command_cstruct.from_address(
+            GeometryRenderer.shared_commands.ctypes.data
+            + ctypes.sizeof(draw_command_cstruct) * self.parent_obj.id
+        )
+
+        self.mapped_data_cstruct = object_data_cstruct.from_address(
+            GeometryRenderer.object_data.ctypes.data
+            + ctypes.sizeof(object_data_cstruct) * self.parent_obj.id
+        )
 
         # -- properties
         self.is_transparent = is_transparent
         self.is_UI = is_UI
         self.is_visible = is_visible
 
-        # -- resources
-        self.texture = texture
-
-        self.upload_draw_command()
+        self.upload_object_command()
         self.upload_texture_id()
 
+    def deinit(self):
+        self.mapped_command_cstruct.instance_count = 0
+
+    @property
+    def is_visible(self):
+        return self._is_visible
+
+    @is_visible.setter
+    def is_visible(self, value):
+        self.mapped_data_cstruct.is_visible = 1 if value else 0
+        self._is_visible = value
+
+    @property
+    def is_transparent(self):
+        return self._is_transparent
+
+    @is_transparent.setter
+    def is_transparent(self, value):
+        self.mapped_data_cstruct.is_transparent = 1 if value else 0
+        self._is_transparent = value
+
     def upload_model_matrix(self):
-        ctypes.memmove(
-            self.gpu_object_data.ctypes.data
-            + ctypes.sizeof(object_data_cstruct) * self.parent_obj.id,
-            glm.value_ptr(self.parent_obj.transform.model_matrix),
-            glm.sizeof(self.parent_obj.transform.model_matrix),
-        )
+        self.mapped_data_cstruct.model = self.parent_obj.transform.model_matrix
 
     def upload_texture_id(self):
-        self.gpu_object_data[self.parent_obj.id]["texture_id"] = self.texture_data["id"]
+        self.mapped_data_cstruct.texture_id = self.texture_data["id"]
 
-    def upload_draw_command(self):
-        command = draw_command_cstruct(
-            count=self.mesh_data["size"],
-            instance_count=1 if self.is_visible else 0,
-            first_index=self.mesh_data["index_offset"],
-            base_vertex=self.mesh_data["vertex_offset"],
-            base_instance=self.parent_obj.id,
-        )
-        command.assign_to_element(self.gpu_draw_commands, self.parent_obj.id)
+    def upload_object_command(self):
+        self.mapped_command_cstruct.count = self.mesh_data["size"]
+        self.mapped_command_cstruct.instance_count = 1
+        self.mapped_command_cstruct.first_index = self.mesh_data["index_offset"]
+        self.mapped_command_cstruct.base_vertex = self.mesh_data["vertex_offset"]
+        self.mapped_command_cstruct.base_instance = self.parent_obj.id

@@ -1,9 +1,50 @@
 #version 430
-layout(local_size_x = 8, local_size_y = 8) in;
+layout(local_size_x = 256) in;
+
+struct object_data_struct{
+    mat4 model_matrix;
+    uint texture_id;
+    uint is_visible;
+    uint is_transparent;
+};
+
+struct command_struct{
+    uint count;
+    uint instance_count;
+    uint first_index;
+    uint base_vertex;
+    uint base_instance;
+};
 
 layout(binding=0) uniform atomic_uint opaque_object_counter;
 
+layout(binding=1) uniform atomic_uint transparent_object_counter;
+
+layout(std430, binding=0) buffer object_data_buffer {
+    object_data_struct object_data[];
+};
+
+layout(std430, binding=1) buffer shared_command_buffer {
+    command_struct command_buffer_in[];
+};
+
+layout(std430, binding=2) buffer opaque_object_command_buffer {
+    command_struct opaque_command_buffer[];
+};
+
+layout(std430, binding=3) buffer transparent_object_command_buffer {
+    command_struct transparent_command_buffer[];
+};
+
+uint inv_id = uint(gl_GlobalInvocationID.x);
 
 void main() {
-    ivec2 inv_id = ivec2(gl_GlobalInvocationID.xy);
+    if(object_data[inv_id].is_visible != 0){
+        if(object_data[inv_id].is_transparent == 0) {
+            opaque_command_buffer[atomicCounterIncrement(opaque_object_counter)] = command_buffer_in[inv_id];
+        }
+        else {
+            transparent_command_buffer[atomicCounterIncrement(transparent_object_counter)] = command_buffer_in[inv_id];
+        }
+    }
 }

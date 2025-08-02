@@ -1,14 +1,15 @@
+from __future__ import annotations
 import ctypes
 from pyglm import glm
-from utils.flatten import flatten
 import numpy as np
 
 
-def create_struct(align=True, **field_defs):
+def create_struct(do_align=True, **field_defs):
 
+    # -- ALL MUST BE GLM TYPES!!!
     TYPE_MAP = {
         # -- floats
-        glm.float32: (ctypes.c_float * 1, 4),
+        glm.vec1: (ctypes.c_float * 1, 4),
         glm.vec2: (ctypes.c_float * 2, 8),
         glm.vec3: (ctypes.c_float * 3, 16),
         glm.vec4: (ctypes.c_float * 4, 16),
@@ -17,12 +18,12 @@ def create_struct(align=True, **field_defs):
         glm.mat3: (ctypes.c_float * 12, 16),
         glm.mat4: (ctypes.c_float * 16, 16),
         # -- integers
-        glm.int32: (ctypes.c_int32 * 1, 4),
+        glm.ivec1: (ctypes.c_int32 * 1, 4),
         glm.ivec2: (ctypes.c_int32 * 2, 8),
         glm.ivec3: (ctypes.c_int32 * 3, 16),
         glm.ivec4: (ctypes.c_int32 * 4, 16),
         # -- unsigned integers
-        glm.uint32: (ctypes.c_uint32 * 1, 4),
+        glm.uvec1: (ctypes.c_uint32 * 1, 4),
         glm.uvec2: (ctypes.c_uint32 * 2, 8),
         glm.uvec3: (ctypes.c_uint32 * 3, 16),
         glm.uvec4: (ctypes.c_uint32 * 4, 16),
@@ -30,41 +31,52 @@ def create_struct(align=True, **field_defs):
         glm.quat: (ctypes.c_float * 4, 16),
     }
 
-    fields = []
+    # -- sanity check (all are, indeed, glm types)
+    for entry in TYPE_MAP.keys():
+        try:
+            glm.value_ptr(entry())
+        except:
+            raise Exception(f"(!) {entry} is not a glm type!")
+
+    FIELD_DICT = {}  # -- {name: (ctypes type, glm type)}
+    FIELD_OFFSETS = {}  # -- {name: offset}
+
     current_offset = 0
     padding_count = 0
     max_alignment = 1
 
-    for name, field_type in field_defs.items():
+    for name, glm_field_type in field_defs.items():
         try:
-            ctype, alignment = TYPE_MAP[field_type]
+            ctype, alignment = TYPE_MAP[glm_field_type]
         except KeyError:
-            raise ValueError(f"(!) unsupported type: {field_type.__name__}")
+            raise ValueError(f"(!) unsupported type: {glm_field_type.__name__}")
 
-        if align:
+        if do_align:
             # -- required padding calculation
             padding_needed = (-current_offset) % alignment
             if padding_needed > 0:
                 pad_name = f"pad_{padding_count}"
-                fields.append((pad_name, ctypes.c_byte * padding_needed))
+                FIELD_DICT[pad_name] = (ctypes.c_byte * padding_needed, None)
                 padding_count += 1
                 current_offset += padding_needed
 
         # -- field initialization
-        fields.append((name, ctype))
+        FIELD_DICT[name] = (ctype, glm_field_type)
+        FIELD_OFFSETS[name] = current_offset
         current_offset += ctypes.sizeof(ctype)
         max_alignment = max(max_alignment, alignment)
 
-    if align:
+    if do_align:
         # -- final padding (to align the structure in an array)
         struct_padding = (-current_offset) % max_alignment
         if struct_padding > 0:
             pad_name = f"pad_{padding_count}"
-            fields.append((pad_name, ctypes.c_byte * struct_padding))
+            FIELD_DICT[pad_name] = (ctypes.c_byte * struct_padding, None)
 
     # -- ctypes struct declaration
     class GLMStruct(ctypes.Structure):
-        _fields_ = fields
+        # -- leaving only ctypes
+        _fields_ = [(name, types[0]) for name, types in FIELD_DICT.items()]
         _pack_ = 1  # -- to ensure tight packing with manual alignment
 
         # -- memcopies the underlying object data to an address of an element of a numpy array
@@ -76,16 +88,42 @@ def create_struct(align=True, **field_defs):
             )
             ctypes.memmove(element_address, ctypes.addressof(self), ctypes.sizeof(self))
 
+        def __setattr__(self, name, value):
+            if name in FIELD_DICT:  # -- checks if a name is a field
+                glm_type = FIELD_DICT[name][1]
+                if type(value) is not glm_type:  # -- if types do not match
+                    try:
+                        # -- tries to cast value into the field's type
+                        value = glm_type(value)
+                    except:
+                        # -- if fails to do so, throws an error
+                        raise TypeError(f"(!) can't convert {type(value)} into {glm_type}")
+                # -- if all went well, memcopies data of the glm type into the structure with the attribute's offset
+                ctypes.memmove(
+                    ctypes.addressof(self) + FIELD_OFFSETS[name],
+                    glm.value_ptr(value),
+                    glm.sizeof(value),
+                )
+            else:
+                super().__setattr__(name, value)
+
+        @classmethod
+        def from_address(cls, address) -> GLMStruct:
+            struct_ptr = ctypes.POINTER(cls)
+            ptr = ctypes.cast(
+                address,
+                struct_ptr,
+            )
+            return ptr.contents
+
         def __init__(self, *args, **kwargs):
             super().__init__()
             # -- initialize with values if provided
             for i, (name, field_type) in enumerate(field_defs.items()):
                 if i < len(args):
-                    # -- flattens the type to a list, unrolls it, converts it to a ctypes array of the mapped type and sets the attribute
-                    setattr(self, name, TYPE_MAP[field_type][0](*list(flatten(args[i]))))
+                    setattr(self, name, args[i])
                 elif name in kwargs:
-                    # -- does the same but for kwargs
-                    setattr(self, name, TYPE_MAP[field_type][0](*list(flatten(kwargs[name]))))
+                    setattr(self, name, kwargs[name])
 
     GLMStruct.size = ctypes.sizeof(GLMStruct)
 

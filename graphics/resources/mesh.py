@@ -14,7 +14,7 @@ class Mesh:
         position=glm.vec3,
         texcoord=glm.vec2,
         normal=glm.vec3,
-        align=False,
+        do_align=False,
     )
 
     def __init__(self, vertices, indices):
