@@ -19,9 +19,7 @@ class Collider(Module):
     ) -> Tuple[float, glm.vec3]:
 
         current_distance = glm.distance(self.parent_obj.transform.position, start)
-        minimal_distance = self.parent_obj.physics_body.collision_radius + glm.distance(
-            start, end
-        )
+        minimal_distance = self.parent_obj.physics_body.collision_radius + glm.distance(start, end)
         # -- if collision cannot occur
         # if(current_distance <= minimal_distance):
         #    return None, glm.vec3(0)

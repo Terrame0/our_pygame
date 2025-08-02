@@ -1,13 +1,12 @@
 from utils import custom_events
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.scene_object import SceneObject
 from scene.modules.module_base import Module
 
 
 class Skybox(Module):
-    requires = [Transform, Mesh, Renderer]
+    requires = [Transform, Renderer]
 
     def __init_module__(self, player: SceneObject):
         self.player = player

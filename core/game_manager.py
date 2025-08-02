@@ -33,9 +33,7 @@ class GameManager:
 
         self.score = 0
 
-        EventManager().subscribe(custom_events.UPDATE, self.update)
+        EventManager.subscribe(custom_events.UPDATE, self.update)
 
     def update(self):
-        pygame.display.set_caption(
-            f"HEALTH: {self.player.health.value} SCORE: {self.score}"
-        )
+        pygame.display.set_caption(f"HEALTH: {self.player.health.value} SCORE: {self.score}")

@@ -1,7 +1,6 @@
 from __future__ import annotations
 from utils import custom_events
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.scene_object import SceneObject
 from scene.scene import Scene
@@ -14,7 +13,7 @@ from typing import List
 
 
 class Projectile(Module):
-    requires = [Transform, Mesh, Renderer, PhysicsBody]
+    requires = [Transform, Renderer, PhysicsBody]
 
     def __init_module__(
         self,
@@ -22,12 +21,10 @@ class Projectile(Module):
         parent_velocity: glm.vec3 = glm.vec3(0),
         exclude_from_collision: List[SceneObject] = [],
     ):
-        self.parent_obj.physics_body.exclude_from_collision_check(
-            exclude_from_collision
-        )
+        self.parent_obj.physics_body.exclude_from_collision_check(exclude_from_collision)
 
         self.parent_obj.renderer.is_visible = False
-        self.creation_time = Clock().now
+        self.creation_time = Clock.now
         self.speed = 100
         self.parent_obj.physics_body.max_velocity = 100
 
@@ -36,8 +33,7 @@ class Projectile(Module):
         )
 
         self.parent_obj.transform.position = (
-            progenitor.transform.position.xyz
-            + progenitor.transform.R * glm.vec3(0, 0, 0)
+            progenitor.transform.position.xyz + progenitor.transform.R * glm.vec3(0, 0, 0)
         )
 
         self.parent_obj.transform.scale = glm.vec3(0.5)
@@ -50,12 +46,11 @@ class Projectile(Module):
 
     def collide_with_target(self, obj: SceneObject):
         if hasattr(obj, "health"):
-            print(obj.health.value)
             obj.health.value -= 1
             self.parent_obj.destroy()
 
     def handle_lifetime(self):
-        is_alive_for = Clock().now - self.creation_time
+        is_alive_for = Clock.now - self.creation_time
         if is_alive_for > 0.01 and not self.parent_obj.renderer.is_visible:
             self.parent_obj.renderer.is_visible = True
             if hasattr(self.parent_obj, "trail_emitter"):
@@ -64,6 +59,4 @@ class Projectile(Module):
             self.parent_obj.destroy()
 
     def update(self):
-        self.parent_obj.transform.quaternion = (
-            Scene().camera_object.transform.quaternion
-        )
+        self.parent_obj.transform.quaternion = Scene.camera_object.transform.quaternion

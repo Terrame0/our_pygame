@@ -12,7 +12,11 @@ class ModuleMeta(ABCMeta):
     def __new__(cls, name, bases, namespace):
         namespace["name_snake"] = pascal_to_snake(name)
         namespace["name_pascal"] = name
+        namespace["__str__"] = cls.__str__
         return super().__new__(cls, name, bases, namespace)
+
+    def __str__(self):
+        return f"[{self.name_pascal}]"
 
 
 class Module(ABC, metaclass=ModuleMeta):
@@ -56,12 +60,9 @@ class Module(ABC, metaclass=ModuleMeta):
             parent_obj.modules[self.name_snake] = self  # -- adding self to modules
             self.__init_module__(*self._args[0], **self._args[1])
         else:
-            debug.log(
-                f"(*) [{self.name_pascal}] module is already attached to {parent_obj}!"
-            )
+            debug.log(f"(*) [{self.name_pascal}] module is already attached to {parent_obj}!")
 
     def __init__(self, *args, **kwargs):
-        debug.log(f"instantiating [{self.name_pascal}] module")
         self._event_subscriptions = []
         self._args = (args, kwargs)  # -- storing arguments for lazy construction
 
@@ -72,9 +73,9 @@ class Module(ABC, metaclass=ModuleMeta):
         *args: Any,
         **kwargs: Any,
     ):
-        EventManager().subscribe(event_type, callback, *args, **kwargs)
+        EventManager.subscribe(event_type, callback, *args, **kwargs)
         self._event_subscriptions.append((event_type, callback))
 
     def deinit_base(self):
         for subscription in self._event_subscriptions:
-            EventManager().unsubscribe(subscription[0], subscription[1])
+            EventManager.unsubscribe(subscription[0], subscription[1])

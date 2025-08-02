@@ -1,8 +1,41 @@
 import math
 from pyglm import glm
 from scene.modules.module_base import Module
+from utils import custom_events
+
 
 class Transform(Module):
+
+    def __init_module__(
+        self,
+        position: glm.vec3 = glm.vec3(0, 0, 0),
+        rotation: glm.vec3 = glm.vec3(0, 0, 0),
+        scale: glm.vec3 = glm.vec3(1, 1, 1),
+    ):
+        self.T = glm.mat4()
+        self.S = glm.mat4()
+        self.R = glm.mat4()
+
+        self.M = None
+
+        # -- this flag is used by the renderer to check if the model matrix
+        # -- has changed and needs to be reuploaded to the gpu
+        # -- (this flag is not reset in the model matrix getter)
+        self.needs_update = True
+
+        self.position = position
+        self.rotation = rotation
+        self.scale = scale
+
+        self.subscribe_to_event(custom_events.UPDATE, self.update)
+
+    # -- gets called every frame to update transform-dependent modules
+    def update(self):
+        if self.needs_update:
+            if self.parent_obj.has_module("renderer"):
+                self.parent_obj.renderer.upload_model_matrix()
+            self.needs_update = False
+
     # -- model matrix property
     @property
     def model_matrix(self):
@@ -21,6 +54,7 @@ class Transform(Module):
         self.T[3, 1] = v.y
         self.T[3, 2] = v.z
         self.M = None
+        self.needs_update = True
 
     # -- quaternion property
     @property
@@ -32,6 +66,7 @@ class Transform(Module):
         self.rotation_quaternion = q
         self.R = glm.mat4_cast(q)
         self.M = None
+        self.needs_update = True
 
     # -- rotation property (axis angles)
     @property
@@ -56,6 +91,7 @@ class Transform(Module):
         qy = glm.quat(cy, 0, sy, 0)
         self.quaternion = qy * qx * qz
         self.M = None
+        self.needs_update = True
 
     # -- scale property
     @property
@@ -68,19 +104,4 @@ class Transform(Module):
         self.S[1, 1] = v.y
         self.S[2, 2] = v.z
         self.M = None
-
-    def __init_module__(
-        self,
-        position: glm.vec3 = glm.vec3(0, 0, 0),
-        rotation: glm.vec3 = glm.vec3(0, 0, 0),
-        scale: glm.vec3 = glm.vec3(1, 1, 1),
-    ):
-        self.T = glm.mat4()
-        self.S = glm.mat4()
-        self.R = glm.mat4()
-
-        self.M = None
-
-        self.position = position
-        self.rotation = rotation
-        self.scale = scale
+        self.needs_update = True

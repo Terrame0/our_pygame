@@ -19,9 +19,7 @@ class EventManager:
         *args: Any,
         **kwargs: Any,
     ):
-        self._subscriptions[event_type].append(
-            {"callable": callback, "data": (args, kwargs)}
-        )
+        self._subscriptions[event_type].append({"callable": callback, "data": (args, kwargs)})
         debug.log(f"subscribed callback to {event_type}")
 
     def unsubscribe(self, event_type: Any, callback: Callable):
@@ -54,7 +52,7 @@ class EventManager:
                     callback["callable"](*args, **kwargs)
 
                 except Exception as e:
-                    debug.log(f"(!) error in callback for {event.type}, {callback}: {str(e)}")
+                    raise RuntimeError(f"(!) error in callback for {event.type}, {callback}: {str(e)}")
 
     def process_events(self):
         pygame.event.post(

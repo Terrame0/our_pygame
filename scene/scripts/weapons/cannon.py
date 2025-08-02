@@ -1,11 +1,10 @@
 from typing import List
 from utils import custom_events
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.modules.physics_body import PhysicsBody
 from scene.scene_object import SceneObject
-from graphics.texture import Texture
+from graphics.resources.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
 import pygame
@@ -20,15 +19,15 @@ class Cannon(Module):
 
     def __init_module__(self):
         self.reload_time = 0.5
-        self.last_shot = Clock().now - self.reload_time
+        self.last_shot = Clock.now - self.reload_time
 
         self.cannon_crosshair = SceneObject(
             name="cannon_crosshair",
             modules=[
                 Transform(),
-                Mesh(path="assets/meshes/plane.obj"),
                 Renderer(
-                    texture=Texture.load_from_file("assets/textures/gun_crosshair.png"),
+                    mesh="plane.obj",
+                    texture="gun_crosshair.png",
                     is_transparent=True,
                     is_UI=True,
                 ),
@@ -38,22 +37,16 @@ class Cannon(Module):
         self.subscribe_to_event(custom_events.UPDATE, self.update_crosshair)
 
     def shoot(self, owner: SceneObject):
-        if (
-            pygame.mouse.get_pressed()[0]
-            and Clock().now - self.last_shot > self.reload_time
-        ):
-            self.last_shot = Clock().now
-
-            debug.log(self.parent_obj.physics_body.velocity)
-
+        if pygame.mouse.get_pressed()[0] and Clock.now - self.last_shot > self.reload_time:
+            self.last_shot = Clock.now
             projectile = SceneObject(
                 name="projectile",
                 modules=[
                     Transform,
-                    Mesh(path="assets/meshes/plane.obj"),
                     PhysicsBody(collision_radius=0.3),
                     Renderer(
-                        texture=Texture.load_from_file("assets/textures/plasma.png")
+                        mesh="plane.obj",
+                        texture="plasma.png",
                     ),
                     Projectile(
                         progenitor=self.parent_obj,
@@ -67,6 +60,5 @@ class Cannon(Module):
 
     def update_crosshair(self):
         self.cannon_crosshair.transform.position = (
-            self.parent_obj.transform.position
-            + self.parent_obj.transform.R * glm.vec3(0, 0, -100)
+            self.parent_obj.transform.position + self.parent_obj.transform.R * glm.vec3(0, 0, -100)
         )

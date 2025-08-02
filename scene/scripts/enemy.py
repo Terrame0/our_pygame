@@ -1,6 +1,5 @@
 from utils import custom_events
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.modules.physics_body import PhysicsBody
 from scene.scene_object import SceneObject
@@ -9,7 +8,7 @@ from scene.modules.module_base import Module
 from core.clock import Clock
 from scene.scripts.leading_reticle import LeadingReticle
 from scene.scripts.projectile import Projectile
-from graphics.texture import Texture
+from graphics.resources.texture import Texture
 from scene.scripts.health import Health
 from scene.scripts.trail_emitter import TrailEmitter
 from core.game_manager import GameManager
@@ -18,7 +17,7 @@ from utils.path_resolver import resolve_path
 
 
 class Enemy(Module):
-    requires = [Transform, Mesh, Renderer, PhysicsBody, Health]
+    requires = [Transform, Renderer, PhysicsBody, Health]
 
     def __init_module__(self, player: SceneObject):
         self.shoot_sound = pygame.mixer.Sound(resolve_path("assets/sounds/shoot.mp3"))
@@ -26,35 +25,31 @@ class Enemy(Module):
 
         self.player = player
         self.target_vector = None
-        self.last_shot = Clock().now
+        self.last_shot = Clock.now
         self.reload_time = 3
         self.subscribe_to_event(custom_events.UPDATE, self.check_health)
-        self.subscribe_to_event(custom_events.UPDATE, self.update_heading)
-        self.subscribe_to_event(custom_events.UPDATE, self.shoot)
+        # self.subscribe_to_event(custom_events.UPDATE, self.update_heading)
+        # self.subscribe_to_event(custom_events.UPDATE, self.shoot)
 
     def deinit(self):
-        GameManager().enemies_alive -= 1
+        GameManager.enemies_alive -= 1
 
     def shoot(self):
-        if Clock().now - self.last_shot > self.reload_time:
+        if Clock.now - self.last_shot > self.reload_time:
             self.shoot_sound.set_volume(
                 1
-                / glm.distance(
-                    self.player.transform.position, self.parent_obj.transform.position
-                )
+                / glm.distance(self.player.transform.position, self.parent_obj.transform.position)
                 * 10
             )
             self.shoot_sound.play()
-            self.last_shot = Clock().now
+            self.last_shot = Clock.now
             projectile = SceneObject(
                 name="projectile",
                 modules=[
                     Transform(),
                     Mesh(path="assets/meshes/plane.obj"),
                     PhysicsBody(collision_radius=0.3),
-                    Renderer(
-                        texture=Texture.load_from_file("assets/textures/plasma_red.png")
-                    ),
+                    Renderer(texture=Texture.load_from_file("assets/textures/plasma_red.png")),
                     Projectile(
                         progenitor=self.parent_obj,
                         parent_velocity=self.parent_obj.physics_body.velocity,
@@ -68,13 +63,11 @@ class Enemy(Module):
         if self.parent_obj.health.value <= 0:
             self.hit_sound.set_volume(
                 1
-                / glm.distance(
-                    self.player.transform.position, self.parent_obj.transform.position
-                )
+                / glm.distance(self.player.transform.position, self.parent_obj.transform.position)
                 * 5
             )
             self.hit_sound.play()
-            GameManager().score += 1
+            GameManager.score += 1
             self.parent_obj.destroy()
 
     def update_heading(self):
@@ -98,21 +91,19 @@ class Enemy(Module):
             )
         )
 
-        # self.parent_obj.transform.quaternion = self.target_rotation_quaternion
+        self.parent_obj.transform.quaternion = self.target_rotation_quaternion
 
         # -- interpolating between current and target rotation
         self.parent_obj.transform.quaternion = glm.slerp(
             self.parent_obj.transform.quaternion,
             self.target_rotation_quaternion,
-            1 - Clock().delta_time * 2,
+            1 - Clock.delta_time * 2,
         )
 
-        self.target_vector = (
-            self.player.transform.position - self.parent_obj.transform.position
-        )
+        self.target_vector = self.player.transform.position - self.parent_obj.transform.position
 
         accel = glm.length(self.target_vector)
 
         self.parent_obj.physics_body.velocity += (
-            self.player.transform.R * glm.vec3(0, 0, accel) * Clock().delta_time
+            self.player.transform.R * glm.vec3(0, 0, accel) * Clock.delta_time
         )

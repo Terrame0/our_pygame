@@ -29,7 +29,7 @@ void main() {
         gl_Position = vec4(2,0,0,1);
     }
     else{
-        vec4 v_pos = vec4(quad_vertex.xyz,1);
+        vec4 v_pos = vec4(quad_vertex.xyz/5,1);
         gl_Position = projection*view*(model*v_pos+particle_position);
         float lifetime_fade = cos(clamp(
             0.5 - particle_lifetime,0,1

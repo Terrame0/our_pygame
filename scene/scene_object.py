@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 from scene.modules.module_base import Module
 from typing import Dict, Type, List
 from utils.debug import debug
@@ -7,14 +7,20 @@ from scene.scene import Scene
 
 class SceneObject:
     def __init__(self, modules: List[Module] = [], name: str = "default"):
+        self.id = Scene.add_object(self)
         self.name = name
-        debug.log(f"consturcting {self}")
-
+        debug.log(
+            f"""constructing {"a" if modules else "an empty"} {self} {"with:" if modules else ""}"""
+        )
         self.modules: Dict[str, Module] = {}
-        for module in modules:
-            self.add_module(module)
-
-        Scene().add_objects(self)
+        if modules:
+            debug.indent()
+            for module in modules:
+                debug.log(module)
+                debug.disable
+                self.add_module(module)
+                debug.enable
+            debug.dedent()
 
     def __getattr__(self, module_name: str):
         if module_name in self.modules:
@@ -23,7 +29,7 @@ class SceneObject:
             raise AttributeError(f"(!) no [{module_name}] module attached to {self}")
 
     def __repr__(self):
-        return f"[{self.__class__.__name__}] ({self.name})"
+        return f"[{self.__class__.__name__}] [{self.id}] ({self.name}) "
 
     def add_module(self, module: Module | Type[Module]) -> None:
         try:
@@ -47,8 +53,8 @@ class SceneObject:
         return module_name in self.modules
 
     def destroy(self):
-        Scene().remove_objects(self)
+        debug.log(f"destroying {self}")
+        Scene.remove_object(self)
         modules_to_remove = list(self.modules.values())  # -- creating a copy
         for module in modules_to_remove:
             self.remove_module(module)
-        debug.log(f"destroyed {self}")

@@ -2,13 +2,12 @@ from typing import List
 from scene.modules.collider import PhysicsBody
 from utils import custom_events
 from scene.modules.transform import Transform
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from scene.scripts.weapons.cannon import Cannon
 from scene.scripts.leading_reticle import LeadingReticle
 from scene.scripts.target_selector import TargetSelector
 from scene.scene_object import SceneObject
-from graphics.texture import Texture
+from graphics.resources.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
 from core.clock import Clock
@@ -28,8 +27,10 @@ class WeaponController(Module):
             modules=[
                 Transform(),
                 PhysicsBody(),
-                Mesh(path="assets/meshes/gun.obj"),
-                Renderer(texture=Texture.load_from_file("assets/textures/gun.png")),
+                Renderer(
+                    mesh="gun.obj",
+                    texture="gun.png",
+                ),
                 Cannon(),
             ],
         )
@@ -46,8 +47,7 @@ class WeaponController(Module):
     def update(self):
         for weapon in self.weapons:
             weapon.transform.position = (
-                self.owner.transform.position
-                + self.owner.transform.R * glm.vec3(1, -0.5, -1.5)
+                self.owner.transform.position + self.owner.transform.R * glm.vec3(1, -0.5, -1.5)
             )
 
             if (
@@ -84,5 +84,5 @@ class WeaponController(Module):
             weapon.transform.quaternion = glm.slerp(
                 weapon.transform.quaternion,
                 target_rotation_quaternion,
-                Clock().delta_time * 10,
+                Clock.delta_time * 10,
             )

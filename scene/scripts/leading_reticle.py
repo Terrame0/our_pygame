@@ -2,14 +2,13 @@ from scene.scripts.target_selector import TargetSelector
 from utils import custom_events
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
 from pyglm import glm
 from scene.modules.module_base import Module
 
 
 class LeadingReticle(Module):
-    requires = [Transform, Mesh, Renderer, TargetSelector]
+    requires = [Transform, Renderer, TargetSelector]
 
     def __init_module__(self, player: SceneObject):
         self.target_selector = self.parent_obj.target_selector

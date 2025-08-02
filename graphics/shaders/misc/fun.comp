@@ -1,0 +1,51 @@
+#version 460
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
+
+struct object_data_struct{
+    mat4 model_matrix;
+    uint texture_id;
+};
+
+layout(std430, binding=0) buffer object_data_buffer {
+    object_data_struct object_data[];
+};
+
+uniform uvec3 grid_size;
+uniform uint object_offset;
+uniform float time;
+
+float pi = acos(0)*2;
+
+mat4 rotationMatrix(int axis_id, float angle) {
+    vec3 axis = vec3(0);
+    axis[axis_id] = 1;
+    angle = angle / 180 * pi;
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+    
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+mat4 full_rotation(vec3 rotation){
+    return rotationMatrix(2,rotation.z) * rotationMatrix(0,rotation.x) * rotationMatrix(1,rotation.y);
+}
+
+void main() {
+    uint index = gl_GlobalInvocationID.z * (grid_size.x * grid_size.y)
+               + gl_GlobalInvocationID.y * grid_size.x
+               + gl_GlobalInvocationID.x + object_offset;
+
+    mat4 old_matrix = object_data[index].model_matrix;
+
+    mat4 translation = mat4(2);
+    translation[3][0] = object_data[index].model_matrix[3][0];
+    translation[3][1] = object_data[index].model_matrix[3][1];
+    translation[3][2] = object_data[index].model_matrix[3][2];
+    vec3 position = vec3(translation[3][0],translation[3][1],translation[3][2])*2;
+
+    object_data[index].model_matrix = translation * full_rotation(position+time*30);
+}

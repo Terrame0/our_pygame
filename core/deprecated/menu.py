@@ -15,6 +15,7 @@ BLACK = (0, 0, 0)
 FONT = pygame.font.Font("Elfboyclassic.ttf", 30)
 TITLE_FONT = pygame.font.Font("BlockwayPixies.ttf", 60)
 
+
 class Button:
     def __init__(self, text, pos, callback):
         self.text = text
@@ -37,6 +38,7 @@ class Button:
 
     def handle_hover(self, mouse_pos):
         self.hovered = self.rect.collidepoint(mouse_pos)
+
 
 class Dropdown:
     def __init__(self, text, pos, options, on_select):
@@ -77,6 +79,7 @@ class Dropdown:
                     return True
         return False
 
+
 class VolumeSlider:
     def __init__(self, pos, size):
         self.rect = pygame.Rect(pos, size)
@@ -97,10 +100,11 @@ class VolumeSlider:
             self.value = max(0.0, min(1.0, rel_x / self.rect.width))
             pygame.mixer.music.set_volume(self.value)
 
+
 class GameMenu:
     def __init__(self, screen):
         self.screen = screen
-        self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock
         self.running = True
         self.in_settings = False
         self.sound_on = True
@@ -119,36 +123,84 @@ class GameMenu:
         self.button_y_ratios = [0.25, 0.3667, 0.4833]
         self.settings_y_ratios = [0.1333, 0.2333, 0.9]
         self.slider_y_ratio = 0.39
-        self.dropdown_y_ratio = 0.45 
+        self.dropdown_y_ratio = 0.45
 
         self.volume_slider = VolumeSlider(
-            (int(self.button_x_ratio * self.resolution[0]), int(self.slider_y_ratio * self.resolution[1])),
-            (260, 20)
+            (
+                int(self.button_x_ratio * self.resolution[0]),
+                int(self.slider_y_ratio * self.resolution[1]),
+            ),
+            (260, 20),
         )
         self.volume_slider.value = self.volume
 
         self.main_buttons = [
-            Button("Play", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[0] * self.resolution[1])), self.play_game),
-            Button("Settings", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[1] * self.resolution[1])), self.open_settings),
-            Button("Exit", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[2] * self.resolution[1])), self.exit_game)
+            Button(
+                "Play",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[0] * self.resolution[1]),
+                ),
+                self.play_game,
+            ),
+            Button(
+                "Settings",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[1] * self.resolution[1]),
+                ),
+                self.open_settings,
+            ),
+            Button(
+                "Exit",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[2] * self.resolution[1]),
+                ),
+                self.exit_game,
+            ),
         ]
 
         self.settings_buttons = [
-            Button("Sound: On", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[0] * self.resolution[1])), self.toggle_sound),
-            Button("Fullscreen: Off", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[1] * self.resolution[1])), self.toggle_fullscreen),
-            Button("Back", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[2] * self.resolution[1])), self.close_settings)
+            Button(
+                "Sound: On",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[0] * self.resolution[1]),
+                ),
+                self.toggle_sound,
+            ),
+            Button(
+                "Fullscreen: Off",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[1] * self.resolution[1]),
+                ),
+                self.toggle_fullscreen,
+            ),
+            Button(
+                "Back",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[2] * self.resolution[1]),
+                ),
+                self.close_settings,
+            ),
         ]
 
         self.resolution_dropdown = Dropdown(
             "Resolution",
-            (int(self.button_x_ratio * self.resolution[0]), int(self.dropdown_y_ratio * self.resolution[1])),
+            (
+                int(self.button_x_ratio * self.resolution[0]),
+                int(self.dropdown_y_ratio * self.resolution[1]),
+            ),
             [
                 ("640x480", (640, 480)),
                 ("1280x720", (1280, 720)),
                 ("1920x1080", (1920, 1080)),
                 ("2560x1440", (2560, 1440)),
             ],
-            self.set_resolution
+            self.set_resolution,
         )
 
     def scale_background(self, image, screen_size):
@@ -158,7 +210,10 @@ class GameMenu:
         new_size = (int(img_width * scale), int(img_height * scale))
         scaled_image = pygame.transform.smoothscale(image, new_size)
         bg = pygame.Surface(screen_size)
-        bg.blit(scaled_image, scaled_image.get_rect(center=(screen_width // 2, screen_height // 2)))
+        bg.blit(
+            scaled_image,
+            scaled_image.get_rect(center=(screen_width // 2, screen_height // 2)),
+        )
         return bg
 
     def play_game(self):
@@ -192,33 +247,81 @@ class GameMenu:
         self.screen = pygame.display.set_mode(self.resolution, flags)
 
         self.volume_slider = VolumeSlider(
-            (int(self.button_x_ratio * self.resolution[0]), int(self.slider_y_ratio * self.resolution[1])),
-            (260, 20)
+            (
+                int(self.button_x_ratio * self.resolution[0]),
+                int(self.slider_y_ratio * self.resolution[1]),
+            ),
+            (260, 20),
         )
         self.volume_slider.value = self.volume
 
         self.main_buttons = [
-            Button("Play", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[0] * self.resolution[1])), self.play_game),
-            Button("Settings", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[1] * self.resolution[1])), self.open_settings),
-            Button("Exit", (int(self.button_x_ratio * self.resolution[0]), int(self.button_y_ratios[2] * self.resolution[1])), self.exit_game)
+            Button(
+                "Play",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[0] * self.resolution[1]),
+                ),
+                self.play_game,
+            ),
+            Button(
+                "Settings",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[1] * self.resolution[1]),
+                ),
+                self.open_settings,
+            ),
+            Button(
+                "Exit",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.button_y_ratios[2] * self.resolution[1]),
+                ),
+                self.exit_game,
+            ),
         ]
 
         self.settings_buttons = [
-            Button("Sound: On", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[0] * self.resolution[1])), self.toggle_sound),
-            Button("Fullscreen: Off", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[1] * self.resolution[1])), self.toggle_fullscreen),
-            Button("Back", (int(self.button_x_ratio * self.resolution[0]), int(self.settings_y_ratios[2] * self.resolution[1])), self.close_settings)
+            Button(
+                "Sound: On",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[0] * self.resolution[1]),
+                ),
+                self.toggle_sound,
+            ),
+            Button(
+                "Fullscreen: Off",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[1] * self.resolution[1]),
+                ),
+                self.toggle_fullscreen,
+            ),
+            Button(
+                "Back",
+                (
+                    int(self.button_x_ratio * self.resolution[0]),
+                    int(self.settings_y_ratios[2] * self.resolution[1]),
+                ),
+                self.close_settings,
+            ),
         ]
 
         self.resolution_dropdown = Dropdown(
             "Resolution",
-            (int(self.button_x_ratio * self.resolution[0]), int(self.dropdown_y_ratio * self.resolution[1])),
+            (
+                int(self.button_x_ratio * self.resolution[0]),
+                int(self.dropdown_y_ratio * self.resolution[1]),
+            ),
             [
                 ("640x480", (640, 480)),
                 ("1280x720", (1280, 720)),
                 ("1920x1080", (1920, 1080)),
                 ("2560x1440", (2560, 1440)),
             ],
-            self.set_resolution
+            self.set_resolution,
         )
 
         self.background = self.scale_background(self.background_image, self.resolution)
@@ -234,9 +337,16 @@ class GameMenu:
             title_text = TITLE_FONT.render("OnemanNoman", True, WHITE)
             for offset in [(2, 2), (-2, -2), (2, -2), (-2, 2)]:
                 glow = TITLE_FONT.render("OnemanNoman", True, LIGHT_BLUE)
-                self.screen.blit(glow, (self.resolution[0] // 2 - title_text.get_width() // 2 + offset[0],
-                                        50 + offset[1]))
-            self.screen.blit(title_text, (self.resolution[0] // 2 - title_text.get_width() // 2, 50))
+                self.screen.blit(
+                    glow,
+                    (
+                        self.resolution[0] // 2 - title_text.get_width() // 2 + offset[0],
+                        50 + offset[1],
+                    ),
+                )
+            self.screen.blit(
+                title_text, (self.resolution[0] // 2 - title_text.get_width() // 2, 50)
+            )
 
             buttons = self.settings_buttons if self.in_settings else self.main_buttons
 

@@ -2,9 +2,8 @@ import pygame
 from utils import custom_events
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
-from scene.modules.mesh import Mesh
 from scene.modules.renderer import Renderer
-from graphics.texture import Texture
+from graphics.resources.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
 from scene.scene import Scene
@@ -20,13 +19,8 @@ class TargetSelector(Module):
         self.subscribe_to_event(pygame.KEYDOWN, self.select_target, pass_event=True)
         self.available_targets = {}
 
-        self.active_texture = Texture.load_from_file("assets/textures/target.png")
-        self.inactive_texture = Texture.load_from_file(
-            "assets/textures/target_inactive.png"
-        )
-
     def update(self):
-        for target in Scene().objects:
+        for target in Scene.objects:
             if (
                 hasattr(target, "enemy")
                 and not target.renderer.is_UI
@@ -35,7 +29,7 @@ class TargetSelector(Module):
                 self.available_targets[target] = self.create_indicator(target)
 
         for target in list(self.available_targets.keys()):
-            if target not in Scene().objects:
+            if target not in Scene.objects:
                 self.available_targets.pop(target).destroy()
                 if target is self.selected_target:
                     self.selected_target = None
@@ -45,9 +39,11 @@ class TargetSelector(Module):
             name="indicator",
             modules=[
                 Transform(),
-                Mesh(path="assets/meshes/plane.obj"),
                 Renderer(
-                    texture=self.inactive_texture, is_transparent=True, is_UI=True
+                    mesh="plane.obj",
+                    texture="target_inactive.png",
+                    is_transparent=True,
+                    is_UI=True,
                 ),
                 TargetIndicator(self.player, target),
             ],
@@ -63,14 +59,10 @@ class TargetSelector(Module):
             self.selected_target = max(
                 self.available_targets.keys(),
                 key=lambda obj: glm.dot(
-                    glm.normalize(
-                        obj.transform.position - self.player.transform.position
-                    ),
+                    glm.normalize(obj.transform.position - self.player.transform.position),
                     self.player.transform.R * glm.vec3(0, 0, -1),
                 ),
             )
-            self.available_targets[self.selected_target].renderer.texture = (
-                self.active_texture
-            )
+            self.available_targets[self.selected_target].renderer.texture = "target.png"
 
             debug.log(f"selected {self.selected_target}")
