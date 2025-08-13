@@ -1,6 +1,6 @@
 from graphics.geometry_renderer import GeometryRenderer
 from graphics.geometry_renderer import draw_command_cstruct
-from graphics.geometry_renderer import object_data_cstruct
+from scene.scene import object_data_cstruct, Scene
 from graphics.loaders.mesh_loader import MeshLoader
 from graphics.loaders.texture_loader import TextureLoader
 
@@ -24,14 +24,13 @@ class Renderer(Module):
         self.mesh_data = MeshLoader[mesh]
         self.texture_data = TextureLoader[texture]
 
-        self.mapped_command_cstruct = draw_command_cstruct.from_address(
-            GeometryRenderer.shared_commands.ctypes.data
+        self.draw_command_mapping = draw_command_cstruct.from_address(
+            GeometryRenderer.draw_command_templates.ctypes.data
             + ctypes.sizeof(draw_command_cstruct) * self.parent_obj.id
         )
 
-        self.mapped_data_cstruct = object_data_cstruct.from_address(
-            GeometryRenderer.object_data.ctypes.data
-            + ctypes.sizeof(object_data_cstruct) * self.parent_obj.id
+        self.object_data_mapping = object_data_cstruct.from_address(
+            Scene.object_data.ctypes.data + ctypes.sizeof(object_data_cstruct) * self.parent_obj.id
         )
 
         # -- properties
@@ -39,11 +38,12 @@ class Renderer(Module):
         self.is_UI = is_UI
         self.is_visible = is_visible
 
-        self.upload_object_command()
-        self.upload_texture_id()
+        self.upload_object_command()  # -- setting the object's draw command template
+
+        self.object_data_mapping.texture_id = self.texture_data["id"]
 
     def deinit(self):
-        self.mapped_command_cstruct.instance_count = 0
+        self.draw_command_mapping.instance_count = 0
 
     @property
     def is_visible(self):
@@ -51,7 +51,7 @@ class Renderer(Module):
 
     @is_visible.setter
     def is_visible(self, value):
-        self.mapped_data_cstruct.is_visible = 1 if value else 0
+        self.object_data_mapping.is_visible = 1 if value else 0
         self._is_visible = value
 
     @property
@@ -60,18 +60,15 @@ class Renderer(Module):
 
     @is_transparent.setter
     def is_transparent(self, value):
-        self.mapped_data_cstruct.is_transparent = 1 if value else 0
+        self.object_data_mapping.is_transparent = 1 if value else 0
         self._is_transparent = value
 
-    def upload_model_matrix(self):
-        self.mapped_data_cstruct.model = self.parent_obj.transform.model_matrix
-
-    def upload_texture_id(self):
-        self.mapped_data_cstruct.texture_id = self.texture_data["id"]
+    # def upload_model_matrix(self):
+    #    self.object_data_mapping.model = self.parent_obj.transform.model_matrix
 
     def upload_object_command(self):
-        self.mapped_command_cstruct.count = self.mesh_data["size"]
-        self.mapped_command_cstruct.instance_count = 1
-        self.mapped_command_cstruct.first_index = self.mesh_data["index_offset"]
-        self.mapped_command_cstruct.base_vertex = self.mesh_data["vertex_offset"]
-        self.mapped_command_cstruct.base_instance = self.parent_obj.id
+        self.draw_command_mapping.count = self.mesh_data["size"]
+        self.draw_command_mapping.instance_count = 1
+        self.draw_command_mapping.first_index = self.mesh_data["index_offset"]
+        self.draw_command_mapping.base_vertex = self.mesh_data["vertex_offset"]
+        self.draw_command_mapping.base_instance = self.parent_obj.id

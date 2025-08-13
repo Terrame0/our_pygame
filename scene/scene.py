@@ -2,6 +2,18 @@ from __future__ import annotations
 from utils.singleton_decorator import singleton
 
 from OpenGL.GL import *
+from pyglm import glm
+from graphics.resources.ctypes_struct import create_struct
+from graphics.resources.buffer import Buffer
+import numpy as np
+
+# -- per object data
+object_data_cstruct = create_struct(
+    model=glm.mat4,
+    texture_id=glm.uvec1,
+    is_visible=glm.uvec1,
+    is_transparent=glm.uvec1,
+)
 
 
 @singleton
@@ -26,11 +38,12 @@ class ObjectIDManager:
 @singleton
 class Scene:
 
-    MAX_OBJECTS = 100
+    MAX_OBJECTS = 10000
 
     def __init__(self):
         self._camera_object = None
         self.objects = []
+        self.init_object_data_buffer()
 
     def add_object(self, obj) -> int:  # -- returns object id
         self.objects.append(obj)
@@ -39,6 +52,15 @@ class Scene:
     def remove_object(self, obj):
         ObjectIDManager.return_id(obj.id)
         self.objects.remove(obj)
+
+    def init_object_data_buffer(self):
+        # -- initial value array
+        empty_object_data = np.zeros(self.MAX_OBJECTS, dtype=object_data_cstruct)
+
+        # -- a buffer for per-object data that is used in the shaders
+        self.object_data_buffer = Buffer(GL_SHADER_STORAGE_BUFFER)
+        self.object_data_buffer.upload_data(empty_object_data)
+        self.object_data = self.object_data_buffer.map_to_array()
 
     @property
     def camera(self):

@@ -1,5 +1,4 @@
 #version 460
-#extension GL_ARB_shader_draw_parameters : require
 #extension GL_ARB_bindless_texture : require
 
 layout(std140, binding = 0) uniform camera_data {
@@ -19,7 +18,7 @@ layout(std430, binding=0) buffer object_data_buffer {
 };
 
 layout(std430, binding=1) buffer texture_handle_buffer {
-    sampler2D texture_handles[];  
+    sampler2D texture_handles[];
 };
 
 flat in uint object_id;
@@ -28,7 +27,6 @@ in vec3 frag_normal;
 
 layout(location=0) out vec4 accumulation;
 layout(location=1) out float revealage;
-layout(location=2) out vec4 color;
 
 float pi = acos(0) * 2;
 
@@ -48,31 +46,9 @@ float weight(float alpha) {
 void main() {
     uint texture_id = object_data[object_id].texture_id;
     vec4 frag_color = texture(texture_handles[texture_id],frag_texcoord);
-    
-    // -- diffuse intensity calculation
-    vec3 normal = normalize(frag_normal);
-    vec3 sun = normalize(vec3(1));
-    float diffuse_intensity = dot(sun,normal);
-
-    
-    // -- specular intensity calculation
-    vec3 h = normalize(-view_vector.xyz + sun); // -- halfway vector
-    float cosine = dot(h,frag_normal);
-    float specular_intensity = pow(saturate(cosine),20);
-    
-    // -- cel shading application
-    if(diffuse_intensity < -0.5) frag_color.rgb *= 0.4;
-    else if(diffuse_intensity < 0) frag_color.rgb *= 0.6;
-    else if(diffuse_intensity < 0.5) frag_color.rgb *= 0.8;
-    else frag_color.rgb *= 1;
-
-    // frag_color.a *= 0.5;
-
-    // -- color without transparency
-    color = vec4(frag_color.rgb,1);
 
     // -- writing to the accumulation and revealage targets (for WBOIT)
-    float a = frag_color.a;
+    float a = frag_color.a * 0.5;
     float w = weight(a);
     accumulation = vec4(frag_color.rgb * a * w, a * w);
     revealage = a;

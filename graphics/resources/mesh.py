@@ -10,7 +10,7 @@ from pathlib import Path
 
 class Mesh:
     # -- represents vertex gpu memory layout
-    vertex_dtype = create_struct(
+    vertex_cstruct = create_struct(
         position=glm.vec3,
         texcoord=glm.vec2,
         normal=glm.vec3,
@@ -44,7 +44,7 @@ class Mesh:
             indices[i] = vertex_cache[key]
 
         # -- filling vertex array with values from the vertex cache
-        interleaved_vertices = np.zeros(vertex_counter, dtype=cls.vertex_dtype)
+        interleaved_vertices = np.zeros(vertex_counter, dtype=cls.vertex_cstruct)
         for i, (key, _) in enumerate(vertex_cache.items()):
             interleaved_vertices[i]["position"] = positions[key[0]]
             interleaved_vertices[i]["texcoord"] = texcoords[key[1]]
@@ -53,7 +53,7 @@ class Mesh:
         return instance
 
     @staticmethod
-    def parse_obj(path:Path):
+    def parse_obj(path: Path):
 
         # -- using lists for faster addition
         positions: List[glm.vec3] = []

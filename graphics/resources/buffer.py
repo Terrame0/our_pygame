@@ -37,13 +37,15 @@ class Buffer:
         glGetNamedBufferSubData(self.id, 0, self.nbytes, data)
         return data
 
+    def get_address(self):
+        with self:
+            return glMapBufferRange(self.target, 0, self.nbytes, self.storage_flags)
+
     def map_to_cstruct(self, cstruct):
         with self:
-            struct_ptr = ctypes.POINTER(cstruct)
-            ptr = ctypes.cast(
-                glMapBufferRange(self.target, 0, self.nbytes, self.storage_flags), struct_ptr
+            return cstruct.from_address(
+                glMapBufferRange(self.target, 0, self.nbytes, self.storage_flags)
             )
-        return ptr.contents
 
     def map_to_array(self) -> np.ndarray:
         np_array = None
@@ -66,6 +68,9 @@ class Buffer:
     #            # Timeout or error, put sync back and try again next frame
     #            self.sync_objects.insert(0, sync)
     #            break
+
+    def __len__(self):
+        return self.size
 
     def __enter__(self):
         self.bind()

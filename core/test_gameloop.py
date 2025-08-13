@@ -12,7 +12,9 @@ from scene.modules.transform import Transform
 from scene.modules.camera import Camera
 from scene.modules.physics_body import PhysicsBody
 
-from scene.scripts.player import Player
+from scene.scripts.camera_controller import CameraController
+
+# from scene.scripts.player import Player
 from scene.scripts.health import Health
 
 from scene.scene_object import SceneObject
@@ -33,46 +35,31 @@ class TestGameloop:
         Scene.camera_object = SceneObject(
             name=f"viewer",
             modules=[
-                Transform(position=glm.vec3(0, 0, 15)),
+                Transform(position=glm.vec3(0, 0, 3)),
                 Camera,
-                PhysicsBody(collision_radius=0.5),
-                Health(100),
-                Player,
+                CameraController,
             ],
         )
 
-        grid_size = glm.uvec3(1)
+        grid_size = glm.uvec3(3)
 
         for x in range(-grid_size.x, grid_size.x + 1):
             for y in range(-grid_size.y, grid_size.y + 1):
                 for z in range(-grid_size.z, grid_size.z + 1):
-                    position = glm.vec3(x, y, z) * 3
+                    position = glm.vec3(x, y, z)*2
                     SceneObject(
                         name=f"test_transparent",
                         modules=[
-                            Transform(position=position),
+                            Transform(position=position, rotation=position * 9),
                             Renderer(
-                                mesh="plane.obj",
-                                texture=f"""plasma{"_red" if (x+y+z+round(Clock.now))%2==0 else ""}.png""",
-                                is_transparent = True,
+                                mesh="sphere.obj",
+                                texture=f"plasma.png",
+                                is_transparent=True,
                             ),
                         ],
                     )
 
-        a = SceneObject(
-            name=f"test_opaque",
-            modules=[
-                Transform(position=position),
-                Renderer(
-                    mesh="cube.obj",
-                    texture=f"cat_tex.png",
-                    is_transparent = False,
-                ),
-            ],
-        )
-
         while True:
-            a.renderer.is_visible = True
             EventManager.process_events()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             GraphicsBackend.next_frame()

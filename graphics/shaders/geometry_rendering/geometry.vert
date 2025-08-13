@@ -1,6 +1,5 @@
 #version 460
 #extension GL_ARB_shader_draw_parameters : require
-#extension GL_ARB_bindless_texture : require
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texcoord;
@@ -38,8 +37,8 @@ void main() {
     vec4 clip_space = projection*view*model*vec4(position, 1.0);
 
     // -- vertex jittering
-    vec2 screen_space = round((clip_space.xy / clip_space.w) * window_size / 4) / window_size * 4 * clip_space.w;
-    gl_Position = vec4(screen_space,clip_space.zw);
+    //vec2 screen_space = round((clip_space.xy / clip_space.w) * window_size / 2) / window_size * 2 * clip_space.w;
+    // gl_Position = vec4(screen_space,clip_space.zw);
     gl_Position = clip_space;
 
     frag_texcoord = texcoord;

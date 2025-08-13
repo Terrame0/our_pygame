@@ -17,12 +17,13 @@ class GraphicsBackend:
         self.init_state()
 
     def init_state(self):
-        # -- pygame setup
+        # -- pygame setup6
         pygame.init()
         Window.init(1000, 1000)
 
         # -- global opengl state
-        glClearColor(0.1, 0.1, 0.1, 0.0)
+        # glEnable(GL_FRAMEBUFFER_SRGB)
+        glClearColor(0.2, 0.2, 0.2, 0.0)
         # glClearColor(0.53, 0.81, 0.98, 0.0)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)

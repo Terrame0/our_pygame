@@ -30,14 +30,6 @@ draw_command_cstruct = create_struct(
     base_instance=glm.uvec1,
 )
 
-# -- per object data
-object_data_cstruct = create_struct(
-    model=glm.mat4,
-    texture_id=glm.uvec1,
-    is_visible=glm.uvec1,
-    is_transparent=glm.uvec1,
-)
-
 
 @singleton
 class GeometryRenderer:
@@ -88,44 +80,38 @@ class GeometryRenderer:
 
         # -- command buffers that the culling shader writes commands to every frame
         # -- they are the ones that get used in the drawing passes
-        self.transparent_command_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
-        self.transparent_command_buffer.upload_data(empty_commands)
-        self.opaque_command_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
-        self.opaque_command_buffer.upload_data(empty_commands)
+        self.transparent_draw_command_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
+        self.transparent_draw_command_buffer.upload_data(empty_commands)
+        self.opaque_draw_command_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
+        self.opaque_draw_command_buffer.upload_data(empty_commands)
 
-        # TODO migrate this data into the object_data_buffer
         # -- a command buffer that the culling shader copies commands from
         # -- objects write their commands to this buffer
-        self.shared_command_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
-        self.shared_command_buffer.upload_data(empty_commands)
+        self.draw_command_template_buffer = Buffer(GL_DRAW_INDIRECT_BUFFER)
+        self.draw_command_template_buffer.upload_data(empty_commands)
 
         # -- command buffer mapped to an array (used in the objects)
-        self.shared_commands = self.shared_command_buffer.map_to_array()
-
-        # -- initial value array
-        empty_object_data = np.zeros(Scene.MAX_OBJECTS, dtype=object_data_cstruct)
-
-        # -- a buffer for per-object data that is used in the shaders
-        self.object_data_buffer = Buffer(GL_SHADER_STORAGE_BUFFER)
-        self.object_data_buffer.upload_data(empty_object_data)
-        self.object_data = self.object_data_buffer.map_to_array()
+        self.draw_command_templates = self.draw_command_template_buffer.map_to_array()
 
     def init_shaders(self):
         self.culling_shader = ShaderProgram(
             "culler.comp",
         )
 
-        self.geometry_shader = ShaderProgram(
-            "geometry.frag",
+        self.transparent_shader = ShaderProgram(
+            "transparent.frag",
             "geometry.vert",
         )
-        self.outline_shader = ShaderProgram(
-            "outline.frag",
-            "outline.vert",
+
+        self.opaque_shader = ShaderProgram(
+            "opaque.frag",
+            "geometry.vert",
         )
 
-    def reset_object_counters(self):
-        pass
+        self.outline_shader = ShaderProgram(
+            "outline.frag",
+            "geometry.vert",
+        )
 
     def draw(self) -> Framebuffer:
         # -- culling and separating objects' commands
@@ -135,28 +121,38 @@ class GeometryRenderer:
         self.opaque_counter_buffer.bind_base(0, GL_ATOMIC_COUNTER_BUFFER)
         self.transparent_counter_buffer.bind_base(1, GL_ATOMIC_COUNTER_BUFFER)
 
-        self.object_data_buffer.bind_base(0, GL_SHADER_STORAGE_BUFFER)
-        self.shared_command_buffer.bind_base(1, GL_SHADER_STORAGE_BUFFER)
-        self.opaque_command_buffer.bind_base(2, GL_SHADER_STORAGE_BUFFER)
-        self.transparent_command_buffer.bind_base(3, GL_SHADER_STORAGE_BUFFER)
+        Scene.object_data_buffer.bind_base(0, GL_SHADER_STORAGE_BUFFER)
+        self.draw_command_template_buffer.bind_base(1, GL_SHADER_STORAGE_BUFFER)
+        self.opaque_draw_command_buffer.bind_base(2, GL_SHADER_STORAGE_BUFFER)
+        self.transparent_draw_command_buffer.bind_base(3, GL_SHADER_STORAGE_BUFFER)
 
         with self.culling_shader:
             glDispatchCompute(Scene.MAX_OBJECTS // 256 + 1, 1, 1)
 
-        # print(self.opaque_counter_buffer.get_data())
-        # print(self.transparent_counter_buffer.get_data())
-        # 
-        # print(self.shared_commands)
-        # print(self.opaque_command_buffer.get_data())
-        # print(self.transparent_command_buffer.get_data())
-
         # -- preparing to render
-        self.object_data_buffer.bind_base(0, GL_SHADER_STORAGE_BUFFER)  # -- per object data ssbo
-        TextureLoader.texture_handle_buffer.bind_base(
-            1, GL_SHADER_STORAGE_BUFFER
-        )  # -- per object texture handles
-        Scene.camera.camera_ubo.bind_base(0, GL_UNIFORM_BUFFER)  # -- camera ubo
+
+        # -- binding per object data ssbo
+        Scene.object_data_buffer.bind_base(0, GL_SHADER_STORAGE_BUFFER)
+
+        # -- binding per object texture handle buffer
+        TextureLoader.texture_handle_buffer.bind_base(1, GL_SHADER_STORAGE_BUFFER)
+
+        # -- binding camera ubo
+        Scene.camera.camera_ubo.bind_base(0, GL_UNIFORM_BUFFER)
+
+        # -- binding joint vao
         glBindVertexArray(MeshLoader.joint_vao)
+
+        with self.geometry_fbo:
+            glDrawBuffers(3, [GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2])
+            glClearBufferfv(GL_COLOR, 0, (0, 0, 0, 0))
+
+            # -- clearing depth attachment
+            glDepthMask(GL_TRUE)  # -- depth mask must be enabled for it to work
+            glClearBufferfv(GL_DEPTH, 0, 1)
+            glClearBufferfv(GL_COLOR, 0, (0, 0, 0, 0))
+            glClearBufferfv(GL_COLOR, 1, (1, 0, 0, 0))
+            glClearBufferfv(GL_COLOR, 2, (0, 0, 0, 0))
 
         self.opaque_pass()
         self.transparent_pass()
@@ -164,31 +160,63 @@ class GeometryRenderer:
         return self.geometry_fbo
 
     def opaque_pass(self):
-        pass
+        with self.opaque_draw_command_buffer, self.geometry_fbo:
 
-    def transparent_pass(self):
+            # -- enabling backface culling
+            glEnable(GL_CULL_FACE)
+            glCullFace(GL_BACK)
 
-        with self.transparent_command_buffer, self.geometry_fbo:
-            glClearBufferfv(GL_COLOR, 0, (0, 0, 0, 0))
-            glClearBufferfv(GL_COLOR, 1, (1, 0, 0, 0))
-            glClearBufferfv(GL_COLOR, 2, (0, 0, 0, 0))
+            # -- enabling writes to the depth buffer
             glDepthMask(GL_TRUE)
-            glClearBufferfv(GL_DEPTH, 0, 1)  # -- depth mask must be enabled for this to work
-            glDepthMask(GL_FALSE)
-            glEnable(GL_BLEND)
 
-            glBlendFunci(0, GL_ONE, GL_ONE)
-            glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR)
+            # -- disabling blending
+            glEnable(GL_BLEND)
             glBlendFunci(2, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-            glDrawBuffers(3, [GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2])
-            glDisable(GL_CULL_FACE)
-
-            with self.geometry_shader:
+            with self.opaque_shader:
                 glMultiDrawElementsIndirect(
                     GL_TRIANGLES,
                     GL_UNSIGNED_INT,
                     None,
-                    Scene.MAX_OBJECTS,
+                    self.opaque_counter_buffer.get_data()[0],
+                    0,
+                )
+
+            glPolygonMode(GL_BACK, GL_LINE)
+            glEnable(GL_CULL_FACE)
+            glCullFace(GL_FRONT)
+
+            with self.outline_shader:
+                glMultiDrawElementsIndirect(
+                    GL_TRIANGLES,
+                    GL_UNSIGNED_INT,
+                    None,
+                    self.opaque_counter_buffer.get_data()[0],
+                    0,
+                )
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+    def transparent_pass(self):
+        with self.transparent_draw_command_buffer, self.geometry_fbo:
+
+            # -- disabling backface culling
+            glDisable(GL_CULL_FACE)
+
+            # -- disabling writes to the depth buffer
+            glDepthMask(GL_FALSE)
+
+            # -- enabling blending
+            glEnable(GL_BLEND)
+            glBlendFunci(0, GL_ONE, GL_ONE)
+            glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR)
+
+            # -- drawing transparent objects
+            with self.transparent_shader:
+                glMultiDrawElementsIndirect(
+                    GL_TRIANGLES,
+                    GL_UNSIGNED_INT,
+                    None,
+                    self.transparent_counter_buffer.get_data()[0],
                     0,
                 )

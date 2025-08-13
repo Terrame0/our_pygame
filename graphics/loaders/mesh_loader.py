@@ -11,7 +11,7 @@ from graphics.resources.buffer import Buffer
 @singleton
 class MeshLoader:
     def __init__(self):
-        self.joint_vertex_buffer = np.array([], dtype=Mesh.vertex_dtype)
+        self.joint_vertex_buffer = np.array([], dtype=Mesh.vertex_cstruct)
         self.joint_index_buffer = np.array([], dtype=ctypes.c_uint32)
 
         self.mesh_data: Dict[str, Dict[str, int]] = {}

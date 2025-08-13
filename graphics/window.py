@@ -16,10 +16,10 @@ class Window:
         self.size = (width, height)
         pygame.display.set_mode(self.size, pygame.DOUBLEBUF | pygame.OPENGL)
         EventManager.subscribe(pygame.VIDEORESIZE, self.resize, pass_event=True)
-        EventManager.subscribe(pygame.WINDOWFOCUSGAINED, pygame.mouse.set_visible, False)
-        EventManager.subscribe(pygame.WINDOWFOCUSGAINED, pygame.event.set_grab, True)
-        EventManager.subscribe(pygame.WINDOWFOCUSLOST, pygame.mouse.set_visible, True)
-        EventManager.subscribe(pygame.WINDOWFOCUSLOST, pygame.event.set_grab, False)
+        # EventManager.subscribe(pygame.WINDOWFOCUSGAINED, pygame.mouse.set_visible, False)
+        # EventManager.subscribe(pygame.WINDOWFOCUSGAINED, pygame.event.set_grab, True)
+        # EventManager.subscribe(pygame.WINDOWFOCUSLOST, pygame.mouse.set_visible, True)
+        # EventManager.subscribe(pygame.WINDOWFOCUSLOST, pygame.event.set_grab, False)
 
     def resize(self, event):
         self.size = event.size
