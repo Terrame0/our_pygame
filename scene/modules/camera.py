@@ -1,5 +1,5 @@
 from pyglm import glm
-import pygame
+
 from scene.modules.module_base import Module
 from scene.modules.transform import Transform
 from core.event_manager import EventManager
@@ -8,7 +8,7 @@ from graphics.resources.buffer import Buffer
 from OpenGL.GL import *
 from graphics.resources.ctypes_struct import create_struct
 import numpy as np
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 
 
 camera_data_cstruct = create_struct(
@@ -42,9 +42,9 @@ class Camera(Module):
         self.load_view_vector_to_gpu()
         self.load_window_size_to_gpu()
 
-        EventManager.subscribe(pygame.VIDEORESIZE, self._resize, pass_event=True)
-        EventManager.subscribe(custom_events.UPDATE, self.load_view_matrix_to_gpu)
-        EventManager.subscribe(custom_events.UPDATE, self.load_view_vector_to_gpu)
+        #EventManager.subscribe(pygame.VIDEORESIZE, self._resize, pass_event=True)
+        EventManager.subscribe(UserEvents.get_id("update"), self.load_view_matrix_to_gpu)
+        EventManager.subscribe(UserEvents.get_id("update"), self.load_view_vector_to_gpu)
 
     def load_view_matrix_to_gpu(self):  # -- is called every frame
         self.camera_data.view = self.view_matrix

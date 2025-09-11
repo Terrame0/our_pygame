@@ -1,4 +1,4 @@
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
 from scene.modules.renderer import Renderer
 from scene.scene_object import SceneObject
@@ -10,7 +10,7 @@ class Skybox(Module):
 
     def __init_module__(self, player: SceneObject):
         self.player = player
-        self.subscribe_to_event(custom_events.UPDATE, self.update)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
 
     def update(self):
         self.parent_obj.transform.position = self.player.transform.position

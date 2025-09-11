@@ -58,13 +58,13 @@ class Module(ABC, metaclass=ModuleMeta):
                 )
 
             parent_obj.modules[self.name_snake] = self  # -- adding self to modules
-            self.__init_module__(*self._args[0], **self._args[1])
+            self.__init_module__(*self.construction_args[0], **self.construction_args[1])
         else:
             debug.log(f"(*) [{self.name_pascal}] module is already attached to {parent_obj}!")
 
     def __init__(self, *args, **kwargs):
-        self._event_subscriptions = []
-        self._args = (args, kwargs)  # -- storing arguments for lazy construction
+        self.event_subscriptions = []
+        self.construction_args = (args, kwargs)  # -- storing arguments for lazy construction
 
     def subscribe_to_event(
         self,
@@ -74,8 +74,8 @@ class Module(ABC, metaclass=ModuleMeta):
         **kwargs: Any,
     ):
         EventManager.subscribe(event_type, callback, *args, **kwargs)
-        self._event_subscriptions.append((event_type, callback))
+        self.event_subscriptions.append((event_type, callback))
 
     def deinit_base(self):
-        for subscription in self._event_subscriptions:
-            EventManager.unsubscribe(subscription[0], subscription[1])
+        for event_type, callback in self.event_subscriptions:
+            EventManager.unsubscribe(event_type, callback)

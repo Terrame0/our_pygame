@@ -17,6 +17,7 @@ class debug:
 
     @staticmethod
     def log(string):
+        pass
         if debug.is_enabled:
             char = "│"
             if debug.after_indent:

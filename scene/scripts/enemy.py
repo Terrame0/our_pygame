@@ -1,4 +1,4 @@
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
 from scene.modules.renderer import Renderer
 from scene.modules.physics_body import PhysicsBody
@@ -12,7 +12,7 @@ from graphics.resources.texture import Texture
 from scene.scripts.health import Health
 from scene.scripts.trail_emitter import TrailEmitter
 from core.game_manager import GameManager
-import pygame
+
 from utils.path_resolver import resolve_path
 
 
@@ -27,9 +27,9 @@ class Enemy(Module):
         self.target_vector = None
         self.last_shot = Clock.now
         self.reload_time = 3
-        self.subscribe_to_event(custom_events.UPDATE, self.check_health)
-        # self.subscribe_to_event(custom_events.UPDATE, self.update_heading)
-        # self.subscribe_to_event(custom_events.UPDATE, self.shoot)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.check_health)
+        # self.subscribe_to_event(UserEvents.get_id("update"), self.update_heading)
+        # self.subscribe_to_event(UserEvents.get_id("update"), self.shoot)
 
     def deinit(self):
         GameManager.enemies_alive -= 1

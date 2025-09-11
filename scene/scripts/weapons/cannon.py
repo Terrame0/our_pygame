@@ -1,5 +1,5 @@
 from typing import List
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
 from scene.modules.renderer import Renderer
 from scene.modules.physics_body import PhysicsBody
@@ -7,7 +7,7 @@ from scene.scene_object import SceneObject
 from graphics.resources.texture import Texture
 from pyglm import glm
 from scene.modules.module_base import Module
-import pygame
+
 from scene.scripts.projectile import Projectile
 from scene.scripts.trail_emitter import TrailEmitter
 from core.clock import Clock
@@ -34,7 +34,7 @@ class Cannon(Module):
             ],
         )
 
-        self.subscribe_to_event(custom_events.UPDATE, self.update_crosshair)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update_crosshair)
 
     def shoot(self, owner: SceneObject):
         if pygame.mouse.get_pressed()[0] and Clock.now - self.last_shot > self.reload_time:

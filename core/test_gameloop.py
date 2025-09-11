@@ -1,6 +1,8 @@
-from OpenGL.GL import *
 
+import random
 from pyglm import glm
+import ctypes
+import sdl2 as sdl
 
 from graphics.graphics_backend import GraphicsBackend
 from graphics.loaders.shader_loader import ShaderLoader
@@ -17,49 +19,78 @@ from scene.scripts.camera_controller import CameraController
 # from scene.scripts.player import Player
 from scene.scripts.health import Health
 
+from scene.gizmos.bounding_box import AABB
+from graphics.bvh import BVH
+from utils.tree_printer import TreePrinter, TreeVisualizer
+
 from scene.scene_object import SceneObject
 from scene.scene import Scene
 from core.clock import Clock
 
 from utils.singleton_decorator import singleton
+from utils.debug import debug
 
 
-from OpenGL.GL import *
+def inv_cdf(value: float):
+    return glm.sqrt(value)
+    return glm.acos(2 * value - 1) / glm.pi()
 
 
 @singleton
 class TestGameloop:
     def __init__(self):
+
         GraphicsBackend.init()
 
         Scene.camera_object = SceneObject(
             name=f"viewer",
             modules=[
-                Transform(position=glm.vec3(0, 0, 3)),
+                Transform(position=glm.vec3(0, 0, 5)),
                 Camera,
                 CameraController,
             ],
         )
 
-        grid_size = glm.uvec3(3)
-
-        for x in range(-grid_size.x, grid_size.x + 1):
-            for y in range(-grid_size.y, grid_size.y + 1):
-                for z in range(-grid_size.z, grid_size.z + 1):
-                    position = glm.vec3(x, y, z)*2
-                    SceneObject(
-                        name=f"test_transparent",
-                        modules=[
-                            Transform(position=position, rotation=position * 9),
-                            Renderer(
-                                mesh="sphere.obj",
-                                texture=f"plasma.png",
-                                is_transparent=True,
-                            ),
-                        ],
-                    )
-
+        SceneObject(
+            name=f"test",
+            modules=[
+                Transform(position=glm.vec3(0, 0, 0)),
+                Camera,
+                Renderer(mesh="sphere.obj", texture="error.png"),
+            ],
+        )
+        # bvh = BVH()
+        #
+        # spawn_time = Clock.now
+        # counter = 0
+        # leaves = []
+        # max_count = 100
         while True:
+            # if Clock.now - spawn_time > 0.1:
+            #    spawn_time = Clock.now
+            #    counter += 1
+            #    if counter < max_count:
+            #        random.seed(counter)
+            #        pos = glm.vec3(
+            #            random.random(),
+            #            random.random(),
+            #            random.random(),
+            #        )
+            #        size = glm.vec3(
+            #            random.random(),
+            #            random.random(),
+            #            random.random(),
+            #        )
+            #
+            #        aabb = AABB(pos * 50, pos * 50 + size + 0.1)
+            #
+            #        leaves.append(bvh.insert(aabb))
+            #    elif leaves:
+            #        bvh.remove(leaves.pop())
+            #    if leaves:
+            #        TreeVisualizer.draw(bvh.root)
+            #    if not leaves:
+            #        counter = 0
+
             EventManager.process_events()
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             GraphicsBackend.next_frame()

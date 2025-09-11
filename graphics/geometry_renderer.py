@@ -197,6 +197,9 @@ class GeometryRenderer:
 
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
+    def wireframe_pass(self):
+        pass
+
     def transparent_pass(self):
         with self.transparent_draw_command_buffer, self.geometry_fbo:
 

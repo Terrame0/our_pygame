@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 
 from OpenGL.GL import *
-import pygame
+
 
 from graphics.resources.texture import Texture
 from graphics.window import Window
@@ -19,7 +19,7 @@ class Framebuffer:
         for name, value in textures.items():
             setattr(self, name, value)
 
-        EventManager.subscribe(pygame.VIDEORESIZE, self.resize, pass_event=True)
+        # EventManager.subscribe(pygame.VIDEORESIZE, self.resize, pass_event=True)
 
     # -- checks if the value is a color attachment, if true binds it to the framebuffer and adds it to the list, otherwise passes it through
     def __setattr__(self, name, value):

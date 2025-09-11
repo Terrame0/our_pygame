@@ -26,14 +26,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="core\application.py" />
+    <Compile Include="core\event_system\event_queue.py" />
+    <Compile Include="core\event_system\user_events.py" />
+    <Compile Include="graphics\bvh.py" />
     <Compile Include="graphics\loaders\shader_loader.py" />
     <Compile Include="graphics\loaders\texture_loader.py" />
-    <Compile Include="core\enemy_spawner.py" />
+    <Compile Include="core\deprecated\enemy_spawner.py" />
     <Compile Include="core\event_manager.py" />
-    <Compile Include="core\game_manager.py" />
+    <Compile Include="core\deprecated\game_manager.py" />
     <Compile Include="core\deprecated\game_over_screen.py" />
     <Compile Include="core\deprecated\menu.py" />
     <Compile Include="core\test_gameloop.py" />
+    <Compile Include="graphics\new_octree.py" />
+    <Compile Include="graphics\octree.py" />
     <Compile Include="graphics\resources\ctypes_struct.py" />
     <Compile Include="graphics\blitter.py" />
     <Compile Include="graphics\resources\framebuffer.py" />
@@ -45,6 +50,8 @@
     <Compile Include="graphics\materials\diffuse\diffuse.py" />
     <Compile Include="graphics\materials\material_base.py" />
     <Compile Include="graphics\materials\transparent.py" />
+    <Compile Include="scene\gizmos\bounding_box.py" />
+    <Compile Include="scene\modules\new_collider.py" />
     <Compile Include="scene\modules\renderer.py" />
     <Compile Include="scene\modules\physics_body.py" />
     <Compile Include="scene\scripts\camera_controller.py" />
@@ -70,9 +77,10 @@
     <Compile Include="scene\scripts\target_selector.py" />
     <Compile Include="utils\args.py" />
     <Compile Include="utils\classproperty.py" />
-    <Compile Include="utils\custom_events.py" />
     <Compile Include="utils\flatten.py" />
     <Compile Include="utils\path_resolver.py" />
+    <Compile Include="utils\pointer.py" />
+    <Compile Include="utils\user_input.py" />
     <Compile Include="utils\singleton_decorator.py" />
     <Compile Include="core\main.py" />
     <Compile Include="graphics\resources\buffer.py" />
@@ -83,6 +91,7 @@
     <Compile Include="utils\gl_constant_map.py" />
     <Compile Include="utils\debug.py" />
     <Compile Include="utils\case_converter.py" />
+    <Compile Include="utils\tree_printer.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="graphics\shaders\geometry_rendering\culler.comp" />
@@ -107,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="core\deprecated\" />
+    <Folder Include="core\event_system\" />
     <Folder Include="graphics\" />
     <Folder Include="core\" />
     <Folder Include="graphics\loaders\" />
@@ -123,6 +133,7 @@
     <Folder Include="graphics\materials\diffuse\" />
     <Folder Include="scene\modules\" />
     <Folder Include="graphics\materials\" />
+    <Folder Include="scene\gizmos\" />
     <Folder Include="scene\scripts\" />
     <Folder Include="scene\scripts\weapons\" />
     <Folder Include="utils\" />

@@ -1,7 +1,6 @@
 from __future__ import annotations
 from OpenGL.GL import *
 from OpenGL.GL.ARB.bindless_texture import *
-from pygame.locals import *
 from PIL import Image
 import numpy as np
 from typing import Tuple

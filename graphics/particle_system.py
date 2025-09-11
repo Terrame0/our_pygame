@@ -1,5 +1,4 @@
 from OpenGL.GL import *
-from pygame.locals import *
 from utils.singleton_decorator import singleton
 from graphics.resources.shader import Shader
 from graphics.resources.shader_program import ShaderProgram

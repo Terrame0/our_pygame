@@ -1,6 +1,6 @@
 from typing import List
 from scene.modules.collider import PhysicsBody
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
 from scene.modules.renderer import Renderer
 from scene.scripts.weapons.cannon import Cannon
@@ -37,7 +37,7 @@ class WeaponController(Module):
 
         self.weapons.append(cannon)
 
-        self.subscribe_to_event(custom_events.UPDATE, self.update)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
 
     def shoot_weapons(self):
         for weapon in self.weapons:

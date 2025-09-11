@@ -19,7 +19,7 @@ from OpenGL.GL import *
 from utils.singleton_decorator import singleton
 
 import random
-import pygame
+
 import sys
 
 

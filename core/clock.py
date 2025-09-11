@@ -1,9 +1,8 @@
 from collections import deque
 from OpenGL.GL import *
-from pygame.locals import *
 from utils.singleton_decorator import singleton
 from core.event_manager import EventManager
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 import time
 from pyglm import glm
 
@@ -18,7 +17,7 @@ class Clock:
 
         self.frame_timestamps = deque([self.now])
 
-        EventManager.subscribe(custom_events.UPDATE, self.tick)
+        EventManager.subscribe(UserEvents.get_id("update"), self.tick)
 
     def tick(self):
         current_time = time.time()
@@ -36,4 +35,4 @@ class Clock:
 
     @property
     def avg_fps(self):
-        return 1 / max((self.now - self.start_time) / self.frame_count,glm.epsilon())
+        return 1 / max((self.now - self.start_time) / self.frame_count, glm.epsilon())

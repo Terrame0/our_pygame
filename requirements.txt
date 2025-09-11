@@ -1,6 +1,7 @@
 numpy
 Pillow
-pygame
 pyglm
 PyInstaller
 PyOpenGL
+pysdl
+pysdl-dll

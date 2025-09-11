@@ -1,5 +1,5 @@
 import random
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from pyglm import glm
 from scene.modules.module_base import Module
 from graphics.resources.shader import Shader
@@ -35,7 +35,7 @@ class TrailEmitter(Module):
         self.spawner_program = _TrailEmitterShaders.spawner_program
         self.renderer_program = _TrailEmitterShaders.renderer_program
 
-        self.subscribe_to_event(custom_events.UPDATE, self.render_particles)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.render_particles)
 
     def deinit(self):
         RenderpassIDManager.return_id(self.renderpass_id)

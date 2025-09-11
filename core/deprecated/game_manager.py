@@ -10,8 +10,8 @@ from scene.scripts.weapons.weapon_controller import WeaponController
 from scene.modules.camera import Camera
 from scene.scripts.health import Health
 from OpenGL.GL import *
-import pygame
-from utils import custom_events
+
+from core.event_system.user_events import UserEvents
 
 
 @singleton
@@ -33,7 +33,7 @@ class GameManager:
 
         self.score = 0
 
-        EventManager.subscribe(custom_events.UPDATE, self.update)
+        EventManager.subscribe(UserEvents.get_id("update"), self.update)
 
     def update(self):
         pygame.display.set_caption(f"HEALTH: {self.player.health.value} SCORE: {self.score}")

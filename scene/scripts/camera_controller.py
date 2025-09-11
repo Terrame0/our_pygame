@@ -1,12 +1,12 @@
-from utils import custom_events
+from sdl2 import SDL_MOUSEMOTION, SDL_SCANCODE_LSHIFT, SDL_MOUSEWHEEL
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
-from scene.modules.renderer import Renderer
-from scene.scene_object import SceneObject
 from pyglm import glm
 from scene.modules.module_base import Module
 from scene.modules.camera import Camera
-from core.clock import Clock
-import pygame
+from graphics.window import Window
+from core.event_system.user_events import UserEvents
+from utils.user_input import UserInput
 
 
 class CameraController(Module):
@@ -15,7 +15,6 @@ class CameraController(Module):
     def __init_module__(self):
 
         self.needs_update = True
-        self.parent_obj.transform.position = glm.vec3(0, 0, 10)
 
         self.phi = 0
         self.theta = 0
@@ -25,12 +24,12 @@ class CameraController(Module):
         self.zoom_base = 2.0
 
         self.pivot_point = glm.vec3(0)
-        self.offset_direction = glm.vec3(0, 0, 1)
+        self.offset_direction = glm.normalize(glm.vec3(1))
 
-        self.subscribe_to_event(pygame.MOUSEMOTION, self.handle_panning, pass_event=True)
-        self.subscribe_to_event(pygame.MOUSEMOTION, self.handle_rotation, pass_event=True)
-        self.subscribe_to_event(pygame.MOUSEWHEEL, self.handle_zoom, pass_event=True)
-        self.subscribe_to_event(custom_events.UPDATE, self.update_transform)
+        self.subscribe_to_event(SDL_MOUSEMOTION, self.handle_panning, pass_event=True)
+        self.subscribe_to_event(SDL_MOUSEMOTION, self.handle_rotation, pass_event=True)
+        self.subscribe_to_event(SDL_MOUSEWHEEL, self.handle_zoom, pass_event=True)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update_transform)
 
     @property
     def offset_vector(self):
@@ -56,14 +55,21 @@ class CameraController(Module):
         return self.zoom_base**self.zoom_power
 
     def handle_rotation(self, event):
-        if pygame.mouse.get_pressed()[1] and not pygame.key.get_pressed()[pygame.K_LSHIFT]:
-            motion = glm.vec2(-event.rel[0], event.rel[1]) / 300
+        if (UserInput.mbutton(1) or UserInput.mbutton(2)) and not UserInput.key(
+            SDL_SCANCODE_LSHIFT
+        ):
+            motion = glm.vec2(-event.motion.xrel, event.motion.yrel) / 300
             self.rotation_angle = motion
             self.needs_update = True
 
     def handle_panning(self, event):
-        if pygame.mouse.get_pressed()[1] and pygame.key.get_pressed()[pygame.K_LSHIFT]:
-            motion = glm.vec2(-event.rel[0], event.rel[1]) / 500 * self.zoom_modifier
+        if (UserInput.mbutton(1) or UserInput.mbutton(2)) and UserInput.key(SDL_SCANCODE_LSHIFT):
+            motion = (
+                glm.vec2(-event.motion.xrel, event.motion.yrel)
+                / glm.vec2(*Window.size)
+                * self.zoom_modifier
+                * 2
+            )
             right = self.parent_obj.transform.R * glm.vec3(1, 0, 0)
             up = self.parent_obj.transform.R * glm.vec3(0, 1, 0)
 
@@ -71,7 +77,7 @@ class CameraController(Module):
             self.needs_update = True
 
     def handle_zoom(self, event):
-        self.zoom_power = glm.clamp(self.zoom_power - event.y / 5, -10, 10)
+        self.zoom_power = glm.clamp(self.zoom_power - event.wheel.y / 5, -10, 10)
         self.needs_update = True
 
     def update_transform(self):

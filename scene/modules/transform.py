@@ -3,7 +3,7 @@ import math
 from OpenGL.GL import *
 from pyglm import glm
 from scene.modules.module_base import Module
-from utils import custom_events
+from core.event_system.user_events import UserEvents
 from utils.singleton_decorator import singleton
 from graphics.resources.ctypes_struct import create_struct
 from graphics.resources.buffer import Buffer
@@ -36,8 +36,7 @@ class Transform(Module):
         self.position = position
         self.rotation = rotation
         self.scale = scale
-
-        self.subscribe_to_event(custom_events.UPDATE, self.update_model_matrix)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update_model_matrix)
 
     # -- gets called every frame to make sure the model matrix stays relevant
     def update_model_matrix(self) -> glm.mat4:

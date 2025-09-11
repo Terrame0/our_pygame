@@ -21,8 +21,6 @@ class Renderer(Module):
         is_UI: bool = False,
         is_visible: bool = True,
     ):
-        self.mesh_data = MeshLoader[mesh]
-        self.texture_data = TextureLoader[texture]
 
         self.draw_command_mapping = draw_command_cstruct.from_address(
             GeometryRenderer.draw_command_templates.ctypes.data
@@ -40,10 +38,31 @@ class Renderer(Module):
 
         self.upload_object_command()  # -- setting the object's draw command template
 
-        self.object_data_mapping.texture_id = self.texture_data["id"]
+        self.texture = texture
+        self.mesh = mesh
+
+    @property
+    def texture(self):
+        pass
+
+    @texture.setter
+    def texture(self, name):
+        self.object_data_mapping.texture_id = TextureLoader[name]["id"]
+
+    @property
+    def mesh(self):
+        pass
+
+    @mesh.setter
+    def mesh(self, name):
+        self.mesh_data = MeshLoader[name]
+        self.draw_command_mapping.count = self.mesh_data["size"]
+        self.draw_command_mapping.first_index = self.mesh_data["index_offset"]
+        self.draw_command_mapping.base_vertex = self.mesh_data["vertex_offset"]
 
     def deinit(self):
         self.draw_command_mapping.instance_count = 0
+        self.object_data_mapping.is_visible = 0
 
     @property
     def is_visible(self):
@@ -63,12 +82,6 @@ class Renderer(Module):
         self.object_data_mapping.is_transparent = 1 if value else 0
         self._is_transparent = value
 
-    # def upload_model_matrix(self):
-    #    self.object_data_mapping.model = self.parent_obj.transform.model_matrix
-
     def upload_object_command(self):
-        self.draw_command_mapping.count = self.mesh_data["size"]
         self.draw_command_mapping.instance_count = 1
-        self.draw_command_mapping.first_index = self.mesh_data["index_offset"]
-        self.draw_command_mapping.base_vertex = self.mesh_data["vertex_offset"]
         self.draw_command_mapping.base_instance = self.parent_obj.id

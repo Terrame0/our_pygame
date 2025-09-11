@@ -3,7 +3,6 @@ from scene.modules.module_base import Module
 from scene.modules.transform import Transform
 from scene.modules.physics_body import PhysicsBody
 from OpenGL.GL import *
-from pygame.locals import *
 from pyglm import glm
 from typing import Tuple
 

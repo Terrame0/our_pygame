@@ -1,5 +1,5 @@
-import pygame
-from utils import custom_events
+
+from core.event_system.user_events import UserEvents
 from scene.modules.transform import Transform
 from scene.scene_object import SceneObject
 from scene.modules.renderer import Renderer
@@ -15,7 +15,7 @@ class TargetSelector(Module):
     def __init_module__(self, player: SceneObject):
         self.player = player
         self.selected_target = None
-        self.subscribe_to_event(custom_events.UPDATE, self.update)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
         self.subscribe_to_event(pygame.KEYDOWN, self.select_target, pass_event=True)
         self.available_targets = {}
 

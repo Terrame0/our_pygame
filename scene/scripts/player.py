@@ -1,7 +1,7 @@
 from pyglm import glm
-import pygame
 
-from utils import custom_events
+
+from core.event_system.user_events import UserEvents
 from utils.path_resolver import resolve_path
 from graphics.resources.texture import Texture
 
@@ -92,11 +92,11 @@ class Player(Module):
         )
 
         # -- event subscriptions
-        self.subscribe_to_event(custom_events.UPDATE, self.handle_keyboard_input)
-        self.subscribe_to_event(custom_events.UPDATE, self.calculate_boost)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.handle_keyboard_input)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.calculate_boost)
         self.subscribe_to_event(pygame.MOUSEMOTION, self.handle_mouse_input)
-        self.subscribe_to_event(custom_events.UPDATE, self.shoot)
-        self.subscribe_to_event(custom_events.UPDATE, self.check_health)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.shoot)
+        self.subscribe_to_event(UserEvents.get_id("update"), self.check_health)
 
     def check_health(self):
         if self.parent_obj.health.value <= 0:

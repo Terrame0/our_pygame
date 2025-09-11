@@ -1,6 +1,7 @@
 from __future__ import annotations
-import pygame
+
 import OpenGL
+import sdl2 as sdl
 
 OpenGL.ERROR_CHECKING = False
 from OpenGL.GL import *
@@ -17,13 +18,14 @@ class GraphicsBackend:
         self.init_state()
 
     def init_state(self):
-        # -- pygame setup6
-        pygame.init()
+        # -- window creation
+        
         Window.init(1000, 1000)
 
         # -- global opengl state
         # glEnable(GL_FRAMEBUFFER_SRGB)
-        glClearColor(0.2, 0.2, 0.2, 0.0)
+        # glClearColor(0.2, 0.2, 0.2, 0.0)
+        glClearColor(1, 1, 1, 0.0)
         # glClearColor(0.53, 0.81, 0.98, 0.0)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
@@ -42,4 +44,4 @@ class GraphicsBackend:
 
         # ParticleSystem.reset_particles()
 
-        pygame.display.flip()
+        Window.flip()

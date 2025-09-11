@@ -1,4 +1,4 @@
-import pygame
+
 import sys
 
 WIDTH, HEIGHT = 800, 600
