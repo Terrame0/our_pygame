@@ -23,8 +23,8 @@ class PhysicsBody(Module):
         self.collision_radius = collision_radius
         self.angular_velocity = glm.vec3(0)
         self.velocity = glm.vec3(0)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.handle_collision)
+        self.subscribe_to_event(UserEvents["update"], self.update)
+        self.subscribe_to_event(UserEvents["update"], self.handle_collision)
 
         self.callbacks = []
         self.collision_exclusion_list = []

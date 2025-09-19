@@ -13,7 +13,7 @@ class LeadingReticle(Module):
     def __init_module__(self, player: SceneObject):
         self.target_selector = self.parent_obj.target_selector
         self.player = player
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
+        self.subscribe_to_event(UserEvents["update"], self.update)
 
     def update(self):
         self.parent_obj.renderer.is_visible = False

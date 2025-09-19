@@ -3,5 +3,5 @@ Pillow
 pyglm
 PyInstaller
 PyOpenGL
-pysdl
-pysdl-dll
+pysdl2
+pysdl2-dll

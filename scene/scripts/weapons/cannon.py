@@ -34,7 +34,7 @@ class Cannon(Module):
             ],
         )
 
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update_crosshair)
+        self.subscribe_to_event(UserEvents["update"], self.update_crosshair)
 
     def shoot(self, owner: SceneObject):
         if pygame.mouse.get_pressed()[0] and Clock.now - self.last_shot > self.reload_time:

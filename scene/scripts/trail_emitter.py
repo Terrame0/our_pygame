@@ -35,7 +35,7 @@ class TrailEmitter(Module):
         self.spawner_program = _TrailEmitterShaders.spawner_program
         self.renderer_program = _TrailEmitterShaders.renderer_program
 
-        self.subscribe_to_event(UserEvents.get_id("update"), self.render_particles)
+        self.subscribe_to_event(UserEvents["update"], self.render_particles)
 
     def deinit(self):
         RenderpassIDManager.return_id(self.renderpass_id)

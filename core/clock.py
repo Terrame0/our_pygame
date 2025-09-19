@@ -17,7 +17,7 @@ class Clock:
 
         self.frame_timestamps = deque([self.now])
 
-        EventManager.subscribe(UserEvents.get_id("update"), self.tick)
+        EventManager.subscribe(UserEvents["update"], self.tick)
 
     def tick(self):
         current_time = time.time()

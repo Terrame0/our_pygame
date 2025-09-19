@@ -27,9 +27,9 @@ class Enemy(Module):
         self.target_vector = None
         self.last_shot = Clock.now
         self.reload_time = 3
-        self.subscribe_to_event(UserEvents.get_id("update"), self.check_health)
-        # self.subscribe_to_event(UserEvents.get_id("update"), self.update_heading)
-        # self.subscribe_to_event(UserEvents.get_id("update"), self.shoot)
+        self.subscribe_to_event(UserEvents["update"], self.check_health)
+        # self.subscribe_to_event(UserEvents["update"], self.update_heading)
+        # self.subscribe_to_event(UserEvents["update"], self.shoot)
 
     def deinit(self):
         GameManager.enemies_alive -= 1

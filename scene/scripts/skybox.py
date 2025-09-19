@@ -10,7 +10,7 @@ class Skybox(Module):
 
     def __init_module__(self, player: SceneObject):
         self.player = player
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
+        self.subscribe_to_event(UserEvents["update"], self.update)
 
     def update(self):
         self.parent_obj.transform.position = self.player.transform.position

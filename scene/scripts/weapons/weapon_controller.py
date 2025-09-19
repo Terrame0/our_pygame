@@ -37,7 +37,7 @@ class WeaponController(Module):
 
         self.weapons.append(cannon)
 
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
+        self.subscribe_to_event(UserEvents["update"], self.update)
 
     def shoot_weapons(self):
         for weapon in self.weapons:

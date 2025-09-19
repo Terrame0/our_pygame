@@ -39,8 +39,8 @@ class Projectile(Module):
         self.parent_obj.transform.scale = glm.vec3(0.5)
 
         self.update()
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.handle_lifetime)
+        self.subscribe_to_event(UserEvents["update"], self.update)
+        self.subscribe_to_event(UserEvents["update"], self.handle_lifetime)
 
         self.parent_obj.physics_body.callbacks.append(self.collide_with_target)
 

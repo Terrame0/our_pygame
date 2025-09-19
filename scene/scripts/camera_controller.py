@@ -29,7 +29,7 @@ class CameraController(Module):
         self.subscribe_to_event(SDL_MOUSEMOTION, self.handle_panning, pass_event=True)
         self.subscribe_to_event(SDL_MOUSEMOTION, self.handle_rotation, pass_event=True)
         self.subscribe_to_event(SDL_MOUSEWHEEL, self.handle_zoom, pass_event=True)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update_transform)
+        self.subscribe_to_event(UserEvents["update"], self.update_transform)
 
     @property
     def offset_vector(self):

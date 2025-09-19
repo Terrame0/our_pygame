@@ -5,6 +5,7 @@ from utils.debug import debug
 from core.event_manager import EventManager
 from utils.case_converter import pascal_to_snake
 from utils.classproperty import classproperty
+from core.event_system.user_events import UserEvents
 
 
 # -- metaclass to precompute class names
@@ -12,7 +13,11 @@ class ModuleMeta(ABCMeta):
     def __new__(cls, name, bases, namespace):
         namespace["name_snake"] = pascal_to_snake(name)
         namespace["name_pascal"] = name
-        namespace["__str__"] = cls.__str__
+        if "local_events" in namespace:
+            event_types = []
+            for event_name in namespace["local_events"]:
+                event_types.append(UserEvents.register_event(event_name))
+            namespace["local_events"] = dict(zip(namespace["local_events"], event_types))
         return super().__new__(cls, name, bases, namespace)
 
     def __str__(self):
@@ -20,7 +25,14 @@ class ModuleMeta(ABCMeta):
 
 
 class Module(ABC, metaclass=ModuleMeta):
-    requires: List[Type[Module]] = []
+    requires: List[Module] = []
+    local_events: List[str] = (
+        []
+    )  # -- gets changed to a dictionary of event name/type pairs after initialization
+
+    def __init__(self, *args, **kwargs):
+        self.event_subscriptions = []
+        self.construction_args = (args, kwargs)  # -- storing arguments for lazy construction
 
     # -- functions as the constructor for subclasses
     @abstractmethod
@@ -46,25 +58,22 @@ class Module(ABC, metaclass=ModuleMeta):
 
         if self not in parent_obj.modules:
             self._parent_obj = parent_obj
-            # -- checking requirements
-            missing = [
-                required_module.name_snake
-                for required_module in self.requires
-                if required_module.name_snake not in parent_obj.modules
-            ]
-            if missing:
-                raise Exception(
-                    f"(!) missing required modules on {parent_obj} for [{self.name_pascal}] module: {', '.join(missing)}"
-                )
-
+            self.check_required_modules(parent_obj)  # -- checking module dependencies
             parent_obj.modules[self.name_snake] = self  # -- adding self to modules
             self.__init_module__(*self.construction_args[0], **self.construction_args[1])
         else:
             debug.log(f"(*) [{self.name_pascal}] module is already attached to {parent_obj}!")
 
-    def __init__(self, *args, **kwargs):
-        self.event_subscriptions = []
-        self.construction_args = (args, kwargs)  # -- storing arguments for lazy construction
+    def check_required_modules(self, parent_obj):
+        missing = [
+            required_module.name_snake
+            for required_module in self.requires
+            if required_module.name_snake not in parent_obj.modules
+        ]
+        if missing:
+            raise Exception(
+                f"(!) missing required modules on {parent_obj} for [{self.name_pascal}] module: {', '.join(missing)}"
+            )
 
     def subscribe_to_event(
         self,
@@ -73,6 +82,11 @@ class Module(ABC, metaclass=ModuleMeta):
         *args: Any,
         **kwargs: Any,
     ):
+        if event_type in self.local_events.values() and "progenitor" not in kwargs:
+            raise RuntimeError(
+                f"(!) a subscription for a progenitor-specific event must have a progenitor specified"
+            )
+
         EventManager.subscribe(event_type, callback, *args, **kwargs)
         self.event_subscriptions.append((event_type, callback))
 

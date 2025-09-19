@@ -92,11 +92,11 @@ class Player(Module):
         )
 
         # -- event subscriptions
-        self.subscribe_to_event(UserEvents.get_id("update"), self.handle_keyboard_input)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.calculate_boost)
+        self.subscribe_to_event(UserEvents["update"], self.handle_keyboard_input)
+        self.subscribe_to_event(UserEvents["update"], self.calculate_boost)
         self.subscribe_to_event(pygame.MOUSEMOTION, self.handle_mouse_input)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.shoot)
-        self.subscribe_to_event(UserEvents.get_id("update"), self.check_health)
+        self.subscribe_to_event(UserEvents["update"], self.shoot)
+        self.subscribe_to_event(UserEvents["update"], self.check_health)
 
     def check_health(self):
         if self.parent_obj.health.value <= 0:

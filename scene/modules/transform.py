@@ -3,7 +3,7 @@ import math
 from OpenGL.GL import *
 from pyglm import glm
 from scene.modules.module_base import Module
-from core.event_system.user_events import UserEvents
+from core.event_system.user_events import UserEvents, Payload
 from utils.singleton_decorator import singleton
 from graphics.resources.ctypes_struct import create_struct
 from graphics.resources.buffer import Buffer
@@ -14,6 +14,7 @@ import sys
 
 
 class Transform(Module):
+    local_events = ["transform_update"]
 
     def __init_module__(
         self,
@@ -36,11 +37,20 @@ class Transform(Module):
         self.position = position
         self.rotation = rotation
         self.scale = scale
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update_model_matrix)
+        self.subscribe_to_event(UserEvents["update"], self.update_model_matrix)
+        self.subscribe_to_event(
+            UserEvents["transform_update"], self.bruh, progenitor=self.parent_obj, pass_event=True
+        )
+
+    def bruh(self,event):
+        print(event.progenitor)
+        print(f"called bruh from {self.parent_obj}")
 
     # -- gets called every frame to make sure the model matrix stays relevant
     def update_model_matrix(self) -> glm.mat4:
         if self.needs_update:
+            UserEvents.get_instance("transform_update").post(progenitor=self.parent_obj)
+
             self.object_data_mapping.model = self.T * self.R * self.S
             self.needs_update = False
         return self.object_data_mapping.model

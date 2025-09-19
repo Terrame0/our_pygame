@@ -29,7 +29,7 @@ class SpeedLinesEmitter(Module):
             "speed_line_renderer.vert",
         )
 
-        self.subscribe_to_event(UserEvents.get_id("update"), self.render_particles)
+        self.subscribe_to_event(UserEvents["update"], self.render_particles)
 
     def deinit(self):
         RenderpassIDManager.return_id(self.renderpass_id)

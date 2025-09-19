@@ -16,7 +16,7 @@ class UserInput:
         self._cx = ctypes.c_int(0)
         self._cy = ctypes.c_int(0)
         self.update()
-        EventManager.subscribe(UserEvents.get_id("update"), self.update)
+        EventManager.subscribe(UserEvents["update"], self.update)
 
     def update(self):
         self._mbutton_state = sdl.SDL_GetMouseState(ctypes.byref(self._cx), ctypes.byref(self._cy))

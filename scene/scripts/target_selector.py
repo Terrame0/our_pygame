@@ -15,7 +15,7 @@ class TargetSelector(Module):
     def __init_module__(self, player: SceneObject):
         self.player = player
         self.selected_target = None
-        self.subscribe_to_event(UserEvents.get_id("update"), self.update)
+        self.subscribe_to_event(UserEvents["update"], self.update)
         self.subscribe_to_event(pygame.KEYDOWN, self.select_target, pass_event=True)
         self.available_targets = {}
 
