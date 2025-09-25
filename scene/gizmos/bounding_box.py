@@ -1,12 +1,9 @@
 from __future__ import annotations
-from scene.scene_object import SceneObject
-from scene.modules.transform import Transform
-from scene.modules.renderer import Renderer
-from core.event_system.user_events import UserEvents
-from core.event_manager import EventManager
 from pyglm import glm
 import numpy as np
 from itertools import combinations
+from typing import List
+import sys
 
 
 class RelaxedAABB:
@@ -22,6 +19,15 @@ class AABB:
     def __init__(self, p1=glm.vec3(0), p2=glm.vec3(0)):
         self.p1 = p1
         self.p2 = p2
+
+    @classmethod
+    def fit(cls, *points: List[glm.vec3]):
+        min_p = glm.vec3(sys.float_info.max)
+        max_p = glm.vec3(-sys.float_info.max)
+        for point in points:
+            min_p = glm.min(min_p, point)
+            max_p = glm.max(max_p, point)
+        return cls(min_p, max_p)
 
     def contains(self, other: AABB) -> bool:
         return np.all(other.min_p >= self.min_p) and np.all(other.max_p <= self.max_p)
@@ -49,6 +55,10 @@ class AABB:
         return glm.abs(self.p1 - self.p2)
 
     @property
+    def center(self) -> glm.vec3:
+        return (self.p1 + self.p2) / 2
+
+    @property
     def area(self) -> float:
         return np.sum([np.prod(side) * 2 for side in combinations(self.extent, 2)])
 
@@ -59,3 +69,6 @@ class AABB:
     @property
     def max_p(self) -> glm.vec3:
         return glm.max(self.p1, self.p2)
+
+    def __str__(self):
+        return f"AABB[{self.p1}, {self.p2}]"

@@ -1,12 +1,11 @@
 import ctypes
-from OpenGL.GL import GL_ARRAY_BUFFER
 from pyglm import glm
 import numpy as np
 from graphics.resources.ctypes_struct import create_struct
-from graphics.resources.buffer import Buffer
 from typing import List
 from pathlib import Path
-
+from scene.gizmos.bounding_box import AABB
+import sys
 
 class Mesh:
     # -- represents vertex gpu memory layout
@@ -17,9 +16,10 @@ class Mesh:
         do_align=False,
     )
 
-    def __init__(self, vertices, indices):
+    def __init__(self, vertices, indices, aabb):
         self.vertices = vertices
         self.indices = indices
+        self.aabb = aabb
 
     @classmethod
     def load_from_file(cls, path: Path):
@@ -43,13 +43,20 @@ class Mesh:
                 vertex_counter += 1
             indices[i] = vertex_cache[key]
 
+        min_p = glm.vec3(sys.float_info.max)
+        max_p = glm.vec3(-sys.float_info.max)
+
         # -- filling vertex array with values from the vertex cache
         interleaved_vertices = np.zeros(vertex_counter, dtype=cls.vertex_cstruct)
         for i, (key, _) in enumerate(vertex_cache.items()):
-            interleaved_vertices[i]["position"] = positions[key[0]]
+            pos = positions[key[0]]
+            min_p = glm.min(min_p, pos)
+            max_p = glm.max(max_p, pos)
+            interleaved_vertices[i]["position"] = pos
             interleaved_vertices[i]["texcoord"] = texcoords[key[1]]
             interleaved_vertices[i]["normal"] = normals[key[2]]
-        instance = cls(interleaved_vertices, indices)
+        aabb = AABB(min_p, max_p)
+        instance = cls(interleaved_vertices, indices, aabb)
         return instance
 
     @staticmethod

@@ -13,6 +13,7 @@ from scene.modules.renderer import Renderer
 from scene.modules.transform import Transform
 from scene.modules.camera import Camera
 from scene.modules.physics_body import PhysicsBody
+from scene.modules.new_collider import NewCollider
 
 from scene.scripts.camera_controller import CameraController
 
@@ -51,46 +52,47 @@ class TestGameloop:
             ],
         )
 
-        SceneObject(
+        bnuy = SceneObject(
             name=f"test",
             modules=[
                 Transform(position=glm.vec3(0, 0, 0)),
                 Camera,
-                Renderer(mesh="sphere.obj", texture="error.png"),
+                Renderer(mesh="bunny.obj", texture="blue.png", is_transparent=True),
+                NewCollider,
             ],
         )
-        # bvh = BVH()
-        #
+
         # spawn_time = Clock.now
         # counter = 0
         # leaves = []
         # max_count = 100
         while True:
+            #bnuy.transform.rotation = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2 * 360)
+            bnuy.transform.rotation = glm.vec3((Clock.now - Clock.start_time) * 10)
+            bnuy.transform.position = glm.vec3(glm.sin(Clock.now),0,glm.cos(Clock.now)) * 1
+            #bnuy.transform.position = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2) * 3
+            #bnuy.transform.scale = glm.vec3(((glm.sin(Clock.now * 10) + 1) / 2) * 0.2 + 1)
+
             # if Clock.now - spawn_time > 0.1:
-            #    spawn_time = Clock.now
-            #    counter += 1
-            #    if counter < max_count:
-            #        random.seed(counter)
-            #        pos = glm.vec3(
-            #            random.random(),
-            #            random.random(),
-            #            random.random(),
-            #        )
-            #        size = glm.vec3(
-            #            random.random(),
-            #            random.random(),
-            #            random.random(),
-            #        )
+            #     spawn_time = Clock.now
+            #     counter += 1
+            #     if counter < max_count:
+            #         random.seed(counter)
+            #         pos = glm.vec3(
+            #             random.random(),
+            #             random.random(),
+            #             random.random(),
+            #         )
+            #         size = glm.vec3(
+            #             random.random(),
+            #             random.random(),
+            #             random.random(),
+            #         )
             #
-            #        aabb = AABB(pos * 50, pos * 50 + size + 0.1)
+            #         aabb = AABB(pos * 50, pos * 50 + size + 0.1)
             #
-            #        leaves.append(bvh.insert(aabb))
-            #    elif leaves:
-            #        bvh.remove(leaves.pop())
-            #    if leaves:
-            #        TreeVisualizer.draw(bvh.root)
-            #    if not leaves:
-            #        counter = 0
+            #         leaves.append(bvh.insert(aabb))
+            #         TreeVisualizer.draw(bvh.root)
 
             EventManager.process_events()
             GraphicsBackend.next_frame()

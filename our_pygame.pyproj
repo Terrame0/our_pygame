@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>our_pygame</Name>
     <RootNamespace>our_pygame</RootNamespace>
-    <InterpreterId>MSBuild|main_env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <IsWindowsApplication>False</IsWindowsApplication>
@@ -139,10 +139,10 @@
     <Folder Include="utils\" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="main_env\">
-      <Id>main_env</Id>
+    <Interpreter Include="env\">
+      <Id>env</Id>
       <Version>3.9</Version>
-      <Description>main_env (Python 3.9 (64-bit))</Description>
+      <Description>env (Python 3.9 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>

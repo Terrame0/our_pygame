@@ -55,13 +55,14 @@ class BVH:
     def __init__(self):
         self.root = None
 
-    def insert(self, aabb: AABB) -> BVHNode:
-        leaf = BVHNode.as_leaf(aabb)
+    def insert(self, leaf: BVHNode) -> None:
+
+        print(leaf.aabb)
 
         # -- if the tree is empty
         if self.root is None:
             self.root = leaf
-            return self.root
+            return
 
         # -- best candidate to group the leaf with
         sibling = self.find_sibling(leaf)
@@ -98,14 +99,17 @@ class BVH:
         # -- performs transformations that reduce the cost of the tree (SAH)
         self.balance(leaf)
 
-        return leaf
-
     def remove(self, leaf: BVHNode):
+        cur = leaf
+        while cur.parent is not None:
+            cur = cur.parent
+        if cur is not self.root:
+            raise ValueError("(!) node to remove is not in the tree")
+
         parent = leaf.parent
 
         # -- node is root
         if parent is None:
-            assert self.root == leaf
             self.root = None
             return
 

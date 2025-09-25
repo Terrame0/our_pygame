@@ -42,7 +42,7 @@ class Camera(Module):
         self.load_view_vector_to_gpu()
         self.load_window_size_to_gpu()
 
-        #EventManager.subscribe(pygame.VIDEORESIZE, self._resize, pass_event=True)
+        # EventManager.subscribe(pygame.VIDEORESIZE, self._resize, pass_event=True)
         EventManager.subscribe(UserEvents["update"], self.load_view_matrix_to_gpu)
         EventManager.subscribe(UserEvents["update"], self.load_view_vector_to_gpu)
 

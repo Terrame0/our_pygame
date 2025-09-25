@@ -58,11 +58,12 @@ class UserEvents:
         else:
             return None
 
-    def __getitem__(self, name):
+    # -- an alias for get_type()
+    def __getitem__(self, name) -> int:
         return self.get_type(name)
 
-    def get_type(self, name):
+    def get_type(self, name) -> int:
         return self.event_type_registry[name]
 
-    def get_instance(self, name):
+    def get_instance(self, name) -> UserEventInstance:
         return UserEventInstance(self.get_type(name))

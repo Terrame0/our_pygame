@@ -13,6 +13,7 @@ class ModuleMeta(ABCMeta):
     def __new__(cls, name, bases, namespace):
         namespace["name_snake"] = pascal_to_snake(name)
         namespace["name_pascal"] = name
+        namespace["__str__"] = cls.__str__
         if "local_events" in namespace:
             event_types = []
             for event_name in namespace["local_events"]:
@@ -75,6 +76,11 @@ class Module(ABC, metaclass=ModuleMeta):
                 f"(!) missing required modules on {parent_obj} for [{self.name_pascal}] module: {', '.join(missing)}"
             )
 
+    def post_event(self, name, **kwargs):
+        if name in self.local_events and "progenitor" not in kwargs:
+            kwargs["progenitor"] = self.parent_obj
+        UserEvents.get_instance(name).post(**kwargs)
+
     def subscribe_to_event(
         self,
         event_type: Any,
@@ -82,11 +88,6 @@ class Module(ABC, metaclass=ModuleMeta):
         *args: Any,
         **kwargs: Any,
     ):
-        if event_type in self.local_events.values() and "progenitor" not in kwargs:
-            raise RuntimeError(
-                f"(!) a subscription for a progenitor-specific event must have a progenitor specified"
-            )
-
         EventManager.subscribe(event_type, callback, *args, **kwargs)
         self.event_subscriptions.append((event_type, callback))
 

@@ -1,16 +1,10 @@
-import copy
 import math
 from OpenGL.GL import *
 from pyglm import glm
 from scene.modules.module_base import Module
-from core.event_system.user_events import UserEvents, Payload
-from utils.singleton_decorator import singleton
-from graphics.resources.ctypes_struct import create_struct
-from graphics.resources.buffer import Buffer
+from core.event_system.user_events import UserEvents
 from scene.scene import Scene, object_data_cstruct
-import numpy as np
 import ctypes
-import sys
 
 
 class Transform(Module):
@@ -38,18 +32,15 @@ class Transform(Module):
         self.rotation = rotation
         self.scale = scale
         self.subscribe_to_event(UserEvents["update"], self.update_model_matrix)
-        self.subscribe_to_event(
-            UserEvents["transform_update"], self.bruh, progenitor=self.parent_obj, pass_event=True
-        )
 
-    def bruh(self,event):
-        print(event.progenitor)
-        print(f"called bruh from {self.parent_obj}")
+        # self.subscribe_to_event(
+        #     UserEvents["transform_update"], self.bruh, progenitor=self.parent_obj, pass_event=True
+        # )
 
-    # -- gets called every frame to make sure the model matrix stays relevant
+    # -- gets called every frame to make sure the model matrix stays relevant for every draw call
     def update_model_matrix(self) -> glm.mat4:
         if self.needs_update:
-            UserEvents.get_instance("transform_update").post(progenitor=self.parent_obj)
+            self.post_event("transform_update")
 
             self.object_data_mapping.model = self.T * self.R * self.S
             self.needs_update = False

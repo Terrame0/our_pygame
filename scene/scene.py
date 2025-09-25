@@ -6,6 +6,7 @@ from pyglm import glm
 from graphics.resources.ctypes_struct import create_struct
 from graphics.resources.buffer import Buffer
 import numpy as np
+from graphics.bvh import BVH
 
 # -- per object data
 object_data_cstruct = create_struct(
@@ -44,6 +45,7 @@ class Scene:
         self._camera_object = None
         self.objects = []
         self.init_object_data_buffer()
+        self.bvh = BVH()
 
     def add_object(self, obj) -> int:  # -- returns object id
         self.objects.append(obj)

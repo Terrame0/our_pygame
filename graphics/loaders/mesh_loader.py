@@ -14,11 +14,14 @@ class MeshLoader:
         self.joint_vertex_buffer = np.array([], dtype=Mesh.vertex_cstruct)
         self.joint_index_buffer = np.array([], dtype=ctypes.c_uint32)
 
+        self.meshes = {}
         self.mesh_data: Dict[str, Dict[str, int]] = {}
-        self.joint_vao = None
-
         self.load_meshes()
+        self.joint_vao = None
         self.init_joint_vao()
+
+    def get_mesh(self, name: str) -> Mesh:
+        return self.meshes[name]
 
     def __getitem__(self, name: str) -> Dict[str, int]:
         return self.mesh_data[name]
@@ -26,22 +29,21 @@ class MeshLoader:
     def get_mesh_data(self, name: str) -> Dict[str, int]:
         return self.mesh_data[name]
 
-    def load_meshes(self) -> Dict[str, Dict[str, int]]:
+    def load_meshes(self):
         mesh_paths = list(Path(resolve_path("assets/")).glob("**/*.obj"))
-        meshes = [Mesh.load_from_file(path=str(s)) for s in mesh_paths]
+        self.meshes = {path.name: Mesh.load_from_file(path=str(path)) for path in mesh_paths}
         index_offset = 0
         vertex_offset = 0
-        for mesh, path in zip(meshes, mesh_paths):
-            self.mesh_data[path.name] = {
+        for name, mesh in self.meshes.items():
+            self.mesh_data[name] = {
                 "size": len(mesh.indices),
                 "index_offset": index_offset,
                 "vertex_offset": vertex_offset,
             }
             index_offset += len(mesh.indices)
             vertex_offset += len(mesh.vertices)
-        self.joint_vertex_buffer = np.concatenate([mesh.vertices for mesh in meshes])
-        self.joint_index_buffer = np.concatenate([mesh.indices for mesh in meshes])
-        return self.mesh_data
+        self.joint_vertex_buffer = np.concatenate([mesh.vertices for mesh in self.meshes.values()])
+        self.joint_index_buffer = np.concatenate([mesh.indices for mesh in self.meshes.values()])
 
     def init_joint_vao(self):
         # -- vertex array object

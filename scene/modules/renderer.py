@@ -36,10 +36,13 @@ class Renderer(Module):
         self.is_UI = is_UI
         self.is_visible = is_visible
 
-        self.upload_object_command()  # -- setting the object's draw command template
+        self.upload_object_command()
 
-        self.texture = texture
-        self.mesh = mesh
+        self.mesh_name = mesh
+        self.texture_name = texture
+
+        self.mesh = self.mesh_name
+        self.texture = self.texture_name
 
     @property
     def texture(self):
@@ -51,7 +54,7 @@ class Renderer(Module):
 
     @property
     def mesh(self):
-        pass
+        return MeshLoader.get_mesh(self.mesh_name)
 
     @mesh.setter
     def mesh(self, name):

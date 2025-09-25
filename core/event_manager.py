@@ -63,7 +63,6 @@ class EventManager:
     def unsubscribe(self, event_type: Any, callback: Callable):
         if event_type in self.subscriptions:
             original_subscriptions = self.subscriptions[event_type][:]
-
             for sub_data in original_subscriptions:
                 if sub_data.callback == callback:
                     self.subscriptions[event_type].remove(sub_data)
@@ -79,14 +78,13 @@ class EventManager:
                 try:
                     progenitor = sub_data.parameters["progenitor"]
                     payload = UserEvents.get_payload(event)
-                    if progenitor is not None and payload is not None:
-                        if hasattr(payload, "progenitor"):
-                            if progenitor != payload.progenitor:
-                                break  # -- the subscription and event instance progenitors do not match
-                        else:
-                            raise RuntimeError(
-                                f"""(!) a payload of an event instance of a progenitor-specific event type must have a "progenitor" field"""
-                            )
+                    if progenitor is not None and hasattr(payload, "progenitor"):
+                        if progenitor != payload.progenitor:
+                            break  # -- the subscription and event instance progenitors do not match
+                    elif progenitor is None and hasattr(payload, "progenitor"):
+                        raise RuntimeError(
+                            f"""(!) subscription for a progenitor-specific event does not have a "progenitor" parameter"""
+                        )
                     if sub_data.parameters["pass_event"] is True:
                         sub_data.callback(
                             event if payload is None else payload, *sub_data.args, **sub_data.kwargs
@@ -97,6 +95,9 @@ class EventManager:
                     raise RuntimeError(
                         f"(!) error in callback for {event}, {sub_data.callback}: {str(e)}"
                     )
+
+    def get_parameter(self, event_type, callback, parameter_name):
+        return getattr(self.subscriptions[event_type].parameters, parameter_name)
 
     def process_events(self):
         UserEvents.get_instance("update").post()

@@ -48,7 +48,7 @@ void main() {
     vec4 frag_color = texture(texture_handles[texture_id],frag_texcoord);
 
     // -- writing to the accumulation and revealage targets (for WBOIT)
-    float a = frag_color.a * 0.1;
+    float a = frag_color.a * 0.3;
     float w = weight(a);
     accumulation = vec4(frag_color.rgb * a * w, a * w);
     revealage = a;
