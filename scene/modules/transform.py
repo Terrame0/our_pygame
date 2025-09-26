@@ -33,15 +33,10 @@ class Transform(Module):
         self.scale = scale
         self.subscribe_to_event(UserEvents["update"], self.update_model_matrix)
 
-        # self.subscribe_to_event(
-        #     UserEvents["transform_update"], self.bruh, progenitor=self.parent_obj, pass_event=True
-        # )
-
     # -- gets called every frame to make sure the model matrix stays relevant for every draw call
     def update_model_matrix(self) -> glm.mat4:
         if self.needs_update:
             self.post_event("transform_update")
-
             self.object_data_mapping.model = self.T * self.R * self.S
             self.needs_update = False
         return self.object_data_mapping.model

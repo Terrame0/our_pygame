@@ -57,7 +57,7 @@ class BVH:
 
     def insert(self, leaf: BVHNode) -> None:
 
-        print(leaf.aabb)
+        # print(leaf.aabb)
 
         # -- if the tree is empty
         if self.root is None:

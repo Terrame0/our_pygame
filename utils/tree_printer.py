@@ -31,7 +31,7 @@ class TreeVisualizer:
                         Renderer(
                             mesh="unit_cube.obj",
                             texture="blue.png" if node.is_leaf else "black.png",
-                            is_transparent=False if node.is_leaf else True,
+                            is_transparent=True,
                         ),
                     ]
                 )

@@ -11,6 +11,7 @@ from scene.scene import Scene
 from scene.scene_object import SceneObject
 from core.event_system.user_events import UserEvents
 from graphics.bvh import BVHNode
+from utils.tree_printer import TreeVisualizer
 
 
 class NewCollider(Module):
@@ -45,6 +46,7 @@ class NewCollider(Module):
 
     def recalculate_relaxed_aabb(self):
         if not self.relaxed_aabb.contains(self.outer_aabb):
+            # TreeVisualizer.draw(Scene.bvh.root)
             self.relaxed_aabb.p1 = self.outer_aabb.min_p - self.offset
             self.relaxed_aabb.p2 = self.outer_aabb.max_p + self.offset
             Scene.bvh.reinsert(self.node_handle)

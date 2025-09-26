@@ -52,26 +52,34 @@ class TestGameloop:
             ],
         )
 
-        bnuy = SceneObject(
-            name=f"test",
-            modules=[
-                Transform(position=glm.vec3(0, 0, 0)),
-                Camera,
-                Renderer(mesh="bunny.obj", texture="blue.png", is_transparent=True),
-                NewCollider,
-            ],
-        )
+        objs = [
+            SceneObject(
+                name=f"test_{i}",
+                modules=[
+                    Transform(position=glm.vec3(0, 0, 0)),
+                    Renderer(mesh="sphere.obj", texture="blue.png", is_transparent=False),
+                    NewCollider,
+                ],
+            )
+            for i in range(2)
+        ]
 
         # spawn_time = Clock.now
         # counter = 0
         # leaves = []
         # max_count = 100
         while True:
-            #bnuy.transform.rotation = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2 * 360)
-            bnuy.transform.rotation = glm.vec3((Clock.now - Clock.start_time) * 10)
-            bnuy.transform.position = glm.vec3(glm.sin(Clock.now),0,glm.cos(Clock.now)) * 1
-            #bnuy.transform.position = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2) * 3
-            #bnuy.transform.scale = glm.vec3(((glm.sin(Clock.now * 10) + 1) / 2) * 0.2 + 1)
+            for i, obj in enumerate(objs):
+                # obj.transform.rotation = glm.vec3((Clock.now - Clock.start_time) * 10)
+
+                obj.transform.position = (
+                    glm.vec3(glm.sin(Clock.now * (i+1)), 0, glm.cos(Clock.now * (i+1))) * (i+1)
+                )
+
+            # bnuy.transform.rotation = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2 * 360)
+
+            # bnuy.transform.position = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2) * 3
+            # bnuy.transform.scale = glm.vec3(((glm.sin(Clock.now * 10) + 1) / 2) * 0.2 + 1)
 
             # if Clock.now - spawn_time > 0.1:
             #     spawn_time = Clock.now

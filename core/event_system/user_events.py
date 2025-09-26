@@ -48,15 +48,21 @@ class UserEvents:
         if event.type in self.event_type_registry.values():
             try:
                 ptr = ctypes.cast(event.user.data1, ctypes.POINTER(ctypes.py_object))
-                obj = ptr.contents.value
-                # del UserEventInstance.payload_registry[id(obj)]
-                return obj
+                payload = ptr.contents.value
             except:
-                RuntimeError(
+                raise RuntimeError(
                     f"(!) error trying to dereference the payload pointer for {event.type}"
                 )
+            if id(payload) in UserEventInstance.payload_registry:
+                del UserEventInstance.payload_registry[id(payload)]
+                return payload
+            else:
+                raise RuntimeError(f"(!) payload {payload} for  has already been retrieved")
         else:
             return None
+
+    def free_payload(self, payload):
+        del UserEventInstance.payload_registry[id(payload)]
 
     # -- an alias for get_type()
     def __getitem__(self, name) -> int:

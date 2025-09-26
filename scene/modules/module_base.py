@@ -77,9 +77,7 @@ class Module(ABC, metaclass=ModuleMeta):
             )
 
     def post_event(self, name, **kwargs):
-        if name in self.local_events and "progenitor" not in kwargs:
-            kwargs["progenitor"] = self.parent_obj
-        UserEvents.get_instance(name).post(**kwargs)
+        UserEvents.get_instance(name).post(**kwargs, progenitor=self.parent_obj)
 
     def subscribe_to_event(
         self,

@@ -7,7 +7,7 @@ import sys
 import sdl2 as sdl
 import ctypes
 
-from core.event_system.user_events import UserEvents, Payload
+from core.event_system.user_events import UserEvents, Payload, UserEventInstance
 from core.event_system.event_queue import EventQueue
 
 
@@ -73,24 +73,42 @@ class EventManager:
             raise RuntimeError(f"(!) event_type {event_type} not found in subscriptions")
 
     def emit(self, event: Any):
+        payload = UserEvents.get_payload(event)
         if event.type in self.subscriptions:
             for sub_data in self.subscriptions[event.type]:
                 try:
                     progenitor = sub_data.parameters["progenitor"]
-                    payload = UserEvents.get_payload(event)
-                    if progenitor is not None and hasattr(payload, "progenitor"):
-                        if progenitor != payload.progenitor:
-                            break  # -- the subscription and event instance progenitors do not match
-                    elif progenitor is None and hasattr(payload, "progenitor"):
+                    subscription_has_progenitor = progenitor is not None
+                    payload_has_progenitor = hasattr(payload, "progenitor")
+
+                    # -- exiting if either the subscription or the payload are missing progenitor parameters
+                    # -- (but not both, that would be a regular global event)
+                    if subscription_has_progenitor and not payload_has_progenitor:
+                        raise RuntimeError(
+                            f"""(!) payload for a progenitor-specific event does not have a "progenitor" field"""
+                        )
+                    if not subscription_has_progenitor and payload_has_progenitor:
                         raise RuntimeError(
                             f"""(!) subscription for a progenitor-specific event does not have a "progenitor" parameter"""
                         )
+
+                    # -- handling the progenitor-specific event if both parameters are specified
+                    if subscription_has_progenitor and payload_has_progenitor:
+                        if progenitor != payload.progenitor:
+                            continue  # -- the subscription and event instance progenitors do not match
+
+                    # -- calling the function specified in the callback
                     if sub_data.parameters["pass_event"] is True:
                         sub_data.callback(
-                            event if payload is None else payload, *sub_data.args, **sub_data.kwargs
+                            event if payload is None else payload,
+                            *sub_data.args,
+                            **sub_data.kwargs,
                         )
                     else:
-                        sub_data.callback(*sub_data.args, **sub_data.kwargs)
+                        sub_data.callback(
+                            *sub_data.args,
+                            **sub_data.kwargs,
+                        )
                 except Exception as e:
                     raise RuntimeError(
                         f"(!) error in callback for {event}, {sub_data.callback}: {str(e)}"
@@ -100,6 +118,11 @@ class EventManager:
         return getattr(self.subscriptions[event_type].parameters, parameter_name)
 
     def process_events(self):
+        # for key, l in self.subscriptions.items():
+        #    print(f"{key}:")
+        #    for entry in l:
+        #        if hasattr(entry.callback.__self__, "parent_obj"):
+        #            print(entry.callback, entry.callback.__self__.parent_obj, entry.parameters)
         UserEvents.get_instance("update").post()
         for event in EventQueue.poll_events():
             if event.type == sdl.SDL_QUIT:
