@@ -56,51 +56,25 @@ class TestGameloop:
             SceneObject(
                 name=f"test_{i}",
                 modules=[
-                    Transform(position=glm.vec3(0, 0, 0)),
+                    Transform(position=glm.vec3(0, 0, 0),scale = glm.vec3(0.1)),
                     Renderer(mesh="sphere.obj", texture="blue.png", is_transparent=False),
-                    NewCollider,
+                    #NewCollider,
                 ],
             )
-            for i in range(2)
+            for i in range(1000)
         ]
 
-        # spawn_time = Clock.now
-        # counter = 0
-        # leaves = []
-        # max_count = 100
         while True:
             for i, obj in enumerate(objs):
                 # obj.transform.rotation = glm.vec3((Clock.now - Clock.start_time) * 10)
 
-                obj.transform.position = (
-                    glm.vec3(glm.sin(Clock.now * (i+1)), 0, glm.cos(Clock.now * (i+1))) * (i+1)
-                )
-
-            # bnuy.transform.rotation = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2 * 360)
-
-            # bnuy.transform.position = glm.vec3((glm.sin(Clock.now / 2) + 1) / 2) * 3
-            # bnuy.transform.scale = glm.vec3(((glm.sin(Clock.now * 10) + 1) / 2) * 0.2 + 1)
-
-            # if Clock.now - spawn_time > 0.1:
-            #     spawn_time = Clock.now
-            #     counter += 1
-            #     if counter < max_count:
-            #         random.seed(counter)
-            #         pos = glm.vec3(
-            #             random.random(),
-            #             random.random(),
-            #             random.random(),
-            #         )
-            #         size = glm.vec3(
-            #             random.random(),
-            #             random.random(),
-            #             random.random(),
-            #         )
-            #
-            #         aabb = AABB(pos * 50, pos * 50 + size + 0.1)
-            #
-            #         leaves.append(bvh.insert(aabb))
-            #         TreeVisualizer.draw(bvh.root)
+                obj.transform.position = glm.vec3(
+                    glm.sin(Clock.now / 1000 * (i)),
+                    glm.cos(Clock.now / 1000 * (i * 2)),
+                    glm.cos(Clock.now / 1000 * (i * 3)),
+                ) * (i + 1) / 100
+            # TreePrinter.print(Scene.bvh.root)
+            # TreeVisualizer.draw(Scene.bvh.root)
 
             EventManager.process_events()
             GraphicsBackend.next_frame()

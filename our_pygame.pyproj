@@ -51,6 +51,7 @@
     <Compile Include="graphics\materials\material_base.py" />
     <Compile Include="graphics\materials\transparent.py" />
     <Compile Include="scene\gizmos\bounding_box.py" />
+    <Compile Include="core\main.py" />
     <Compile Include="scene\modules\new_collider.py" />
     <Compile Include="scene\modules\renderer.py" />
     <Compile Include="scene\modules\physics_body.py" />
@@ -82,7 +83,6 @@
     <Compile Include="utils\pointer.py" />
     <Compile Include="utils\user_input.py" />
     <Compile Include="utils\singleton_decorator.py" />
-    <Compile Include="core\main.py" />
     <Compile Include="graphics\resources\buffer.py" />
     <Compile Include="graphics\graphics_backend.py" />
     <Compile Include="scene\scene_object.py" />

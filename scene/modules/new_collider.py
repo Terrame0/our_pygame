@@ -11,19 +11,24 @@ from scene.scene import Scene
 from scene.scene_object import SceneObject
 from core.event_system.user_events import UserEvents
 from graphics.bvh import BVHNode
+from collections import deque
 from utils.tree_printer import TreeVisualizer
 
 
 class NewCollider(Module):
     requires = [Transform, Renderer]
-    offset = 0.2
 
     def __init_module__(self):
+        # -- offset calculations
+        self.previous_position_sample = self.parent_obj.transform.position
+        self.accumulated_velocity = 0
+        self.aabb_offset = 1
+
         self.mesh_aabb = self.parent_obj.renderer.mesh.aabb
         self.outer_aabb = AABB(self.mesh_aabb.p1, self.mesh_aabb.p2)
         self.relaxed_aabb = AABB(
-            self.mesh_aabb.min_p - self.offset,
-            self.mesh_aabb.max_p + self.offset,
+            self.mesh_aabb.min_p - self.aabb_offset,
+            self.mesh_aabb.max_p + self.aabb_offset,
         )
         self.node_handle = BVHNode.as_leaf(self.relaxed_aabb)
 
@@ -43,12 +48,28 @@ class NewCollider(Module):
             self.recalculate_relaxed_aabb,
             progenitor=self.parent_obj,
         )
+        self.subscribe_to_event(
+            UserEvents["transform_update"],
+            self.update_accumulated_velocity,
+            progenitor=self.parent_obj,
+        )
+
+    def update_accumulated_velocity(self):
+        self.accumulated_velocity *= 0.99
+        self.accumulated_velocity += glm.length(
+            self.previous_position_sample - self.parent_obj.transform.position
+        )
+        self.previous_position_sample = self.parent_obj.transform.position
+
+        self.aabb_offset = self.accumulated_velocity
+
+        print(self.accumulated_velocity)
 
     def recalculate_relaxed_aabb(self):
         if not self.relaxed_aabb.contains(self.outer_aabb):
             # TreeVisualizer.draw(Scene.bvh.root)
-            self.relaxed_aabb.p1 = self.outer_aabb.min_p - self.offset
-            self.relaxed_aabb.p2 = self.outer_aabb.max_p + self.offset
+            self.relaxed_aabb.p1 = self.outer_aabb.min_p - self.aabb_offset
+            self.relaxed_aabb.p2 = self.outer_aabb.max_p + self.aabb_offset
             Scene.bvh.reinsert(self.node_handle)
 
     def recalculate_outer_aabb(self):
