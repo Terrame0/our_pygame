@@ -1,12 +1,11 @@
 ﻿from __future__ import annotations
 from scene.gizmos.bounding_box import AABB
-from pyglm import glm
-from itertools import product
-from graphics.resources.ctypes_struct import create_struct
-from utils.debug import debug
-from collections import defaultdict
 import numpy as np
 import heapq
+from core.event_manager import EventManager
+from core.event_system.user_events import UserEvents
+from core.clock import Clock
+from pyglm import glm
 
 
 class BVHNode:
@@ -54,10 +53,17 @@ class BVH:
 
     def __init__(self):
         self.root = None
+        self.reinsertion_counter = 0
+
+        EventManager.subscribe(
+            UserEvents["update"],
+            self.update_reinsertion_counter,
+        )
+
+    def update_reinsertion_counter(self):
+        print(self.reinsertion_counter / max(Clock.now - Clock.start_time, glm.epsilon()))
 
     def insert(self, leaf: BVHNode) -> None:
-
-        # print(leaf.aabb)
 
         # -- if the tree is empty
         if self.root is None:
@@ -139,6 +145,7 @@ class BVH:
             sibling.parent = None
 
     def reinsert(self, leaf: BVHNode):
+        self.reinsertion_counter += 1
         self.remove(leaf)
         self.insert(leaf)
 

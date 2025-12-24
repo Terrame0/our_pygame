@@ -56,25 +56,29 @@ class TestGameloop:
             SceneObject(
                 name=f"test_{i}",
                 modules=[
-                    Transform(position=glm.vec3(0, 0, 0),scale = glm.vec3(0.1)),
-                    Renderer(mesh="sphere.obj", texture="blue.png", is_transparent=False),
-                    #NewCollider,
+                    Transform,
+                    Renderer(mesh="cat.obj", texture="cat_tex.png", is_transparent=False),
+                    NewCollider,
                 ],
             )
-            for i in range(1000)
+            for i in range(10)
         ]
 
         while True:
             for i, obj in enumerate(objs):
                 # obj.transform.rotation = glm.vec3((Clock.now - Clock.start_time) * 10)
 
-                obj.transform.position = glm.vec3(
-                    glm.sin(Clock.now / 1000 * (i)),
-                    glm.cos(Clock.now / 1000 * (i * 2)),
-                    glm.cos(Clock.now / 1000 * (i * 3)),
-                ) * (i + 1) / 100
+                obj.transform.position = (
+                    glm.vec3(
+                        glm.sin(Clock.now / 1000 * (i)),
+                        glm.cos(Clock.now / 1000 * (i * 2)),
+                        glm.cos(Clock.now / 1000 * (i * 3)),
+                    )
+                    * (i + 1)
+                    * 5
+                )
             # TreePrinter.print(Scene.bvh.root)
-            # TreeVisualizer.draw(Scene.bvh.root)
+            TreeVisualizer.draw(Scene.bvh.root)
 
             EventManager.process_events()
             GraphicsBackend.next_frame()
